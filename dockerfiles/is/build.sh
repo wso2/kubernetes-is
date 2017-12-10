@@ -29,11 +29,5 @@ repository=docker.wso2.com/${product}-${platform}
 tag=${productVersion}
 
 echo "Creating ${repository}:${tag}..."
-docker_api_version=`docker version | grep -m2 "API version" | head -n1 | cut -d' ' -f5 | bc -l`
-echo "Docker API version: ${docker_api_version}"
-if (( $(echo ${docker_api_version} '>=' 1.25 | bc -l) )); then
-    docker build -t ${repository}:${tag} . --squash
-else
-    docker build -t ${repository}:${tag} .
-fi
+docker build -t ${repository}:${tag} .
 docker images --filter "dangling=true" -q --no-trunc | xargs docker rmi > /dev/null 2>&1

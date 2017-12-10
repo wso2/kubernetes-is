@@ -14,32 +14,21 @@
 -- limitations under the License.
 --
 
-DROP DATABASE IF EXISTS WSO2_IDENTITY_DB;
-DROP DATABASE IF EXISTS WSO2_PERMISSION_DB;
-DROP DATABASE IF EXISTS WSO2_BPS_DB;
 DROP DATABASE IF EXISTS WSO2_USER_STORE_DB;
+DROP DATABASE IF EXISTS WSO2_IDENTITY_DB;
 
-CREATE DATABASE WSO2_IDENTITY_DB;
-CREATE DATABASE WSO2_PERMISSION_DB;
-CREATE DATABASE WSO2_BPS_DB;
 CREATE DATABASE WSO2_USER_STORE_DB;
+CREATE DATABASE WSO2_IDENTITY_DB;
 
 CREATE USER IF NOT EXISTS 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-GRANT ALL ON WSO2_IDENTITY_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-GRANT ALL ON WSO2_PERMISSION_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-GRANT ALL ON WSO2_BPS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 GRANT ALL ON WSO2_USER_STORE_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+GRANT ALL ON WSO2_IDENTITY_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+
+USE WSO2_USER_STORE_DB;
+SOURCE /home/wso2is-5.4.0-db-scripts/user-mgt.sql;
 
 USE WSO2_IDENTITY_DB;
 SOURCE /home/wso2is-5.4.0-db-scripts/identity.sql;
 SOURCE /home/wso2is-5.4.0-db-scripts/registry.sql;
-
-USE WSO2_PERMISSION_DB;
-SOURCE /home/wso2is-5.4.0-db-scripts/registry.sql;
 SOURCE /home/wso2is-5.4.0-db-scripts/user-mgt.sql;
-
-USE WSO2_BPS_DB;
 SOURCE /home/wso2is-5.4.0-db-scripts/bps.sql;
-
-USE WSO2_USER_STORE_DB;
-SOURCE /home/wso2is-5.4.0-db-scripts/user-mgt.sql;
