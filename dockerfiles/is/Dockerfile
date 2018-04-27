@@ -69,7 +69,7 @@ COPY ${FILES}/${JDK_ARCHIVE} ${STARTUP_SCRIPT} ${FILES}/${WSO2_SERVER_PACK} ${FI
 # install jdk, wso2 server, remove distributions and set folder permissions
 RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
     && mkdir -p ${USER_HOME}/tmp \
-    && cp -r ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/deployment/server/* ${USER_HOME}/tmp/ \
+    && cp -r ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/deployment/server ${USER_HOME}/tmp/ \
     && mkdir -p ${JAVA_HOME} \
     && tar -xf ${USER_HOME}/${JDK_ARCHIVE} -C ${JAVA_HOME} --strip-components=1 \
     && cp ${USER_HOME}/${JDBC_DRIVER} ${USER_HOME}/${DNS_JAVA_LIB} ${WSO2_SERVER_HOME}/repository/components/lib/ \
