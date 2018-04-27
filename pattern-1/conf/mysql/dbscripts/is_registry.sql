@@ -21,6 +21,7 @@
 -- ################################
 -- REGISTRY TABLES
 -- ################################
+USE WSO2_IDENTITY_DB;
 
 CREATE TABLE IF NOT EXISTS REG_CLUSTER_LOCK (
              REG_LOCK_NAME VARCHAR (20),

@@ -23,7 +23,11 @@ ENV DEBIAN_FRONTEND noninteractive
 # set user information
 ARG USER=wso2user
 ARG USER_GROUP=wso2
+ARG USER_ID=1000000000
 ARG USER_HOME=/home/${USER}
+
+# Set startup script
+ARG STARTUP_SCRIPT=init_carbon.sh
 
 # set local files directory
 ARG FILES=./files
@@ -34,7 +38,7 @@ ARG JAVA_HOME=${USER_HOME}/java
 
 # set wso2 product information
 ARG WSO2_SERVER=wso2is
-ARG WSO2_SERVER_VERSION=5.4.0
+ARG WSO2_SERVER_VERSION=5.5.0
 ARG WSO2_SERVER_PACK=${WSO2_SERVER}-${WSO2_SERVER_VERSION}.zip
 ARG WSO2_SERVER_HOME=${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}
 
@@ -55,8 +59,8 @@ RUN groupadd --system ${USER_GROUP} && \
     useradd --system --create-home --home-dir ${USER_HOME} --no-log-init -g ${USER_GROUP} ${USER}
 
 # copy jdk, wso2 product distribution, jdbc driver and kubernetes dependency libraries to user's home directory
-COPY ${FILES}/${JDK_ARCHIVE} ${FILES}/${WSO2_SERVER_PACK} ${FILES}/${JDBC_DRIVER} \
-     ${FILES}/${DNS_JAVA_LIB} ${FILES}/${KUBERNETES_MEMBERSHIP_SCHEME_LIB} ${USER_HOME}/
+COPY ${FILES}/${JDK_ARCHIVE} ${STARTUP_SCRIPT} ${FILES}/${WSO2_SERVER_PACK} ${FILES}/${JDBC_DRIVER} \
+     ${FILES}/${DNS_JAVA_LIB} ${FILES}/${KUBERNETES_MEMBERSHIP_SCHEME_LIB}  sudoers change_ownership.sh ${USER_HOME}/
 
 # install jdk, wso2 server, remove distributions and set folder permissions
 RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
@@ -66,13 +70,22 @@ RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
     && tar -xf ${USER_HOME}/${JDK_ARCHIVE} -C ${JAVA_HOME} --strip-components=1 \
     && cp ${USER_HOME}/${JDBC_DRIVER} ${USER_HOME}/${DNS_JAVA_LIB} ${WSO2_SERVER_HOME}/repository/components/lib/ \
     && cp ${USER_HOME}/${KUBERNETES_MEMBERSHIP_SCHEME_LIB} ${WSO2_SERVER_HOME}/repository/components/dropins/ \
+    && mkdir -p ${USER_HOME}/scripts/ \
+    && cat ${USER_HOME}/${STARTUP_SCRIPT} > ${USER_HOME}/scripts/${STARTUP_SCRIPT} \
+    && rm ${USER_HOME}/${STARTUP_SCRIPT} \
     && rm ${USER_HOME}/${WSO2_SERVER_PACK} \
     && rm ${USER_HOME}/${JDK_ARCHIVE} \
     && rm ${USER_HOME}/${JDBC_DRIVER} \
     && rm ${USER_HOME}/${DNS_JAVA_LIB} \
     && rm ${USER_HOME}/${KUBERNETES_MEMBERSHIP_SCHEME_LIB} \
-    && chown -R ${USER}:${USER_GROUP} ${USER_HOME} \
-    && chmod -R g=u ${USER_HOME}
+    && chgrp -R 0 ${USER_HOME} \
+    && chmod -R g=u ${USER_HOME} \
+    && chown -R ${USER_ID} ${USER_HOME} \
+    && chmod -R 0774 ${USER_HOME} \
+    && cat ${USER_HOME}/sudoers > /etc/sudoers \
+    && rm ${USER_HOME}/sudoers \
+    && cat ${USER_HOME}/change_ownership.sh > /bin/change_ownership.sh \
+    && chmod 0755 /bin/change_ownership.sh
 
 # set the user and work directory
 USER ${USER_ID}
@@ -89,26 +102,4 @@ ENV JAVA_HOME=${JAVA_HOME} \
 # expose ports
 EXPOSE 9763 9443
 
-CMD [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf/* ${WSO2_SERVER_HOME}/repository/conf/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-axis2" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-axis2/* ${WSO2_SERVER_HOME}/repository/conf/axis2/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-datasources" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-datasources/* ${WSO2_SERVER_HOME}/repository/conf/datasources/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-email" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-email/* ${WSO2_SERVER_HOME}/repository/conf/email/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-identity" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-identity/* ${WSO2_SERVER_HOME}/repository/conf/identity/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-identity-providers" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-identity-providers/* ${WSO2_SERVER_HOME}/repository/conf/identity/identity-providers/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-service-providers" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-service-providers/* ${WSO2_SERVER_HOME}/repository/conf/identity/service-providers/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-security" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-security/* ${WSO2_SERVER_HOME}/repository/conf/security/; \
-    [ -d "${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-tomcat" ] \
-        && cp ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-conf/conf-tomcat/* ${WSO2_SERVER_HOME}/repository/conf/tomcat/; \
-    [ ! -z "${USER_HOME}/tmp/" ] && cp -rf ${USER_HOME}/tmp/* ${WSO2_SERVER_HOME}/repository/deployment/server/ && rm -rf ${USER_HOME}/tmp; \
-    ipaddress=$(ip route get 1 | awk '{print $NF;exit}') && [ ! -z ${ipaddress} ] \
-        && sed -i 's/^\([[:space:]]*<parameter name=\"localMemberHost\">\)127\.0\.0\.1\(<\/parameter>.*\)$/\1'${ipaddress}'\2/' ${WSO2_SERVER_HOME}/repository/conf/axis2/axis2.xml; \
-    chown -R ${USER}:${USER_GROUP} ${WSO2_SERVER_HOME}/repository/deployment/server && chmod -R g=u ${WSO2_SERVER_HOME}/repository/deployment/server; \
-    ${WSO2_SERVER_HOME}/bin/wso2server.sh;
+ENTRYPOINT exec ${USER_HOME}/scripts/init_carbon.sh
