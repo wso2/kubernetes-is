@@ -50,4 +50,3 @@ spec:
         - name: mysql-dbscripts
           configMap:
             name: mysql-dbscripts
-          

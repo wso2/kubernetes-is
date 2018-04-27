@@ -51,12 +51,16 @@ ARG DNS_JAVA_LIB=dnsjava-2.1.*.jar
 
 # install required packages
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends --no-install-suggests unzip telnet iproute2 \
-    && rm -rf /var/lib/apt/lists/*
+	&& apt-get install -y --no-install-recommends --no-install-suggests \
+       	   zip \
+           unzip \
+           telnet \
+           iproute2 \
+	   sudo && rm -rf /var/lib/apt/lists/*
 
 # create user group and user
-RUN groupadd --system ${USER_GROUP} && \
-    useradd --system --create-home --home-dir ${USER_HOME} --no-log-init -g ${USER_GROUP} ${USER}
+RUN useradd --system --uid ${USER_ID} --gid 0 --create-home --home-dir ${USER_HOME} \
+	--no-log-init ${USER}
 
 # copy jdk, wso2 product distribution, jdbc driver and kubernetes dependency libraries to user's home directory
 COPY ${FILES}/${JDK_ARCHIVE} ${STARTUP_SCRIPT} ${FILES}/${WSO2_SERVER_PACK} ${FILES}/${JDBC_DRIVER} \
@@ -82,10 +86,15 @@ RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
     && chmod -R g=u ${USER_HOME} \
     && chown -R ${USER_ID} ${USER_HOME} \
     && chmod -R 0774 ${USER_HOME} \
-    && cat ${USER_HOME}/sudoers > /etc/sudoers \
-    && rm ${USER_HOME}/sudoers \
-    && cat ${USER_HOME}/change_ownership.sh > /bin/change_ownership.sh \
-    && chmod 0755 /bin/change_ownership.sh
+	&& cat ${USER_HOME}/sudoers > /etc/sudoers \
+	&& rm ${USER_HOME}/sudoers \
+	&& cat ${USER_HOME}/change_ownership.sh > /bin/change_ownership.sh \
+	&& chmod 0755 /bin/change_ownership.sh \
+	&& rm ${USER_HOME}/change_ownership.sh \
+	&& chgrp -R 0 ${USER_HOME} \
+	&& chmod -R g=u ${USER_HOME} \
+	&& chown -R ${USER_ID} ${USER_HOME} \
+	&& chmod -R 0774 ${USER_HOME}
 
 # set the user and work directory
 USER ${USER_ID}
@@ -97,7 +106,8 @@ ENV JAVA_HOME=${JAVA_HOME} \
     USER_HOME=${USER_HOME} \
     WSO2_SERVER=${WSO2_SERVER} \
     WSO2_SERVER_VERSION=${WSO2_SERVER_VERSION} \
-    WSO2_SERVER_HOME=${WSO2_SERVER_HOME}
+    WSO2_SERVER_HOME=${WSO2_SERVER_HOME} \
+    USER=${USER}
 
 # expose ports
 EXPOSE 9763 9443
