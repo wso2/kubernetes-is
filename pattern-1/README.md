@@ -28,7 +28,8 @@ kubectl create configmap is-conf-identity --from-file=conf/is/conf/identity/
 kubectl create configmap is-conf-axis2 --from-file=conf/is/conf/axis2/
 kubectl create configmap is-conf-tomcat --from-file=conf/is/conf/tomcat/
 kubectl create configmap mysql-conf --from-file=conf/mysql/conf/
-kubectl create configmap mysql-dbscripts --from-file=conf/mysql/dbscripts/
+kubectl create configmap mysql-initscripts --from-file=conf/mysql/initscripts/
+kubectl create configmap mysql-dbscripts --from-file=conf/mysql/dbscripts
 ```
 ##### 3. Deploy and run MySQL service: 
 ```
@@ -42,6 +43,12 @@ container is used.
 kubectl create -f is-service.yaml
 kubectl create -f is-nfs-volume-claim.yaml
 kubectl create -f is-deployment.yaml
+```
+Due to known [issue](https://github.com/wso2/kubernetes-is/issues/7), after deploying 1st node, scale up the 
+deployment to two nodes using following,
+
+```
+kubectl scale --replicas=2 -f is-deployment.yaml
 ```
 ##### 5. Deploy and run Nginx Ingress service:
 Install ingress-controller and default-backend  using [this](https://kubernetes.github.io/ingress-nginx/deploy/)
@@ -57,7 +64,7 @@ Nginx Ingress cluster IP and try navigating to `https://wso2is-pattern1/carbon` 
 your favorite browser.
 
 ##### 7. Scale up using `kubectl scale`:
-Default deployment runs one replica (or pod) of WSO2 Identity server. To scale this deployment into <br>
+Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale this deployment into <br>
 any `<n>` number of container replicas, upon your requirement, simply run following kubectl 
 command on the terminal. Assuming your current working directory is `KUBERNETES_HOME/pattern-1` 
 ```
@@ -93,6 +100,7 @@ kubectl delete configmap is-conf-identity
 kubectl delete configmap is-conf-axis2
 kubectl delete configmap is-conf-tomcat
 kubectl delete configmap mysql-conf
+kubectl delete configmap mysql-initscripts
 kubectl delete configmap mysql-dbscripts
 ```
 ##### 5. Delete NFS persistent volume:

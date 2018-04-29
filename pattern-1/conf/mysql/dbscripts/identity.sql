@@ -21,35 +21,6 @@
 -- ################################
 -- IDENTITY TABLES
 -- ################################
-
-USE WSO2_IDENTITY_DB;
-
--- ----------------------------------------------------------------------------
---
--- Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
---
--- WSO2 Inc. licenses this file to you under the Apache License,
--- Version 2.0 (the "License"); you may not use this file except
--- in compliance with the License.
--- You may obtain a copy of the License at
---
--- http://www.apache.org/licenses/LICENSE-2.0
-
--- Unless required by applicable law or agreed to in writing,
--- software distributed under the License is distributed on an
--- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
--- KIND, either express or implied.  See the License for the
--- specific language governing permissions and limitations
--- under the License.
---
--- ----------------------------------------------------------------------------
-
--- ################################
--- IDENTITY TABLES
--- ################################
-
-USE WSO2_IDENTITY_DB;
-
 CREATE TABLE IF NOT EXISTS IDN_BASE_TABLE (
             PRODUCT_NAME VARCHAR(20),
             PRIMARY KEY (PRODUCT_NAME)

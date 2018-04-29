@@ -22,8 +22,6 @@
 -- BPEL TABLES
 -- ################################
 
-USE WSO2_IDENTITY_DB;
-
 create table ODE_SCHEMA_VERSION (VERSION integer);
 insert into ODE_SCHEMA_VERSION values (6);
 -- Apache ODE - SimpleScheduler Database Schema
