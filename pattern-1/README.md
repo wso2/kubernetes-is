@@ -53,7 +53,7 @@ kubectl scale --replicas=2 -f is-deployment.yaml
 ##### 5. Deploy and run Nginx Ingress service:
 Install ingress-controller and default-backend  using [this](https://kubernetes.github.io/ingress-nginx/deploy/)
 ```
-kubectl create -f is-pattern-secret.yaml
+kubectl create -f loadbalancer-secret.yaml
 kubectl create -f is-ingress.yaml
 ```
 ##### 6. Access Management Console:
@@ -77,7 +77,7 @@ For example, If `<n>` is 3, you are here scaling up this deployment from 1 to 3 
 ##### 1. Undeploy Nginx Ingress service: 
 ```
 kubectl delete -f is-ingress.yaml
-kubectl delete -f is-pattern-secret.yaml
+kubectl delete -f loadbalancer-secret.yaml
 ```
 Delete the ingress controller and default back-end.
 ##### 2. Undeploy WSO2 Identity Server service: 
