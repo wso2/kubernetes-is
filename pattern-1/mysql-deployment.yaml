@@ -42,7 +42,7 @@ spec:
           mountPath: /etc/mysql/conf.d/my.cnf
           subPath: my.cnf
         - name: mysql-dbscripts
-          mountPath: /home/wso2is-5.5.0-db-scripts/
+          mountPath: /home/wso2is-5.4.0-db-scripts/
         - name: mysql-initscripts
           mountPath: /docker-entrypoint-initdb.d
       volumes:
