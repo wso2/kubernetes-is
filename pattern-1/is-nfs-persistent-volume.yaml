@@ -23,5 +23,6 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Recycle
   nfs:
-    server: 10.39.249.9
+    # Update the ip with nfs server url.
+    server: 10.51.246.103
     path: /exports
