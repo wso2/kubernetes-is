@@ -19,9 +19,12 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: "nginx"
     ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/secure-backends: "true"
+    ingress.kubernetes.io/ssl-redirect: "true"
 spec:
   tls:
-  - hosts:
+  - secretName: loadbalancer-secret
+    hosts:
     - wso2is-pattern1
   rules:
   - host: wso2is-pattern1
