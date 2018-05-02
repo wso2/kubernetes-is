@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # ------------------------------------------------------------------------
 # Copyright 2017 WSO2, Inc. (http://wso2.com)
 #
@@ -14,25 +16,12 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-FROM mysql:5.7
-MAINTAINER WSO2 Docker Maintainers "dev@wso2.org"
+set -e
 
-# set local files directory
-ARG FILES=./files
+echo 'going to change ownership of <IS_HOME>/repository/data directory: '
+echo "user: ${USER}"
+echo "user home: ${USER_HOME}"
+echo "carbon server: ${WSO2_SERVER}-${WSO2_SERVER_VERSION}"
 
-# set database scripts path
-ARG HOME=/home
-ARG WSO2_SERVER=wso2is
-ARG WSO2_SERVER_VERSION=5.4.0
-ARG WSO2_SERVER_DB_SCRIPTS=${HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-db-scripts
-
-# copy Files
-COPY ["${FILES}/my.cnf", "/etc/mysql/conf.d/"]
-COPY ["${FILES}/init.sql", "/docker-entrypoint-initdb.d/"]
-COPY ["${FILES}/identity.sql", "${WSO2_SERVER_DB_SCRIPTS}/"]
-COPY ["${FILES}/registry.sql", "${WSO2_SERVER_DB_SCRIPTS}/"]
-COPY ["${FILES}/user-mgt.sql", "${WSO2_SERVER_DB_SCRIPTS}/"]
-COPY ["${FILES}/bps.sql", "${WSO2_SERVER_DB_SCRIPTS}/"]
-
-# Expose transport ports
-EXPOSE 3306
+/bin/chown -R ${USER} ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/deployment/server/
+/bin/chgrp -R root ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/deployment/server/

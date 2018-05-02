@@ -21,7 +21,6 @@
 -- ################################
 -- IDENTITY TABLES
 -- ################################
-
 CREATE TABLE IF NOT EXISTS IDN_BASE_TABLE (
             PRODUCT_NAME VARCHAR(20),
             PRIMARY KEY (PRODUCT_NAME)
