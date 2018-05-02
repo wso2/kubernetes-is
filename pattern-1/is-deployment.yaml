@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: wso2is-pattern1-deployment
 spec:
-  replicas: 2
+  replicas: 1
   template:
     metadata:
       labels:
@@ -37,6 +37,8 @@ spec:
           mountPath: /home/wso2user/wso2is-5.4.0/repository/deployment/server
         - name: is-conf
           mountPath: /home/wso2user/wso2is-5.4.0-conf/conf
+        - name: is-bin
+          mountPath: /home/wso2user/wso2is-5.4.0-conf/bin
         - name: is-conf-datasources
           mountPath: /home/wso2user/wso2is-5.4.0-conf/conf-datasources
         - name: is-conf-identity
@@ -49,6 +51,9 @@ spec:
       - name: is-nfs-volume
         persistentVolumeClaim:
           claimName: wso2is-pattern-1-nfs-volume-claim
+      - name: is-bin
+        configMap:
+          name: is-bin
       - name: is-conf
         configMap:
           name: is-conf
