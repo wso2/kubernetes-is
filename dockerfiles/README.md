@@ -15,5 +15,5 @@ Tested against jdk-8u45-linux-x64.tar.gz and mysql-connector-java-5.1.46-bin.jar
 ###### Add above files to is/files directory.
 ###### Build the docker image from is/ directory.
 ```
-docker build -t docker.wso2.com/wso2is-kubernetes:5.5.0 .
+docker build -t docker.cloud.wso2.com/wso2is-kubernetes:5.5.0 .
 ```
