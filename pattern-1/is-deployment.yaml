@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
       - name: wso2is-pattern1
-        image: docker.wso2.com/wso2is-kubernetes:5.5.0
+        image: docker.cloud.wso2.com/wso2is-kubernetes:5.5.0
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 9763
