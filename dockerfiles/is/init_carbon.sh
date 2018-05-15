@@ -61,6 +61,13 @@ if [ -e ${carbon_home}-conf/conf-tomcat ]
  then cp ${carbon_home}-conf/conf-tomcat/* ${carbon_home}/repository/conf/tomcat/
 fi
 
+if [ -n "$(ls -A ${carbon_home}-lib 2>/dev/null)" ]
+ then cp ${carbon_home}-lib/* ${carbon_home}/repository/components/lib/
+fi
+
+if [ -n "$(ls -A ${carbon_home}-dropins 2>/dev/null)" ]
+ then cp ${carbon_home}-dropins/* ${carbon_home}/repository/components/dropins/
+fi
 
 # overwrite localMemberHost element value in axis2.xml with container ip
 export local_docker_ip=$(ip route get 1 | awk '{print $NF;exit}')

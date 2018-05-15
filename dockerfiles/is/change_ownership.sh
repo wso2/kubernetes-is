@@ -18,7 +18,7 @@
 
 set -e
 
-echo 'going to change ownership of <IS_HOME>/repository/data directory: '
+echo 'going to change ownership of <IS_HOME>/repository/deployment/server directory: '
 echo "user: ${USER}"
 echo "user home: ${USER_HOME}"
 echo "carbon server: ${WSO2_SERVER}-${WSO2_SERVER_VERSION}"
