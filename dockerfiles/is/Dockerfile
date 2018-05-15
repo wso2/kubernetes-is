@@ -71,6 +71,8 @@ RUN unzip -q ${USER_HOME}/${WSO2_SERVER_PACK} -d ${USER_HOME}/ \
     && mkdir -p ${USER_HOME}/tmp \
     && cp -r ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/repository/deployment/server ${USER_HOME}/tmp/ \
     && mkdir -p ${JAVA_HOME} \
+    && mkdir -p ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-lib \
+    && mkdir -p ${USER_HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}-dropins \
     && tar -xf ${USER_HOME}/${JDK_ARCHIVE} -C ${JAVA_HOME} --strip-components=1 \
     && cp ${USER_HOME}/${JDBC_DRIVER} ${USER_HOME}/${DNS_JAVA_LIB} ${WSO2_SERVER_HOME}/repository/components/lib/ \
     && cp ${USER_HOME}/${KUBERNETES_MEMBERSHIP_SCHEME_LIB} ${WSO2_SERVER_HOME}/repository/components/dropins/ \
