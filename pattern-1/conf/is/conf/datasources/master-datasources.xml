@@ -46,14 +46,83 @@
         </datasource>
 
         <datasource>
-            <name>WSO2_IDENTITY_DB</name>
-            <description>The datasource used for registry, user management and identity</description>
+            <name>WSO2_REG_DB</name>
+            <description>The datasource used for registry</description>
             <jndiConfig>
-                <name>jdbc/WSO2IdentityDS</name>
+                <name>jdbc/WSO2RegDB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_REG_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    <maxActive>80</maxActive>
+                    <maxWait>60000</maxWait>
+                    <minIdle>5</minIdle>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                    <defaultAutoCommit>false</defaultAutoCommit>
+                </configuration>
+            </definition>
+        </datasource>
+
+        <datasource>
+            <name>WSO2_USER_DB</name>
+            <description>The datasource used for user management</description>
+            <jndiConfig>
+                <name>jdbc/WSO2UserDB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_USER_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    <maxActive>80</maxActive>
+                    <maxWait>60000</maxWait>
+                    <minIdle>5</minIdle>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                    <defaultAutoCommit>false</defaultAutoCommit>
+                </configuration>
+            </definition>
+        </datasource>
+
+        <datasource>
+            <name>WSO2_IDENTITY_DB</name>
+            <description>The datasource used for identity management</description>
+            <jndiConfig>
+                <name>jdbc/WSO2IdentityDB</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
                     <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    <maxActive>80</maxActive>
+                    <maxWait>60000</maxWait>
+                    <minIdle>5</minIdle>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                    <defaultAutoCommit>false</defaultAutoCommit>
+                </configuration>
+            </definition>
+        </datasource>
+
+        <datasource>
+            <name>WSO2_CONSENT_DB</name>
+            <description>The datasource used for consent management</description>
+            <jndiConfig>
+                <name>jdbc/WSO2ConsentDB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>

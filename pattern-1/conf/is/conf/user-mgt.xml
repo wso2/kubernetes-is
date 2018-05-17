@@ -26,7 +26,7 @@
             <EveryOneRoleName>everyone</EveryOneRoleName> <!-- By default users in this role sees the registry root -->
             <Property name="isCascadeDeleteEnabled">true</Property>
             <Property name="initializeNewClaimManager">true</Property>
-            <Property name="dataSource">jdbc/WSO2IdentityDS</Property>
+            <Property name="dataSource">jdbc/WSO2UserDB</Property>
         </Configuration>
 
 	    <!-- Following is the configuration for internal JDBC user store. This user store manager is based on JDBC.
@@ -41,7 +41,7 @@
         <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
             <Property name="driverName">com.mysql.jdbc.Driver</Property>
-            <Property name="url">jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_USER_STORE_DB?autoReconnect=true&amp;verifyServerCertificate=false&amp;useSSL=true</Property>
+            <Property name="url">jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_USER_DB?autoReconnect=true&amp;verifyServerCertificate=false&amp;useSSL=true</Property>
             <Property name="userName">wso2carbon</Property>
             <Property encrypted="false" name="password">wso2carbon</Property>
             <Property name="ReadOnly">false</Property>
