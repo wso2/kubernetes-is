@@ -33,8 +33,12 @@ spec:
         - containerPort: 9443
           protocol: TCP
         volumeMounts:
-        - name: is-nfs-volume
+        - name: is-server-volume
           mountPath: /home/wso2user/wso2is-5.5.0/repository/deployment/server
+        - name: is-dropins-volume
+          mountPath: /home/wso2user/wso2is-5.5.0-dropins
+        - name: is-libs-volume
+          mountPath: /home/wso2user/wso2is-5.5.0-lib
         - name: is-conf
           mountPath: /home/wso2user/wso2is-5.5.0-conf/conf
         - name: is-bin
@@ -48,9 +52,21 @@ spec:
         - name: is-conf-tomcat
           mountPath: /home/wso2user/wso2is-5.5.0-conf/conf-tomcat
       volumes:
-      - name: is-nfs-volume
-        persistentVolumeClaim:
-          claimName: wso2is-pattern-1-nfs-volume-claim
+      - name: is-server-volume
+        nfs:
+         # Update the ip address with the nfs server ip address.
+         server: 10.128.0.6
+         path: "/data/server"
+      - name: is-dropins-volume
+        nfs:
+         # Update the ip address with the nfs server ip address.
+         server: 10.128.0.6
+         path: "/data/dropins"
+      - name: is-libs-volume
+        nfs:
+         # Update the ip address with the nfs server ip address.
+         server: 10.128.0.6
+         path: "/data/lib"
       - name: is-bin
         configMap:
           name: is-bin
