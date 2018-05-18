@@ -41,6 +41,16 @@ Update the ip address in `is-deployment.yaml` with your NFS server ip address. G
 kubectl create -f is-service.yaml
 kubectl create -f is-deployment.yaml
 ```
+Note- In addition to the config maps mentioned in is-deployment.yaml. Two other config maps can be used to copy the 
+relevant configuration files to `<IS_Home>` and `<IS_Home>/repository/conf/security`.
+
+Those config maps should be mounted to paths `/home/wso2user/wso2is-5.5.0-home` and  `/home/wso2user/wso2is-5.5
+.0-conf/conf-security` respectively.
+
+In-addition to these additional mount volume can be used to copy additional files to path 
+`<IS_Home>/repository/resources/security`. To this, the volume should be mounted to path `home/wso2user/wso2is-5.5
+.0-security`s
+
 Due to known [issue](https://github.com/wso2/kubernetes-is/issues/7), after deploying 1st node, scale up the 
 deployment to two nodes using following,
 

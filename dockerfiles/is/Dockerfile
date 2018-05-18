@@ -58,7 +58,8 @@ COPY --chown=wso2user:wso2 ${FILES}/${KUBERNETES_MEMBERSHIP_SCHEME_LIB} ${WSO2_S
 COPY --chown=wso2user:wso2 ${FILES}/${WSO2_SERVER_PACK}/repository/deployment/server tmp/server
 RUN mkdir ${WSO2_SERVER_PACK}-lib && chown wso2user:wso2 ${WSO2_SERVER_PACK}-lib && \
 mkdir ${WSO2_SERVER_PACK}-dropins && chown wso2user:wso2 ${WSO2_SERVER_PACK}-dropins && \
-mkdir scripts && chown wso2user:wso2 scripts
+mkdir ${WSO2_SERVER_PACK}-security && chown wso2user:wso2 ${WSO2_SERVER_PACK}-security && mkdir scripts && \
+chown wso2user:wso2 scripts
 COPY --chown=wso2user:wso2 init_carbon.sh scripts/
 
 # set the user and work directory

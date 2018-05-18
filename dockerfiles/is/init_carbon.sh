@@ -28,14 +28,9 @@ if [ -n "$(ls -A ${WORKING_DIRECTORY}/tmp/server 2>/dev/null)" ]; then
    fi
 fi
 
-if [ -e ${WORKING_DIRECTORY}/tmp/carbon ]; then
-   echo "copying custom configurations and artifacts from ${WORKING_DIRECTORY}/tmp/carbon/ to ${WSO2_SERVER_HOME}/ .."
-   cp -rf ${WORKING_DIRECTORY}/tmp/carbon/* ${WSO2_SERVER_HOME}/
-fi
-
 # Copy ConfigMaps
 # Mount any ConfigMap to ${WSO2_SERVER_HOME}-conf location
-if [ -e ${WSO2_SERVER_HOME}-conf/bin/* ]
+if [ -e ${WSO2_SERVER_HOME}-conf/bin ]
  then cp ${WSO2_SERVER_HOME}-conf/bin/* ${WSO2_SERVER_HOME}/bin/
 fi
 
@@ -59,12 +54,24 @@ if [ -e ${WSO2_SERVER_HOME}-conf/conf-tomcat ]
  then cp ${WSO2_SERVER_HOME}-conf/conf-tomcat/* ${WSO2_SERVER_HOME}/repository/conf/tomcat/
 fi
 
+if [ -e ${WSO2_SERVER_HOME}-conf/conf-security ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf-security/* ${WSO2_SERVER_HOME}/repository/conf/security/
+fi
+
 if [ -n "$(ls -A ${WSO2_SERVER_HOME}-lib 2>/dev/null)" ]
  then cp ${WSO2_SERVER_HOME}-lib/* ${WSO2_SERVER_HOME}/repository/components/lib/
 fi
 
 if [ -n "$(ls -A ${WSO2_SERVER_HOME}-dropins 2>/dev/null)" ]
  then cp ${WSO2_SERVER_HOME}-dropins/* ${WSO2_SERVER_HOME}/repository/components/dropins/
+fi
+
+if [ -n "$(ls -A ${WSO2_SERVER_HOME}-security 2>/dev/null)" ]
+ then cp ${WSO2_SERVER_HOME}-security/* ${WSO2_SERVER_HOME}/repository/resources/security/
+fi
+
+if [ -e ${WSO2_SERVER_HOME}-home ]
+ then cp ${WSO2_SERVER_HOME}-home/* ${WSO2_SERVER_HOME}/
 fi
 
 # capture the Docker container IP from the container's /etc/hosts file
