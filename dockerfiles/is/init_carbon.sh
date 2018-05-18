@@ -70,8 +70,8 @@ if [ -n "$(ls -A ${WSO2_SERVER_HOME}-security 2>/dev/null)" ]
  then cp ${WSO2_SERVER_HOME}-security/* ${WSO2_SERVER_HOME}/repository/resources/security/
 fi
 
-if [ -e ${WSO2_SERVER_HOME}-home ]
- then cp ${WSO2_SERVER_HOME}-home/* ${WSO2_SERVER_HOME}/
+if [ -e ${WSO2_SERVER_HOME}-conf/home ]
+ then cp ${WSO2_SERVER_HOME}-conf/home/* ${WSO2_SERVER_HOME}/
 fi
 
 # capture the Docker container IP from the container's /etc/hosts file

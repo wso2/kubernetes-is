@@ -31,7 +31,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_BPS_DB?autoReconnect=true&amp;verifyServerCertificate=false&amp;useSSL=true</url>
+                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_BPS_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>

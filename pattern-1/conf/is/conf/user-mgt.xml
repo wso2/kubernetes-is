@@ -41,7 +41,7 @@
         <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
             <Property name="driverName">com.mysql.jdbc.Driver</Property>
-            <Property name="url">jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_USER_DB?autoReconnect=true&amp;verifyServerCertificate=false&amp;useSSL=true</Property>
+            <Property name="url">jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_USER_DB?autoReconnect=true&amp;useSSL=false</Property>
             <Property name="userName">wso2carbon</Property>
             <Property encrypted="false" name="password">wso2carbon</Property>
             <Property name="ReadOnly">false</Property>
