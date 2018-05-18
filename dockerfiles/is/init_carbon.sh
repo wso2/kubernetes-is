@@ -18,69 +18,67 @@
 
 set -e
 # The artifacts will be copied to the CARBON_HOME/repository/deployment/server location before the server is started.
-carbon_home=${HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}
-server_artifact_location=${carbon_home}/repository/deployment/server
-sudo /bin/change_ownership.sh
-if [[ -d ${HOME}/tmp/server/ ]]; then
-   if [[ ! "$(ls -A ${server_artifact_location}/)" ]]; then
+server_artifact_location=${WSO2_SERVER_HOME}/repository/deployment/server
+
+if [ -n "$(ls -A ${WORKING_DIRECTORY}/tmp/server 2>/dev/null)" ]; then
+   if [ ! "$(ls -A ${server_artifact_location}/)" ]; then
       # There are no artifacts under CARBON_HOME/repository/deployment/server/; copy them.
-      echo "copying artifacts from ${HOME}/tmp/server/ to ${server_artifact_location}/ .."
-      cp -rf ${HOME}/tmp/server/* ${server_artifact_location}/
+      echo "copying artifacts from ${WORKING_DIRECTORY}/tmp/server/ to ${server_artifact_location}/ .."
+      cp -rf ${WORKING_DIRECTORY}/tmp/server/* ${server_artifact_location}/
    fi
-   rm -rf ${HOME}/tmp/server/
-fi
-if [[ -d ${HOME}/tmp/carbon/ ]]; then
-   echo "copying custom configurations and artifacts from ${HOME}/tmp/carbon/ to ${carbon_home}/ .."
-   cp -rf ${HOME}/tmp/carbon/* ${carbon_home}/
-   rm -rf ${HOME}/tmp/carbon/
 fi
 
 # Copy ConfigMaps
-# Mount any ConfigMap to ${carbon_home}-conf location
-if [ -e ${carbon_home}-conf/bin/* ]
- then cp ${carbon_home}-conf/bin/* ${carbon_home}/bin/
+# Mount any ConfigMap to ${WSO2_SERVER_HOME}-conf location
+if [ -e ${WSO2_SERVER_HOME}-conf/bin ]
+ then cp ${WSO2_SERVER_HOME}-conf/bin/* ${WSO2_SERVER_HOME}/bin/
 fi
 
-if [ -e ${carbon_home}-conf/conf ]
- then cp ${carbon_home}-conf/conf/* ${carbon_home}/repository/conf/
+if [ -e ${WSO2_SERVER_HOME}-conf/conf ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf/* ${WSO2_SERVER_HOME}/repository/conf/
 fi
 
-if [ -e ${carbon_home}-conf/conf-axis2 ]
- then cp ${carbon_home}-conf/conf-axis2/* ${carbon_home}/repository/conf/axis2/
+if [ -e ${WSO2_SERVER_HOME}-conf/conf-axis2 ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf-axis2/* ${WSO2_SERVER_HOME}/repository/conf/axis2/
 fi
 
-if [ -e ${carbon_home}-conf/conf-datasources ]
- then cp ${carbon_home}-conf/conf-datasources/* ${carbon_home}/repository/conf/datasources/
+if [ -e ${WSO2_SERVER_HOME}-conf/conf-datasources ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf-datasources/* ${WSO2_SERVER_HOME}/repository/conf/datasources/
 fi
 
-if [ -e ${carbon_home}-conf/conf-identity ]
- then cp ${carbon_home}-conf/conf-identity/* ${carbon_home}/repository/conf/identity/
+if [ -e ${WSO2_SERVER_HOME}-conf/conf-identity ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf-identity/* ${WSO2_SERVER_HOME}/repository/conf/identity/
 fi
 
-if [ -e ${carbon_home}-conf/conf-tomcat ]
- then cp ${carbon_home}-conf/conf-tomcat/* ${carbon_home}/repository/conf/tomcat/
+if [ -e ${WSO2_SERVER_HOME}-conf/conf-tomcat ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf-tomcat/* ${WSO2_SERVER_HOME}/repository/conf/tomcat/
 fi
 
-if [ -n "$(ls -A ${carbon_home}-lib 2>/dev/null)" ]
- then cp ${carbon_home}-lib/* ${carbon_home}/repository/components/lib/
+if [ -e ${WSO2_SERVER_HOME}-conf/conf-security ]
+ then cp ${WSO2_SERVER_HOME}-conf/conf-security/* ${WSO2_SERVER_HOME}/repository/conf/security/
 fi
 
-if [ -n "$(ls -A ${carbon_home}-dropins 2>/dev/null)" ]
- then cp ${carbon_home}-dropins/* ${carbon_home}/repository/components/dropins/
+if [ -n "$(ls -A ${WSO2_SERVER_HOME}-lib 2>/dev/null)" ]
+ then cp ${WSO2_SERVER_HOME}-lib/* ${WSO2_SERVER_HOME}/repository/components/lib/
 fi
 
-# overwrite localMemberHost element value in axis2.xml with container ip
-export local_docker_ip=$(ip route get 1 | awk '{print $NF;exit}')
-
-axi2_xml_location=${carbon_home}/repository/conf/axis2/axis2.xml
-if [[ ! -z ${local_docker_ip} ]]; then
-   sed -i "s#<parameter\ name=\"localMemberHost\".*#<parameter\ name=\"localMemberHost\">${local_docker_ip}<\/parameter>#" "${axi2_xml_location}"
-   if [[ $? == 0 ]]; then
-      echo "Successfully updated localMemberHost with ${local_docker_ip}"
-   else
-      echo "Error occurred while updating localMemberHost with ${local_docker_ip}"
-   fi
+if [ -n "$(ls -A ${WSO2_SERVER_HOME}-dropins 2>/dev/null)" ]
+ then cp ${WSO2_SERVER_HOME}-dropins/* ${WSO2_SERVER_HOME}/repository/components/dropins/
 fi
+
+if [ -n "$(ls -A ${WSO2_SERVER_HOME}-security 2>/dev/null)" ]
+ then cp ${WSO2_SERVER_HOME}-security/* ${WSO2_SERVER_HOME}/repository/resources/security/
+fi
+
+if [ -e ${WSO2_SERVER_HOME}-conf/home ]
+ then cp ${WSO2_SERVER_HOME}-conf/home/* ${WSO2_SERVER_HOME}/
+fi
+
+# capture the Docker container IP from the container's /etc/hosts file
+docker_container_ip=$(awk 'END{print $1}' /etc/hosts)
+
+# set the Docker container IP as the `localMemberHost` under axis2.xml clustering configurations (effective only when clustering is enabled)
+sed -i "s#<parameter\ name=\"localMemberHost\".*<\/parameter>#<parameter\ name=\"localMemberHost\">${docker_container_ip}<\/parameter>#" ${WSO2_SERVER_HOME}/repository/conf/axis2/axis2.xml
 
 # Start the carbon server.
-${HOME}/${WSO2_SERVER}-${WSO2_SERVER_VERSION}/bin/wso2server.sh
+${WSO2_SERVER_HOME}/bin/wso2server.sh

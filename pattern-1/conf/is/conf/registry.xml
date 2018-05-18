@@ -33,7 +33,7 @@
     </dbConfig>
 
     <dbConfig name="sharedregistry">
-        <dataSource>jdbc/WSO2IdentityDS</dataSource>
+        <dataSource>jdbc/WSO2RegDB</dataSource>
     </dbConfig>
 
     <remoteInstance url="https://localhost:9443/registry">
@@ -42,7 +42,7 @@
         <readOnly>false</readOnly>
         <registryRoot>/</registryRoot>
         <enableCache>true</enableCache>
-        <cacheId>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_IDENTITY_DB</cacheId>
+        <cacheId>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_REG_DB</cacheId>
     </remoteInstance>
 
     <mount path="/_system/config" overwrite="true">

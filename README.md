@@ -41,8 +41,8 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
 
 ##### 5. Deploy Kubernetes Resources:
 Change directory to `KUBERNETES_HOME/pattern-X` and perform the deployment guide under each pattern.
-eg: For pattern-1 change directory to `KUBERNETES_HOME/pattern-1` and perform the deployment guide in 
-[`KUBERNETES_HOME/dockerfiles/README.md`](pattern-1)
+eg: For pattern-1 change directory to `KUBERNETES_HOME/pattern-1` and perform the deployment as guided in
+[`KUBERNETES_HOME/pattern-1/README.md`](pattern-1)
 
 >To undeploy, follow the undeployment guide of the same.
 
