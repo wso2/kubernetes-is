@@ -34,10 +34,10 @@ on the nodes). Alternatively, if a private Docker registry is used, transfer the
   is required to deploy any pattern.
    Complete following.  
      1. Setup a NFS server.
-     2. Update the NFS server IP in `KUBERNETES_HOME/pattern-X/is-nfs-persistent-volume.yaml'
-     3. Create mount directory in NFS server for each pattern as mentioned in 
-     `KUBERNETES_HOME/pattern-X/is-nfs-persistent-volume.yaml'
-      eg: For pattern-1, create a directory as '/exports/'
+     2. Update the NFS server IP in `KUBERNETES_HOME/pattern-X/is-deployment.yaml'
+     3. Create mount directories in NFS server for each pattern as mentioned in 
+     `KUBERNETES_HOME/pattern-X/is-deployment.yaml'
+      eg: For pattern-1, create 4 directories as '/data/server', '/data/dropins', '/data/lib' and '/data/security'
 
 ##### 5. Deploy Kubernetes Resources:
 Change directory to `KUBERNETES_HOME/pattern-X` and perform the deployment guide under each pattern.
