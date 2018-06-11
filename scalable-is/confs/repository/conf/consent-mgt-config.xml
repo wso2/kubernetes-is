@@ -18,7 +18,7 @@
     <DataSource>
         <!-- Include a data source name (jndiConfigName) from the set of data sources defined in master-datasources
         .xml -->
-        <Name>jdbc/WSO2ConsentDB</Name>
+        <Name>jdbc/WSO2ConsentDS</Name>
     </DataSource>
     <PIIController>
         <PiiController>change-me</PiiController>

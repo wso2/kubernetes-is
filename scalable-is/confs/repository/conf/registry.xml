@@ -33,7 +33,7 @@
     </dbConfig>
 
     <dbConfig name="sharedregistry">
-        <dataSource>jdbc/WSO2RegDB</dataSource>
+        <dataSource>jdbc/WSO2RegDS</dataSource>
     </dbConfig>
 
     <remoteInstance url="https://localhost:9443/registry">
