@@ -15,16 +15,16 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-pattern1-mysql-deployment
+  name: wso2is-scalable-is-mysql-deployment
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        deployment: wso2is-pattern1-mysql
+        deployment: wso2is-scalable-is-mysql
     spec:
       containers:
-      - name: wso2is-pattern1-mysql
+      - name: wso2is-scalable-is-mysql
         image: mysql:5.7
         imagePullPolicy: IfNotPresent
         env:
@@ -38,21 +38,10 @@ spec:
         - containerPort: 3306
           protocol: TCP
         volumeMounts:
-        - name: mysql-conf
-          mountPath: /etc/mysql/conf.d/my.cnf
-          subPath: my.cnf
         - name: mysql-dbscripts
-          mountPath: /home/wso2is-5.5.0-db-scripts/
-        - name: mysql-initscripts
           mountPath: /docker-entrypoint-initdb.d
+        args: ["--max-connections", "10000"]
       volumes:
-        - name: mysql-conf
-          configMap:
-            name: mysql-conf
-        - name: mysql-dbscripts
-          configMap:
-            name: mysql-dbscripts
-        - name: mysql-initscripts
-          configMap:
-            name: mysql-initscripts
-
+      - name: mysql-dbscripts
+        configMap:
+          name: mysql-dbscripts

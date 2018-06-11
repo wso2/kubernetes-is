@@ -15,11 +15,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2is-pattern1-service
+  name: wso2is-scalable-is-service
 spec:
-  sessionAffinity: ClientIP
   selector:
-    deployment: wso2is-pattern1
+    deployment: wso2is-scalable-is
   ports:
   - name: servlet-http
     port: 9763

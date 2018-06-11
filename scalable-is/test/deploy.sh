@@ -53,13 +53,13 @@ sleep 10s
 
 # persistent storage
 echoBold 'Creating persistent volume and volume claim...'
-kubectl create -f ../is/identity-server-volume-claims.yaml
+kubectl create -f ../identity-server-volume-claims.yaml
 kubectl create -f ../volumes/persistent-volumes.yaml
 
 # Identity Server and Analytics
 echoBold 'Deploying WSO2 Identity Server and Analytics...'
-kubectl create -f ../is/identity-server-service.yaml
-kubectl create -f ../is/identity-server-deployment.yaml
+kubectl create -f ../identity-server-service.yaml
+kubectl create -f ../identity-server-deployment.yaml
 sleep 30s
 
 echoBold 'Deploying Ingresses...'
@@ -68,4 +68,3 @@ sleep 30s
 
 echoBold 'Finished'
 echo 'To access the WSO2 Identity Server management console, try https://wso2is-scalable-is/carbon in your browser.'
-echo 'To access the WSO2 Identity Server Analytics management console, try https://wso2is-analytics/carbon in your browser.'

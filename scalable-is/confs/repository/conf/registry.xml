@@ -42,7 +42,7 @@
         <readOnly>false</readOnly>
         <registryRoot>/</registryRoot>
         <enableCache>true</enableCache>
-        <cacheId>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_REG_DB</cacheId>
+        <cacheId>jdbc:mysql://wso2is-scalable-is-rdbms-service:3306/WSO2IS_REG_DB</cacheId>
     </remoteInstance>
 
     <mount path="/_system/config" overwrite="true">

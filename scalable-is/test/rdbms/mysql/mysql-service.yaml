@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2is-pattern1-mysql-service
+  name: wso2is-scalable-is-rdbms-service
 spec:
   type: ClusterIP
   selector:
-    deployment: wso2is-pattern1-mysql
+    deployment: wso2is-scalable-is-mysql
   ports:
   - name: mysql-port
     port: 3306
