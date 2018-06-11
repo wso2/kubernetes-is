@@ -38,29 +38,58 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 kubectl create --username=admin --password=<cluster-admin-password> -f ../../rbac/rbac.yaml
 
 # configuration maps
-echoBold 'Creating Configuration Maps...'
-kubectl create configmap identity-server-conf --from-file=../confs/is/
-kubectl create configmap identity-server-conf-axis2 --from-file=../confs/is/axis2/
-kubectl create configmap identity-server-conf-datasources --from-file=../confs/is/datasources/
-kubectl create configmap identity-server-conf-identity --from-file=../confs/is/identity/
+echoBold 'Creating ConfigMaps...'
+kubectl create configmap identity-server-conf --from-file=../confs/is/conf/
+kubectl create configmap identity-server-conf-axis2 --from-file=../confs/is/conf/axis2/
+kubectl create configmap identity-server-conf-datasources --from-file=../confs/is/conf/datasources/
+kubectl create configmap identity-server-conf-identity --from-file=../confs/is/conf/identity/
+kubectl create configmap identity-server-conf-event-publishers --from-file=../confs/is/deployment/server/eventpublishers/
+
+kubectl create configmap is-analytics-1-conf --from-file=../confs/is-analytics-1/conf
+kubectl create configmap is-analytics-1-conf-analytics --from-file=../confs/is-analytics-1/conf/analytics
+kubectl create configmap is-analytics-1-conf-spark-analytics --from-file=../confs/is-analytics-1/conf/analytics/spark
+kubectl create configmap is-analytics-1-conf-axis2 --from-file=../confs/is-analytics-1/conf/axis2
+kubectl create configmap is-analytics-1-conf-datasources --from-file=../confs/is-analytics-1/conf/datasources
+kubectl create configmap is-analytics-1-deployment-portal --from-file=../confs/is-analytics-1/deployment/server/jaggeryapps/portal/configs
+
+kubectl create configmap is-analytics-2-conf --from-file=../confs/is-analytics-2/conf
+kubectl create configmap is-analytics-2-conf-analytics --from-file=../confs/is-analytics-2/conf/analytics
+kubectl create configmap is-analytics-2-conf-spark-analytics --from-file=../confs/is-analytics-2/conf/analytics/spark
+kubectl create configmap is-analytics-2-conf-axis2 --from-file=../confs/is-analytics-2/conf/axis2
+kubectl create configmap is-analytics-2-conf-datasources --from-file=../confs/is-analytics-2/conf/datasources
+kubectl create configmap is-analytics-2-deployment-portal --from-file=../confs/is-analytics-2/deployment/server/jaggeryapps/portal/configs
+
 kubectl create configmap mysql-dbscripts --from-file=confs/rdbms/mysql/dbscripts/
 
 # MySQL
-echoBold 'Deploying WSO2 Integrator Databases...'
+echoBold 'Deploying WSO2 Identity Server Databases...'
 kubectl create -f rdbms/mysql/mysql-service.yaml
 kubectl create -f rdbms/mysql/mysql-deployment.yaml
 sleep 10s
 
 # persistent storage
 echoBold 'Creating persistent volume and volume claim...'
-kubectl create -f ../identity-server-volume-claim.yaml
+kubectl create -f ../is/identity-server-volume-claims.yaml
+kubectl create -f ../is-analytics/identity-server-analytics-volume-claims.yaml
+
 kubectl create -f ../volumes/persistent-volumes.yaml
 
-# integrator
-echoBold 'Deploying WSO2 Integrator...'
-kubectl create -f ../identity-server-service.yaml
-kubectl create -f ../identity-server-deployment.yaml
-sleep 60s
+# Identity Server and Analytics
+echoBold 'Deploying WSO2 Identity Server and Analytics...'
+kubectl create -f ../is/identity-server-service.yaml
+kubectl create -f ../is/identity-server-deployment.yaml
+kubectl create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
+kubectl create -f ../is-analytics/identity-server-analytics-1-service.yaml
+kubectl create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
+kubectl create -f ../is-analytics/identity-server-analytics-2-service.yaml
+kubectl create -f ../is-analytics/identity-server-analytics-service.yaml
+sleep 30s
+
+echoBold 'Deploying Ingresses...'
+kubectl create -f ../ingresses/identity-server-ingress.yaml
+kubectl create -f ../ingresses/identity-server-analytics-ingress.yaml
+sleep 30s
 
 echoBold 'Finished'
-echo 'To access the console, try https://wso2ei-pattern1-integrator/carbon in your browser.'
+echo 'To access the WSO2 Identity Server management console, try https://wso2is-scalable-is/carbon in your browser.'
+echo 'To access the WSO2 Identity Server Analytics management console, try https://wso2is-analytics/carbon in your browser.'

@@ -5,6 +5,7 @@
     </providers>
   
     <datasources>
+      
         <datasource>
             <name>WSO2_CARBON_DB</name>
             <description>The datasource used for registry and user manager</description>
@@ -34,7 +35,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -56,60 +57,19 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_CONFIG_REG_DB?autoReconnect=true&amp;useSSL=false</url>
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                    <maxActive>50</maxActive>
-                    <maxWait>60000</maxWait>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                </configuration>
-            </definition>
-        </datasource>
-        <!--<datasource>-->
-            <!--<name>WSO2_GOV_REG_DB</name>-->
-            <!--<description>The data source used for governance registry</description>-->
-            <!--<jndiConfig>-->
-                <!--<name>jdbc/WSO2GovRegDS</name>-->
-            <!--</jndiConfig>-->
-            <!--<definition type="RDBMS">-->
-                <!--<configuration>-->
-                    <!--<url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_GOV_REG_DB?autoReconnect=true&amp;useSSL=false</url>-->
-                    <!--<username>wso2carbon</username>-->
-                    <!--<password>wso2carbon</password>-->
-                    <!--<driverClassName>com.mysql.jdbc.Driver</driverClassName>-->
-                    <!--<maxActive>50</maxActive>-->
-                    <!--<maxWait>60000</maxWait>-->
-                    <!--<testOnBorrow>true</testOnBorrow>-->
-                    <!--<validationQuery>SELECT 1</validationQuery>-->
-                    <!--<validationInterval>30000</validationInterval>-->
-                <!--</configuration>-->
-            <!--</definition>-->
-        <!--</datasource>-->
-        <datasource>
-            <name>WSO2_IDENTITY_DB</name>
-            <description>The data source used for identity</description>
-            <jndiConfig>
-                <name>jdbc/WSO2IdentityDS</name>
-            </jndiConfig>
-            <definition type="RDBMS">
-                <configuration>
-                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
                     <maxActive>80</maxActive>
                     <maxWait>60000</maxWait>
-                    <minIdle>5</minIdle>
                     <testOnBorrow>true</testOnBorrow>
                     <validationQuery>SELECT 1</validationQuery>
                     <validationInterval>30000</validationInterval>
-                    <defaultAutoCommit>false</defaultAutoCommit>
                 </configuration>
             </definition>
         </datasource>
+
         <!-- For an explanation of the properties, see: http://people.apache.org/~fhanik/jdbc-pool/jdbc-pool.html -->
         <!--datasource>
             <name>SAMPLE_DATA_SOURCE</name>

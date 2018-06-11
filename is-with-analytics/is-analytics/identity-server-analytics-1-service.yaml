@@ -13,13 +13,30 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: is-server-share-volume-claim
+  name: wso2is-with-analytics-is-analytics-1-service
 spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
+  selector:
+    node: wso2is-with-analytics-is-analytics-1
+  ports:
+  - name: thrift-ssl
+    port: 7712
+    targetPort: 7712
+    protocol: TCP
+  - name: thrift
+    port: 7612
+    targetPort: 7612
+    protocol: TCP
+  - name: spark-worker
+    port: 11001
+    targetPort: 11001
+    protocol: TCP
+  - name: spark-1
+    port: 11225
+    targetPort: 11225
+    protocol: TCP
+  - name: spark-2
+    port: 10006
+    targetPort: 10006
+    protocol: TCP

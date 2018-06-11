@@ -33,9 +33,6 @@
     <dbConfig name="configregistry">
         <dataSource>jdbc/WSO2ConfigDS</dataSource>
     </dbConfig>
-    <!--<dbConfig name="govregistry">-->
-        <!--<dataSource>jdbc/WSO2GovRegDS</dataSource>-->
-    <!--</dbConfig>-->
     
     <remoteInstance url="https://localhost:9443/registry">
         <id>configregistry</id>
@@ -43,24 +40,16 @@
         <readOnly>false</readOnly>
         <registryRoot>/</registryRoot>
         <enableCache>true</enableCache>
-        <cacheId>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_CONFIG_REG_DB</cacheId>
+        <cacheId>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_COMMON_DB</cacheId>
     </remoteInstance>
-    <!--<remoteInstance url="https://localhost:9443/registry">-->
-        <!--<id>govregistry</id>-->
-        <!--<dbConfig>govregistry</dbConfig>-->
-        <!--<readOnly>false</readOnly>-->
-        <!--<registryRoot>/</registryRoot>-->
-        <!--<enableCache>true</enableCache>-->
-        <!--<cacheId>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_GOV_REG_DB</cacheId>-->
-    <!--</remoteInstance>-->
 
     <mount path="/_system/config" overwrite="true">
         <instanceId>configregistry</instanceId>
-        <targetPath>/_system/config</targetPath>
+        <targetPath>/_system/config/is</targetPath>
     </mount>
     <mount path="/_system/governance" overwrite="true">
         <instanceId>configregistry</instanceId>
-        <targetPath>/_system/governance</targetPath>
+        <targetPath>/_system/governance/is</targetPath>
     </mount>
 
    <handler class="org.wso2.carbon.identity.entitlement.policy.finder.registry.RegistryPolicyHandler">

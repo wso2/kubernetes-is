@@ -13,20 +13,35 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
+kind: PersistentVolumeClaim
 metadata:
-  name: wso2is-with-analytics-scalable-is-service
+  name: is-analytics-1-data-volume-claim
 spec:
-  type: LoadBalancer
-  sessionAffinity: ClientIP
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
   selector:
-    deployment: wso2is-with-analytics-scalable-is
-  ports:
-  - name: servlet-http
-    port: 9763
-    targetPort: 9763
-    protocol: TCP
-  - name: servlet-https
-    port: 9443
-    targetPort: 9443
-    protocol: TCP
+    matchLabels:
+      purpose: analytics-data
+      node: wso2is-analytics-1
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-analytics-2-data-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: analytics-data
+      node: wso2is-analytics-2

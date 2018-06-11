@@ -619,10 +619,10 @@
         </EventListener>
         <EventListener type="org.wso2.carbon.identity.core.handler.AbstractIdentityMessageHandler"
                        name="org.wso2.carbon.identity.data.publisher.application.authentication.impl.DASLoginDataPublisherImpl"
-                       orderId="10" enable="false"/>
+                       orderId="10" enable="true"/>
         <EventListener type="org.wso2.carbon.identity.core.handler.AbstractIdentityMessageHandler"
                        name="org.wso2.carbon.identity.data.publisher.application.authentication.impl.DASSessionDataPublisherImpl"
-                       orderId="11" enable="false"/>
+                       orderId="11" enable="true"/>
         <EventListener type="org.wso2.carbon.identity.core.handler.AbstractIdentityMessageHandler"
                        name="org.wso2.carbon.identity.data.publisher.application.authentication.AuthnDataPublisherProxy"
                        orderId="11" enable="true"/>

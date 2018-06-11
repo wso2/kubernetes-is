@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: wso2is-with-analytics-scalable-is-deployment
 spec:
-  replicas: 2
+  replicas: 1
   minReadySeconds: 30
   strategy:
     rollingUpdate:
@@ -38,7 +38,7 @@ spec:
             - /bin/bash
             - -c
             - nc -z localhost 9443
-          initialDelaySeconds: 160
+          initialDelaySeconds: 250
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -46,8 +46,14 @@ spec:
               - /bin/bash
               - -c
               - nc -z localhost 9443
-          initialDelaySeconds: 160
+          initialDelaySeconds: 250
           periodSeconds: 10
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9763
+          protocol: TCP
+        - containerPort: 9443
+          protocol: TCP
         volumeMounts:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/kubernetes-volumes/is/conf
@@ -57,8 +63,12 @@ spec:
           mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-datasources
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-identity
-        - name: shared-pd
-          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment/server
+        - name: identity-server-conf-event-publishers
+          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-event-publishers
+        - name: shared-deployment-persistent-disk
+          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
+        - name: shared-tenants-persistent-disk
+          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -75,6 +85,12 @@ spec:
       - name: identity-server-conf-identity
         configMap:
           name: identity-server-conf-identity
-      - name: shared-pd
+      - name: identity-server-conf-event-publishers
+        configMap:
+          name: identity-server-conf-event-publishers
+      - name: shared-deployment-persistent-disk
         persistentVolumeClaim:
-          claimName: is-server-share-volume-claim
+          claimName: scalable-is-shared-deployment-volume-claim
+      - name: shared-tenants-persistent-disk
+        persistentVolumeClaim:
+          claimName: scalable-is-shared-tenants-volume-claim
