@@ -49,11 +49,11 @@
             <name>WSO2_REG_DB</name>
             <description>The datasource used for registry</description>
             <jndiConfig>
-                <name>jdbc/WSO2RegDB</name>
+                <name>jdbc/WSO2RegDS</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_REG_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -72,11 +72,11 @@
             <name>WSO2_USER_DB</name>
             <description>The datasource used for user management</description>
             <jndiConfig>
-                <name>jdbc/WSO2UserDB</name>
+                <name>jdbc/WSO2UserDS</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_USER_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -95,11 +95,11 @@
             <name>WSO2_IDENTITY_DB</name>
             <description>The datasource used for identity management</description>
             <jndiConfig>
-                <name>jdbc/WSO2IdentityDB</name>
+                <name>jdbc/WSO2IdentityDS</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -118,11 +118,11 @@
             <name>WSO2_CONSENT_DB</name>
             <description>The datasource used for consent management</description>
             <jndiConfig>
-                <name>jdbc/WSO2ConsentDB</name>
+                <name>jdbc/WSO2ConsentDS</name>
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-pattern1-mysql-service:3306/WSO2_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
