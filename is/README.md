@@ -1,6 +1,6 @@
-# Kubernetes Resources for deployment of WSO2 Identity Server with WSO2 Identity Server Analytics
+# Kubernetes Resources for deployment of WSO2 Identity Server
 
-Core Kubernetes resources for a clustered deployment of WSO2 Identity Server with WSO2 Identity Server Analytics.
+Core Kubernetes resources for a clustered deployment of WSO2 Identity Server.
 
 ## Prerequisites
 
@@ -61,12 +61,8 @@ on creating the required databases for the deployment.
 Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
 the following files:
 
-* `KUBERNETES_HOME/is-with-analytics/confs/is/datasources/master-datasources.xml`
-* `KUBERNETES_HOME/is-with-analytics/confs/is/datasources/bps-datasources.xml`
-* `KUBERNETES_HOME/is-with-analytics/confs/is-analytics-1/datasources/master-datasources.xml`
-* `KUBERNETES_HOME/is-with-analytics/confs/is-analytics-1/datasources/analytics-datasources.xml`
-* `KUBERNETES_HOME/is-with-analytics/confs/is-analytics-2/datasources/master-datasources.xml`
-* `KUBERNETES_HOME/is-with-analytics/confs/is-analytics-2/datasources/analytics-datasources.xml`
+* `KUBERNETES_HOME/is/confs/is/datasources/master-datasources.xml`
+* `KUBERNETES_HOME/is/confs/is/datasources/bps-datasources.xml`
 
 Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
@@ -81,14 +77,14 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     first create a Kubernetes ConfigMap for passing database script(s) to the deployment.
     
     ```
-    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is-with-analytics/test/confs/mysql/dbscripts/
+    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is/test/confs/mysql/dbscripts/
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
     
     ```
-    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/test/rdbms/mysql/mysql-service.yaml
-    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/test/rdbms/mysql/mysql-deployment.yaml
+    kubectl create -f <KUBERNETES_HOME>/is/test/rdbms/mysql/mysql-service.yaml
+    kubectl create -f <KUBERNETES_HOME>/is/test/rdbms/mysql/mysql-deployment.yaml
     ```
     
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
@@ -101,12 +97,10 @@ kubectl create --username=admin --password=<cluster-admin-password> -f <KUBERNET
 
 Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
 
-* `wso2is-with-analytics-shared-deployment-pv`
-* `wso2is-with-analytics-shared-tenants-pv`
-* `wso2is-with-analytics-is-analytics-data-pv-1`
-* `wso2is-with-analytics-is-analytics-data-pv-2`
+* `wso2is-shared-deployment-pv`
+* `wso2is-shared-tenants-pv`
 
-in `<KUBERNETES_HOME>/is-with-analytics/volumes/persistent-volumes.yaml` file.
+in `<KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml` file.
 
 Create a user named `wso2carbon` with user id `802` and a group named `wso2` with group id `802` in the NFS node.
 Add `wso2carbon` user to the group `wso2`.
@@ -117,45 +111,24 @@ And provide read-write-executable permissions to owning `wso2carbon` user, for t
 Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/volumes/persistent-volumes.yaml
+kubectl create -f <KUBERNETES_HOME>/is/identity-server-volume-claims.yaml
+kubectl create -f <KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml
 ```
     
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster:
 
 ```
-kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/
-kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/axis2/
-kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/datasources/
-kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/identity/
-kubectl create configmap identity-server-conf-event-publishers --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/deployment/server/eventpublishers/
-
-kubectl create configmap is-analytics-1-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf
-kubectl create configmap is-analytics-1-conf-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/analytics
-kubectl create configmap is-analytics-1-conf-spark-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/analytics/spark
-kubectl create configmap is-analytics-1-conf-axis2 --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/axis2
-kubectl create configmap is-analytics-1-conf-datasources --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/datasources
-kubectl create configmap is-analytics-1-deployment-portal --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/deployment/server/jaggeryapps/portal/configs
-
-kubectl create configmap is-analytics-2-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf
-kubectl create configmap is-analytics-2-conf-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/analytics
-kubectl create configmap is-analytics-2-conf-spark-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/analytics/spark
-kubectl create configmap is-analytics-2-conf-axis2 --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/axis2
-kubectl create configmap is-analytics-2-conf-datasources --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/datasources
-kubectl create configmap is-analytics-2-deployment-portal --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/deployment/server/jaggeryapps/portal/configs
+kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/is/confs/
+kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/is/confs/axis2/
+kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/is/confs/datasources/
+kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/is/confs/identity/
 ```
 
-##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server and Analytics:
+##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-service.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-1-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-1-service.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-service.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-service.yaml
+kubectl create -f <KUBERNETES_HOME>/is/identity-server-service.yaml
+kubectl create -f <KUBERNETES_HOME>/is/identity-server-deployment.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource:
@@ -168,13 +141,12 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 Finally, deploy the WSO2 Enterprise Integrator Kubernetes Ingress resources as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-ingress.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-analytics-ingress.yaml
+kubectl create -f <KUBERNETES_HOME>/is/ingresses/identity-server-ingress.yaml
 ```
 
-##### 10. Access Management Consoles:
+##### 10. Access Management Console:
 
-Default deployment will expose `wso2is` and `wso2is-analytics` hosts (to expose Administrative services and Management Console).
+Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
 
 To access the console in the environment,
 
@@ -183,19 +155,17 @@ To access the console in the environment,
 e.g.
 
 ```
-NAME                                         HOSTS              ADDRESS        PORTS     AGE
-wso2is-with-analytics-is-analytics-ingress   wso2is-analytics   <EXTERNAL-IP>   80, 443   3m
-wso2is-with-analytics-is-ingress             wso2is             <EXTERNAL-IP>   80, 443   3m
+NAME                       HOSTS          ADDRESS        PORTS     AGE
+wso2is-ingress             wso2is         <EXTERNAL-IP>  80, 443   3m
 ```
 
 2. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	wso2is-analytics
 <EXTERNAL-IP>	wso2is
 ```
 
-3. Try navigating to `https://wso2is/carbon` and `https://wso2is-analytics/carbon` from your favorite browser.
+3. Try navigating to `https://wso2is/carbon` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`:
 
@@ -203,8 +173,7 @@ Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is/identity-server-deployment.yaml
 ```
 
 For example, If `<n>` is 3, you are here scaling up this deployment from 1 to 3 container replicas.
-
