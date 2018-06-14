@@ -40,8 +40,8 @@ configurations as necessary.
     `namespace`: Namespace<br>
     `svcaccount`: Service Account<br>
     `serverIp`: NFS Server IP<br>
-    `sharedDeploymentLocationPath`: NFS location path<br>
-    `sharedTentsLocationPath`: NFS location path
+    `sharedDeploymentLocationPath`: NFS shared deployment directory(<IS_HOME>/repository/deployment) location for IS<br>
+    `sharedTentsLocationPath`: NFS shared tenants directory(<IS_HOME>/repository/tenants) location for IS
     
 3. Open the `<HELM_HOME>/is-deployment/values.yaml` and provide the following values.
 
