@@ -40,7 +40,7 @@ configurations as necessary.
     `namespace`: Namespace<br>
     `svcaccount`: Service Account<br>
     `serverIp`: NFS Server IP<br>
-    `sharedDeploymentLocationPath`: NFS location path
+    `sharedDeploymentLocationPath`: NFS location path<br>
     `sharedTentsLocationPath`: NFS location path
     
 3. Open the `<HELM_HOME>/is-deployment/values.yaml` and provide the following values.
