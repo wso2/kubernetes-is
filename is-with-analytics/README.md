@@ -196,3 +196,15 @@ wso2is-with-analytics-is-ingress             wso2is             <EXTERNAL-IP>   
 ```
 
 3. Try navigating to `https://wso2is/carbon` and `https://wso2is-analytics/carbon` from your favorite browser.
+
+##### 11. Scale up using `kubectl scale`:
+
+Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale this deployment into any `<n>` number of
+container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
+
+```
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml
+```
+
+For example, If `<n>` is 3, you are here scaling up this deployment from 1 to 3 container replicas.
+
