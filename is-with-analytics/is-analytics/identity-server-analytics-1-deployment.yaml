@@ -69,26 +69,50 @@ spec:
           containerPort: 7712
           protocol: "TCP"
         -
-          containerPort: 4000
-          protocol: "TCP"
-        -
-          containerPort: 4041
-          protocol: "TCP"
-        -
           containerPort: 11225
-          protocol: "TCP"
-        -
-          containerPort: 8082
-          protocol: "TCP"
-        -
-          containerPort: 11001
           protocol: "TCP"
         -
           containerPort: 10006
           protocol: "TCP"
         -
+          containerPort: 11001
+          protocol: "TCP"
+        -
+          containerPort: 11002
+          protocol: "TCP"
+        -
+          containerPort: 11003
+          protocol: "TCP"
+        -
           containerPort: 11501
           protocol: "TCP"
+        -
+          containerPort: 8083
+          protocol: "TCP"
+        -
+          containerPort: 4041
+          protocol: "TCP"
+        -
+          containerPort: 10007
+          protocol: TCP
+        -
+          containerPort: 12501
+          protocol: TCP
+        -
+          containerPort: 13001
+          protocol: TCP
+        -
+          containerPort: 13501
+          protocol: TCP
+        -
+          containerPort: 14501
+          protocol: TCP
+        -
+          containerPort: 7078
+          protocol: TCP
+        -
+          containerPort: 6067
+          protocol: TCP
         volumeMounts:
         - name: is-analytics-1-conf
           mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf

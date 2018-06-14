@@ -15,7 +15,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-with-analytics-scalable-is-deployment
+  name: wso2is-with-analytics-is-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -27,10 +27,10 @@ spec:
   template:
     metadata:
       labels:
-        deployment: wso2is-with-analytics-scalable-is
+        deployment: wso2is-with-analytics-is
     spec:
       containers:
-      - name: wso2is-with-analytics-scalable-is
+      - name: wso2is-with-analytics-is
         image: docker.wso2.com/wso2is:5.5.0
         livenessProbe:
           exec:
@@ -93,4 +93,4 @@ spec:
           claimName: scalable-is-shared-deployment-volume-claim
       - name: shared-tenants-persistent-disk
         persistentVolumeClaim:
-          claimName: scalable-is-shared-tenants-volume-claim
+          claimName: is-shared-tenants-volume-claim

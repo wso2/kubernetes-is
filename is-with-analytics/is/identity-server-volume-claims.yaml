@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: scalable-is-shared-deployment-volume-claim
+  name: is-shared-deployment-volume-claim
 spec:
   accessModes:
     - ReadWriteMany
@@ -32,7 +32,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: scalable-is-shared-tenants-volume-claim
+  name: is-shared-tenants-volume-claim
 spec:
   accessModes:
     - ReadWriteMany

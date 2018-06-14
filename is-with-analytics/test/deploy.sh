@@ -91,5 +91,5 @@ kubectl create -f ../ingresses/identity-server-analytics-ingress.yaml
 sleep 30s
 
 echoBold 'Finished'
-echo 'To access the WSO2 Identity Server management console, try https://wso2is-scalable-is/carbon in your browser.'
+echo 'To access the WSO2 Identity Server management console, try https://wso2is/carbon in your browser.'
 echo 'To access the WSO2 Identity Server Analytics management console, try https://wso2is-analytics/carbon in your browser.'

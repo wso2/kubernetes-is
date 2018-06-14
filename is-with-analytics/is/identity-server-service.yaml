@@ -15,10 +15,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2is-with-analytics-scalable-is-service
+  name: wso2is-with-analytics-is-service
 spec:
   selector:
-    deployment: wso2is-with-analytics-scalable-is
+    deployment: wso2is-with-analytics-is
   ports:
   - name: servlet-http
     port: 9763

@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2is-with-analytics-scalable-is-ingress
+  name: wso2is-with-analytics-is-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -25,12 +25,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - wso2is-scalable-is
+    - wso2is
   rules:
-  - host: wso2is-scalable-is
+  - host: wso2is
     http:
       paths:
       - path: /
         backend:
-          serviceName: wso2is-with-analytics-scalable-is-service
+          serviceName: wso2is-with-analytics-is-service
           servicePort: 9443
