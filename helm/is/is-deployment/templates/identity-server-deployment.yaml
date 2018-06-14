@@ -15,7 +15,8 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-with-analytics-is-deployment
+  name: wso2is-deployment
+  namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -27,10 +28,10 @@ spec:
   template:
     metadata:
       labels:
-        deployment: wso2is-with-analytics-is
+        deployment: wso2is
     spec:
       containers:
-      - name: wso2is-with-analytics-is
+      - name: wso2is
         image: docker.wso2.com/wso2is:5.5.0
         livenessProbe:
           exec:
@@ -63,8 +64,6 @@ spec:
           mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-datasources
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-identity
-        - name: identity-server-conf-event-publishers
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-event-publishers
         - name: shared-deployment-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk
@@ -85,9 +84,6 @@ spec:
       - name: identity-server-conf-identity
         configMap:
           name: identity-server-conf-identity
-      - name: identity-server-conf-event-publishers
-        configMap:
-          name: identity-server-conf-event-publishers
       - name: shared-deployment-persistent-disk
         persistentVolumeClaim:
           claimName: is-shared-deployment-volume-claim
