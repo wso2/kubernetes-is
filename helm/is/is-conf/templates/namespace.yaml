@@ -13,35 +13,7 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Namespace
 metadata:
-  name: is-shared-deployment-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: is-shared-deployment
-
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: is-shared-tenants-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: is-shared-tenants
+  name: {{ .Values.namespace }}
+  namespace: ""

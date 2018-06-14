@@ -12,36 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
 metadata:
-  name: is-shared-deployment-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: is-shared-deployment
+  namespace: {{ .Values.namespace }}
+  name: endpoints-reader-role
+rules:
+- apiGroups: [""]
+  verbs: ["get", "list"]
+  resources: ["endpoints"]
 
 ---
 
-apiVersion: v1
-kind: PersistentVolumeClaim
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
 metadata:
-  name: is-shared-tenants-volume-claim
-  namespace : {{ .Values.namespace }}
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: is-shared-tenants
+  name: endpoints-reader-role-wso2-binding
+  namespace: {{ .Values.namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: endpoints-reader-role
+subjects:
+  - kind: ServiceAccount
+    name: {{ .Values.svcaccount }}
+    namespace: {{ .Values.namespace }}

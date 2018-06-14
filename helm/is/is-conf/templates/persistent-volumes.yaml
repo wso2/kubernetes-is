@@ -13,35 +13,37 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: is-shared-deployment-volume-claim
+  name: wso2is-with-analytics-shared-deployment-pv
   namespace : {{ .Values.namespace }}
+  labels:
+    purpose: is-shared-deployment
 spec:
+  capacity:
+    storage: 1Gi
   accessModes:
     - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: is-shared-deployment
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.serverIp }}
+    path: {{ .Values.sharedDeploymentLocationPath }}
 
 ---
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: PersistentVolume
 metadata:
-  name: is-shared-tenants-volume-claim
+  name: wso2is-with-analytics-shared-tenants-pv
   namespace : {{ .Values.namespace }}
+  labels:
+    purpose: is-shared-tenants
 spec:
+  capacity:
+    storage: 1Gi
   accessModes:
     - ReadWriteMany
-  resources:
-    requests:
-      storage: 1Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: is-shared-tenants
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.serverIp }}
+    path: {{ .Values.sharedTentsLocationPath }}
