@@ -15,7 +15,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-scalable-is-deployment
+  name: wso2is-deployment
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -27,11 +27,11 @@ spec:
   template:
     metadata:
       labels:
-        deployment: wso2is-scalable-is
+        deployment: wso2is
     spec:
       containers:
-      - name: wso2is-scalable-is
-        image: docker.wso2.com/wso2is:5.5.0
+      - name: wso2is
+        image: gcr.io/apim3-177506/wso2is:5.5.0
         livenessProbe:
           exec:
             command:
@@ -85,7 +85,7 @@ spec:
           name: identity-server-conf-identity
       - name: shared-deployment-persistent-disk
         persistentVolumeClaim:
-          claimName: scalable-is-shared-deployment-volume-claim
+          claimName: is-shared-deployment-volume-claim
       - name: shared-tenants-persistent-disk
         persistentVolumeClaim:
-          claimName: scalable-is-shared-tenants-volume-claim
+          claimName: is-shared-tenants-volume-claim

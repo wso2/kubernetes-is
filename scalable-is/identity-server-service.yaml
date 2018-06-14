@@ -15,10 +15,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2is-scalable-is-service
+  name: wso2is-service
 spec:
   selector:
-    deployment: wso2is-scalable-is
+    deployment: wso2is
   ports:
   - name: servlet-http
     port: 9763
