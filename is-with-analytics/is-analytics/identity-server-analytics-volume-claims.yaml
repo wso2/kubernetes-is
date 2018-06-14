@@ -12,19 +12,36 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IntelliJ IDEA Project Files
-.idea/
-*.ipr
-*.iws
-*.swp
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-analytics-1-data-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: analytics-data
+      node: wso2is-analytics-1
 
-# Backup files
-*~
-*.bck
+---
 
-# Required-image-building-artifacts
-*.tar.gz
-*.zip
-*jar
-
-**/dockerfiles/**/files/*
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-analytics-2-data-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: analytics-data
+      node: wso2is-analytics-2

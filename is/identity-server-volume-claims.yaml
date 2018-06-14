@@ -12,19 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# IntelliJ IDEA Project Files
-.idea/
-*.ipr
-*.iws
-*.swp
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-shared-deployment-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: is-shared-deployment
 
-# Backup files
-*~
-*.bck
+---
 
-# Required-image-building-artifacts
-*.tar.gz
-*.zip
-*jar
-
-**/dockerfiles/**/files/*
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-shared-tenants-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: is-shared-tenants
