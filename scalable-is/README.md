@@ -1,105 +1,168 @@
-# WSO2 Identity Server Deployment Pattern-1 
-WSO2 Identity Server pattern 1 runs two Identity Server replicas fronted with a load balancer. Identity Server 
-nodes are clustered and a NFS volume mount is shared among nodes to synchronize runtime artifacts.
+# Kubernetes Resources for deployment of WSO2 Identity Server
 
-![alt tag](images/pattern-1-deployment-architecture.png)
-
-This deployment can be scaled into any `<n>` number of container replicas, upon your requirements.
-
->In the context of this document, `KUBERNETES_HOME` will refer to a local copy of 
-[`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/) git repository
+Core Kubernetes resources for a clustered deployment of WSO2 Identity Server.
 
 ## Prerequisites
 
-Follow the guide in [`KUBERNETES_HOME/README.md`](../README.md) upto step 4.
+* In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
+from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Enterprise Integrator.
+You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
 
-## Deploy services
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
+(version 17.09.0 or above) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+in order to run the steps provided<br>in the following quick start guide.<br><br>
 
-##### 1. Create configuration maps:
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/)<br><br>
+ 
+## Quick Start Guide
 
-Note : In addition to the config maps mentioned below, two other config maps can be used to copy the 
-relevant configuration files to `<IS_Home>` and `<IS_Home>/repository/conf/security`. Those config maps should be mounted to paths `/home/wso2user/wso2is-5.5.0-conf/home` and  `/home/wso2user/wso2is-5.5
-.0-conf/conf-security` respectively.
-```
-kubectl create configmap is-conf --from-file=conf/is/conf/
-kubectl create configmap is-bin --from-file=conf/is/bin/
-kubectl create configmap is-conf-datasources --from-file=conf/is/conf/datasources/
-kubectl create configmap is-conf-identity --from-file=conf/is/conf/identity/
-kubectl create configmap is-conf-axis2 --from-file=conf/is/conf/axis2/
-kubectl create configmap is-conf-tomcat --from-file=conf/is/conf/tomcat/
-kubectl create configmap mysql-conf --from-file=conf/mysql/conf/
-kubectl create configmap mysql-initscripts --from-file=conf/mysql/initscripts/
-kubectl create configmap mysql-dbscripts --from-file=conf/mysql/dbscripts
-```
-##### 2. Deploy and run MySQL service: 
-```
-kubectl create -f mysql-service.yaml
-kubectl create -f mysql-deployment.yaml
-```
-> In the production environment ensure the high availability of the RDMS used. In this deployment only a one mysql 
-container is used.
-##### 3. Deploy and run WSO2 Identity Server service:
-Update the ip address in `is-deployment.yaml` with your NFS server ip address. Give read and write permissions for user
- id , 1000000000 and group id 1000000000 for the mount directories in your NFS server.  
-```
-kubectl create -f is-service.yaml
-kubectl create -f is-deployment.yaml
-```
-Due to known [issue](https://github.com/wso2/kubernetes-is/issues/7), after deploying 1st node, scale up the 
-deployment to two nodes using following,
+>In the context of this document, `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
+Git repository.<br>
+
+##### 1. Checkout Kubernetes Resources for WSO2 Identity Server Git repository:
 
 ```
-kubectl scale --replicas=2 -f is-deployment.yaml
+git clone https://github.com/wso2/kubernetes-is.git
 ```
-##### 4. Deploy and run Nginx Ingress service:
-Install ingress-controller and default-backend  using [this](https://kubernetes.github.io/ingress-nginx/deploy/)
-```
-kubectl create -f loadbalancer-secret.yaml
-kubectl create -f is-ingress.yaml
-```
-##### 5. Access Management Console:
-Deployment will expose a publicly accessible host, namely: `wso2is-pattern1`
 
-To access the console in a test environment, add the above host as an entry in /etc/hosts file, pointing to <br> 
-Nginx Ingress cluster IP and try navigating to `https://wso2is-pattern1/carbon` from <br>
-your favorite browser.
+##### 2. Create a namespace named `wso2` and a service account named `wso2svc-account`, within the namespace `wso2`.
 
-##### 6. Scale up using `kubectl scale`:
-Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale this deployment into <br>
-any `<n>` number of container replicas, upon your requirement, simply run following kubectl 
-command on the terminal. Assuming your current working directory is `KUBERNETES_HOME/pattern-1` 
 ```
-kubectl scale --replicas=<n> -f is-deployment.yaml
+kubectl create namespace wso2
+kubectl create serviceaccount wso2svc-account -n wso2
 ```
-For example, If `<n>` is 3, you are here scaling up this deployment from 1 to 3 container replicas.
 
-## Undeploy services
+Then, switch the context to new `wso2` namespace from `default` namespace.
 
-##### 1. Undeploy Nginx Ingress service: 
 ```
-kubectl delete -f is-ingress.yaml
-kubectl delete -f loadbalancer-secret.yaml
+kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
-Delete the ingress controller and default back-end.
-##### 2. Undeploy WSO2 Identity Server service: 
+
+##### 3. Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com):
+
+Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
+
 ```
-kubectl delete -f is-deployment.yaml
-kubectl delete -f is-service.yaml
+kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
 ```
-##### 3. Undeploy MySQL service: 
+
+`username`: Username of your Free Trial Subscription<br>
+`password`: Password of your Free Trial Subscription<br>
+`email`: Docker email
+
+Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
+for further details.
+
+##### 4. Setup and configure external product database(s):
+
+Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS550/Setting+Up+Separate+Databases+for+Clustering)
+on creating the required databases for the deployment.
+
+Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
+the following files:
+
+* `KUBERNETES_HOME/is/confs/is/datasources/master-datasources.xml`
+* `KUBERNETES_HOME/is/confs/is/datasources/bps-datasources.xml`
+
+Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
+
+**Note**:
+
+* For **evaluation purposes**, you can use Kubernetes resources provided in the directory<br>
+`KUBERNETES_HOME/is-with-analytics/test/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
+**not recommended** for a production setup.
+
+* For using these Kubernetes resources,
+
+    first create a Kubernetes ConfigMap for passing database script(s) to the deployment.
+    
+    ```
+    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is/test/confs/mysql/dbscripts/
+    ```
+
+    Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
+    
+    ```
+    kubectl create -f <KUBERNETES_HOME>/is/test/rdbms/mysql/mysql-service.yaml
+    kubectl create -f <KUBERNETES_HOME>/is/test/rdbms/mysql/mysql-deployment.yaml
+    ```
+    
+##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+
 ```
-kubectl delete -f mysql-deployment.yaml
-kubectl delete -f mysql-service.yaml
+kubectl create --username=admin --password=<cluster-admin-password> -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
-##### 4. Delete configuration maps:
+
+##### 6. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
+
+Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
+
+* `wso2is-shared-deployment-pv`
+* `wso2is-shared-tenants-pv`
+
+in `<KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml` file.
+
+Create a user named `wso2carbon` with user id `802` and a group named `wso2` with group id `802` in the NFS node.
+Add `wso2carbon` user to the group `wso2`.
+
+Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
+And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+
+Then, deploy the persistent volume resource and volume claim as follows:
+
 ```
-kubectl delete configmap is-bin
-kubectl delete configmap is-conf
-kubectl delete configmap is-conf-datasources
-kubectl delete configmap is-conf-identity
-kubectl delete configmap is-conf-axis2
-kubectl delete configmap is-conf-tomcat
-kubectl delete configmap mysql-conf
-kubectl delete configmap mysql-initscripts
-kubectl delete configmap mysql-dbscripts
+kubectl create -f <KUBERNETES_HOME>/is/identity-server-volume-claims.yaml
+kubectl create -f <KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml
 ```
+    
+##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster:
+
+```
+kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/is/confs/
+kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/is/confs/axis2/
+kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/is/confs/datasources/
+kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/is/confs/identity/
+```
+
+##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server:
+
+```
+kubectl create -f <KUBERNETES_HOME>/is/identity-server-service.yaml
+kubectl create -f <KUBERNETES_HOME>/is/identity-server-deployment.yaml
+```
+
+##### 9. Deploy Kubernetes Ingress resource:
+
+The WSO2 Enterprise Integrator Kubernetes Ingress resource uses the NGINX Ingress Controller.
+
+In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
+please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
+
+Finally, deploy the WSO2 Enterprise Integrator Kubernetes Ingress resources as follows:
+
+```
+kubectl create -f <KUBERNETES_HOME>/is/ingresses/identity-server-ingress.yaml
+```
+
+##### 10. Access Management Console:
+
+Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
+
+To access the console in the environment,
+
+1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing`).
+
+e.g.
+
+```
+NAME                       HOSTS          ADDRESS        PORTS     AGE
+wso2is-ingress             wso2is         <EXTERNAL-IP>  80, 443   3m
+```
+
+2. Add the above host as an entry in /etc/hosts file as follows:
+
+```
+<EXTERNAL-IP>	wso2is
+```
+
+3. Try navigating to `https://wso2is/carbon` from your favorite browser.
