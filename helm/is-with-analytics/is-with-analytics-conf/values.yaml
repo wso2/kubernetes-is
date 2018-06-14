@@ -1,0 +1,12 @@
+username: "<USERNAME>"
+password: "<PASSWORD>"
+email: "<EMAIL>"
+
+namespace: "wso2"
+svcaccount: "wso2svc-account"
+serverIp: "<SERVER_IP>"
+sharedDeploymentLocationPath: "<NFS_LOCATION>"
+sharedTentsLocationPath: "<NFS_LOCATION>"
+analytics1DataLocationPath: "<NFS_LOCATION>"
+analytics2DataLocationPath: "<NFS_LOCATION>"
+

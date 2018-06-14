@@ -16,6 +16,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: wso2is-with-analytics-is-deployment
+  namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
   minReadySeconds: 30
