@@ -1,0 +1,96 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: wso2is-with-analytics-is-deployment
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: wso2is-with-analytics-is
+    spec:
+      containers:
+      - name: wso2is-with-analytics-is
+        image: docker.wso2.com/wso2is:5.5.0
+        livenessProbe:
+          exec:
+            command:
+            - /bin/bash
+            - -c
+            - nc -z localhost 9443
+          initialDelaySeconds: 250
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+              - /bin/bash
+              - -c
+              - nc -z localhost 9443
+          initialDelaySeconds: 250
+          periodSeconds: 10
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9763
+          protocol: TCP
+        - containerPort: 9443
+          protocol: TCP
+        volumeMounts:
+        - name: identity-server-conf
+          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf
+        - name: identity-server-conf-axis2
+          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-axis2
+        - name: identity-server-conf-datasources
+          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-datasources
+        - name: identity-server-conf-identity
+          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-identity
+        - name: identity-server-conf-event-publishers
+          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-event-publishers
+        - name: shared-deployment-persistent-disk
+          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
+        - name: shared-tenants-persistent-disk
+          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
+      serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+      - name: wso2creds
+      volumes:
+      - name: identity-server-conf
+        configMap:
+          name: identity-server-conf
+      - name: identity-server-conf-axis2
+        configMap:
+          name: identity-server-conf-axis2
+      - name: identity-server-conf-datasources
+        configMap:
+          name: identity-server-conf-datasources
+      - name: identity-server-conf-identity
+        configMap:
+          name: identity-server-conf-identity
+      - name: identity-server-conf-event-publishers
+        configMap:
+          name: identity-server-conf-event-publishers
+      - name: shared-deployment-persistent-disk
+        persistentVolumeClaim:
+          claimName: scalable-is-shared-deployment-volume-claim
+      - name: shared-tenants-persistent-disk
+        persistentVolumeClaim:
+          claimName: is-shared-tenants-volume-claim
