@@ -6,7 +6,7 @@ Kubernetes resources provided for a clustered deployment of WSO2 Identity Server
 ## Prerequisites
 
 * In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
-from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Enterprise Integrator.
+from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Identity Server.
 You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
@@ -28,7 +28,7 @@ git clone https://github.com/wso2/kubernetes-is.git
 
 ##### 2. Deploy Kubernetes Ingress resource:
 
-The WSO2 Enterprise Integrator Kubernetes Ingress resource uses the NGINX Ingress Controller.
+The WSO2 Identity Server Kubernetes Ingress resource uses the NGINX Ingress Controller.
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
@@ -68,14 +68,6 @@ Add `wso2carbon` user to the group `wso2`.
 
 Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
 And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
-
-Then, deploy the persistent volume resource and volume claim as follows:
-
-```
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/volumes/persistent-volumes.yaml
-```
   
 ##### 5. Deploy Kubernetes test resources:
 
@@ -110,3 +102,15 @@ wso2is-with-analytics-is-ingress             wso2is             <EXTERNAL-IP>   
 ```
 
 3. Try navigating to `https://wso2is/carbon` and `https://wso2is-analytics/carbon` from your favorite browser.
+
+##### 7. Scale up using `kubectl scale`:
+
+Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale this deployment into any `<n>` number of
+container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
+
+```
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is/identity-server-deployment.yaml
+```
+
+For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
+

@@ -5,7 +5,7 @@ Core Kubernetes resources for a clustered deployment of WSO2 Identity Server wit
 ## Prerequisites
 
 * In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
-from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Enterprise Integrator.
+from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Identity Server.
 You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
@@ -160,12 +160,12 @@ kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-serv
 
 ##### 9. Deploy Kubernetes Ingress resource:
 
-The WSO2 Enterprise Integrator Kubernetes Ingress resource uses the NGINX Ingress Controller.
+The WSO2 Identity Server Kubernetes Ingress resource uses the NGINX Ingress Controller.
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
 
-Finally, deploy the WSO2 Enterprise Integrator Kubernetes Ingress resources as follows:
+Finally, deploy the WSO2 Identity Server Kubernetes Ingress resources as follows:
 
 ```
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-ingress.yaml
@@ -199,12 +199,11 @@ wso2is-with-analytics-is-ingress             wso2is             <EXTERNAL-IP>   
 
 ##### 11. Scale up using `kubectl scale`:
 
-Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale this deployment into any `<n>` number of
+Default deployment runs a single replica (or pod) of WSO2 Identity server. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
 
 ```
 kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml
 ```
 
-For example, If `<n>` is 3, you are here scaling up this deployment from 1 to 3 container replicas.
-
+For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
