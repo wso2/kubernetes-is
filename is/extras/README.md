@@ -33,26 +33,7 @@ The WSO2 Identity Server Kubernetes Ingress resource uses the NGINX Ingress Cont
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
 
-##### 3. Update the deploy.sh file with the [`WSO2 Docker Registry`](https://docker.wso2.com) credentials and Kubernetes cluster admin password.
-
-Replace the relevant placeholders in `KUBERNETES_HOME/is/test/deploy.sh` file with appropriate details, as described below.
-
-* A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
-The following details need to be replaced in the relevant command.
-
-```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
-```
-
-`username`: Username of your Free Trial Subscription<br>
-`password`: Password of your Free Trial Subscription<br>
-`email`: Docker email
-
-* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
-
-`cluster-admin-password`: Kubernetes cluster admin password
-
-##### 4. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
+##### 3. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
 
 Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
 
@@ -67,16 +48,27 @@ Add `wso2carbon` user to the group `wso2`.
 Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
 And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
   
-##### 5. Deploy Kubernetes test resources:
+##### 4. Deploy Kubernetes resources:
 
-Change directory to `KUBERNETES_HOME/is/test` and execute the `deploy.sh` shell script on the terminal.
+Change directory to `KUBERNETES_HOME/is/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh
+./deploy.sh --free-trial-username=<FT_USERNAME> --free-trial-password=<FT_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
 ```
+
+* A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
+The following details need to be replaced in the relevant command.
+
+`FT_USERNAME`: Username of your Free Trial Subscription<br>
+`FT_PASSWORD`: Password of your Free Trial Subscription
+
+* A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+
+`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
+
 >To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
 
-##### 6. Access Management Console:
+##### 5. Access Management Console:
 
 Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
 
@@ -99,7 +91,7 @@ wso2is-ingress             wso2is         <EXTERNAL-IP>  80, 443   3m
 
 3. Try navigating to `https://wso2is/carbon` from your favorite browser.
 
-##### 7. Scale up using `kubectl scale`:
+##### 6. Scale up using `kubectl scale`:
 
 Default deployment runs a single replica (or pod) of WSO2 Identity server. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
