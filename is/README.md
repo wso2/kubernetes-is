@@ -43,12 +43,11 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
 ```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
+kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<FT_USERNAME> --docker-password=<FT_PASSWORD> --docker-email=<FT_USERNAME>
 ```
 
-`username`: Username of your Free Trial Subscription<br>
-`password`: Password of your Free Trial Subscription<br>
-`email`: Docker email
+`FT_USERNAME`: Username of your Free Trial Subscription<br>
+`FT_PASSWORD`: Password of your Free Trial Subscription
 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
@@ -90,8 +89,10 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
-kubectl create --username=admin --password=<cluster-admin-password> -f <KUBERNETES_HOME>/rbac/rbac.yaml
+kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
+
+`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
 ##### 6. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
 

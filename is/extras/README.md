@@ -101,4 +101,3 @@ kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is-with-analytics/is/identity-
 ```
 
 For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
-
