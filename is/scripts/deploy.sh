@@ -49,13 +49,13 @@ while [ "$1" != "" ]; do
             usage
             exit 1
             ;;
-        --free-trial-username)
+        --free-trial-username | --ftu)
             FT_USERNAME=$VALUE
             ;;
-        --free-trial-password)
+        --free-trial-password | --ftp)
             FT_PASSWORD=$VALUE
             ;;
-        --cluster-admin-password)
+        --cluster-admin-password | --cap)
             ADMIN_PASSWORD=$VALUE
             ;;
         *)
@@ -77,17 +77,17 @@ ${KUBECTL} create serviceaccount wso2svc-account -n wso2
 ${KUBECTL} config set-context $(kubectl config current-context) --namespace=wso2
 
 # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${FT_USERNAME} --docker-password=${FT_PASSWORD} --docker-email=${FT_USERNAME}
+#${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${FT_USERNAME} --docker-password=${FT_PASSWORD} --docker-email=${FT_USERNAME}
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
 
 # create Kubernetes ConfigMaps
 echoBold 'Creating Kubernetes ConfigMaps...'
-${KUBECTL} create configmap identity-server-conf --from-file=../confs/repository/conf/
-${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/repository/conf/axis2/
-${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/repository/conf/datasources/
-${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/repository/conf/identity/
+${KUBECTL} create configmap identity-server-conf --from-file=../confs/
+${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/axis2/
+${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/datasources/
+${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/identity/
 ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
 echoBold 'Deploying the Kubernetes Services...'
