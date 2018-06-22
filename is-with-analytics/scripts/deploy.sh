@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # ------------------------------------------------------------------------
 # Copyright 2018 WSO2, Inc. (http://wso2.com)
@@ -16,78 +16,128 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-# methods
 set -e
 
+ECHO=`which echo`
+KUBECTL=`which kubectl`
+
+# methods
 function echoBold () {
-    echo $'\e[1m'"${1}"$'\e[0m'
+    ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
 
+function usage () {
+    echoBold "This script automates the installation of WSO2 Identity Server pattern 1 Kubernetes resources\n"
+    echoBold "Allowed arguments:\n"
+    echoBold "-h | --help"
+    echoBold "--ftu | --free-trial-username\t\tYour WSO2 Free Trial username"
+    echoBold "--ftp | --free-trial-password\t\tYour WSO2 Free Trial password"
+    echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
+}
+
+FT_USERNAME=''
+FT_PASSWORD=''
+ADMIN_PASSWORD=''
+
+# capture named arguments
+while [ "$1" != "" ]; do
+    PARAM=`echo $1 | awk -F= '{print $1}'`
+    VALUE=`echo $1 | awk -F= '{print $2}'`
+
+    case $PARAM in
+        -h | --help)
+            usage
+            exit 1
+            ;;
+        --ftu | --free-trial-username)
+            FT_USERNAME=$VALUE
+            ;;
+        --ftp | --free-trial-password)
+            FT_PASSWORD=$VALUE
+            ;;
+        --cap | --cluster-admin-password)
+            ADMIN_PASSWORD=$VALUE
+            ;;
+        *)
+            echoBold "ERROR: unknown parameter \"$PARAM\""
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
 # create a new Kubernetes Namespace
-kubectl create namespace wso2
+${KUBECTL} create namespace wso2
 
 # create a new service account in 'wso2' Kubernetes Namespace
-kubectl create serviceaccount wso2svc-account -n wso2
+${KUBECTL} create serviceaccount wso2svc-account -n wso2
 
 # switch the context to new 'wso2' namespace
-kubectl config set-context $(kubectl config current-context) --namespace=wso2
+${KUBECTL} config set-context $(${KUBECTL} config current-context) --namespace=wso2
 
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
+# create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
+${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${FT_USERNAME} --docker-password=${FT_PASSWORD} --docker-email=${FT_USERNAME}
 
-# create Kubernetes role and role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
-kubectl create --username=admin --password=<cluster-admin-password> -f ../../rbac/rbac.yaml
+# create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
+${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
 
-# configuration maps
+# create Kubernetes ConfigMaps
 echoBold 'Creating ConfigMaps...'
-kubectl create configmap identity-server-conf --from-file=../confs/is/conf/
-kubectl create configmap identity-server-conf-axis2 --from-file=../confs/is/conf/axis2/
-kubectl create configmap identity-server-conf-datasources --from-file=../confs/is/conf/datasources/
-kubectl create configmap identity-server-conf-identity --from-file=../confs/is/conf/identity/
-kubectl create configmap identity-server-conf-event-publishers --from-file=../confs/is/deployment/server/eventpublishers/
+${KUBECTL} create configmap identity-server-conf --from-file=../confs/is/conf/
+${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/is/conf/axis2/
+${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/is/conf/datasources/
+${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/is/conf/identity/
+${KUBECTL} create configmap identity-server-conf-event-publishers --from-file=../confs/is/deployment/server/eventpublishers/
 
-kubectl create configmap is-analytics-1-conf --from-file=../confs/is-analytics-1/conf
-kubectl create configmap is-analytics-1-conf-analytics --from-file=../confs/is-analytics-1/conf/analytics
-kubectl create configmap is-analytics-1-conf-spark-analytics --from-file=../confs/is-analytics-1/conf/analytics/spark
-kubectl create configmap is-analytics-1-conf-axis2 --from-file=../confs/is-analytics-1/conf/axis2
-kubectl create configmap is-analytics-1-conf-datasources --from-file=../confs/is-analytics-1/conf/datasources
-kubectl create configmap is-analytics-1-deployment-portal --from-file=../confs/is-analytics-1/deployment/server/jaggeryapps/portal/configs
+${KUBECTL} create configmap is-analytics-1-conf --from-file=../confs/is-analytics-1/conf
+${KUBECTL} create configmap is-analytics-1-conf-analytics --from-file=../confs/is-analytics-1/conf/analytics
+${KUBECTL} create configmap is-analytics-1-conf-spark-analytics --from-file=../confs/is-analytics-1/conf/analytics/spark
+${KUBECTL} create configmap is-analytics-1-conf-axis2 --from-file=../confs/is-analytics-1/conf/axis2
+${KUBECTL} create configmap is-analytics-1-conf-datasources --from-file=../confs/is-analytics-1/conf/datasources
+${KUBECTL} create configmap is-analytics-1-deployment-portal --from-file=../confs/is-analytics-1/deployment/server/jaggeryapps/portal/configs
 
-kubectl create configmap is-analytics-2-conf --from-file=../confs/is-analytics-2/conf
-kubectl create configmap is-analytics-2-conf-analytics --from-file=../confs/is-analytics-2/conf/analytics
-kubectl create configmap is-analytics-2-conf-spark-analytics --from-file=../confs/is-analytics-2/conf/analytics/spark
-kubectl create configmap is-analytics-2-conf-axis2 --from-file=../confs/is-analytics-2/conf/axis2
-kubectl create configmap is-analytics-2-conf-datasources --from-file=../confs/is-analytics-2/conf/datasources
-kubectl create configmap is-analytics-2-deployment-portal --from-file=../confs/is-analytics-2/deployment/server/jaggeryapps/portal/configs
+${KUBECTL} create configmap is-analytics-2-conf --from-file=../confs/is-analytics-2/conf
+${KUBECTL} create configmap is-analytics-2-conf-analytics --from-file=../confs/is-analytics-2/conf/analytics
+${KUBECTL} create configmap is-analytics-2-conf-spark-analytics --from-file=../confs/is-analytics-2/conf/analytics/spark
+${KUBECTL} create configmap is-analytics-2-conf-axis2 --from-file=../confs/is-analytics-2/conf/axis2
+${KUBECTL} create configmap is-analytics-2-conf-datasources --from-file=../confs/is-analytics-2/conf/datasources
+${KUBECTL} create configmap is-analytics-2-deployment-portal --from-file=../confs/is-analytics-2/deployment/server/jaggeryapps/portal/configs
 
-kubectl create configmap mysql-dbscripts --from-file=confs/rdbms/mysql/dbscripts/
+${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
+
+echoBold 'Deploying the Kubernetes Services...'
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-service.yaml
+${KUBECTL} create -f ../is/identity-server-service.yaml
+${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-service.yaml
+${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-service.yaml
+${KUBECTL} create -f ../is-analytics/identity-server-analytics-service.yaml
+sleep 10s
 
 # MySQL
-echoBold 'Deploying WSO2 Identity Server Databases...'
-kubectl create -f rdbms/mysql/mysql-service.yaml
-kubectl create -f rdbms/mysql/mysql-deployment.yaml
+echoBold 'Deploying WSO2 Identity Server and Identity Server Analytics Databases using MySQL...'
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
 sleep 10s
 
 # persistent storage
 echoBold 'Creating persistent volume and volume claim...'
-kubectl create -f ../is/identity-server-volume-claims.yaml
-kubectl create -f ../is-analytics/identity-server-analytics-volume-claims.yaml
-
-kubectl create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../is/identity-server-volume-claims.yaml
+${KUBECTL} create -f ../is-analytics/identity-server-analytics-volume-claims.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+${KUBECTL} create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
+sleep 10s
 
 # Identity Server and Analytics
 echoBold 'Deploying WSO2 Identity Server and Analytics...'
-kubectl create -f ../is/identity-server-service.yaml
-kubectl create -f ../is/identity-server-deployment.yaml
-kubectl create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
-kubectl create -f ../is-analytics/identity-server-analytics-1-service.yaml
-kubectl create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
-kubectl create -f ../is-analytics/identity-server-analytics-2-service.yaml
-kubectl create -f ../is-analytics/identity-server-analytics-service.yaml
+${KUBECTL} create -f ../is/identity-server-deployment.yaml
+${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
+${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
 sleep 30s
 
 echoBold 'Deploying Ingresses...'
-kubectl create -f ../ingresses/identity-server-ingress.yaml
-kubectl create -f ../ingresses/identity-server-analytics-ingress.yaml
+${KUBECTL} create -f ../ingresses/identity-server-ingress.yaml
+${KUBECTL} create -f ../ingresses/identity-server-analytics-ingress.yaml
 sleep 30s
 
 echoBold 'Finished'
