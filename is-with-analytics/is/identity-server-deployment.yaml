@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2is-with-analytics-is
-        image: docker.wso2.com/wso2is:5.5.0
+        image: gcr.io/apim3-177506/wso2is:5.6.0
         livenessProbe:
           exec:
             command:
@@ -66,9 +66,9 @@ spec:
         - name: identity-server-conf-event-publishers
           mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-event-publishers
         - name: shared-deployment-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
+          mountPath: /home/wso2carbon/wso2is-5.6.0/repository/deployment
         - name: shared-tenants-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
+          mountPath: /home/wso2carbon/wso2is-5.6.0/repository/tenants
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
