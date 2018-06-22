@@ -46,6 +46,7 @@ sleep 2m
 echoBold 'Deleting the MySQL deployment...'
 ${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-service.yaml
 ${KUBECTL} delete -f ../extras/rdbms/mysql/mysql-deployment.yaml
+${KUBECTL} delete -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 50s
 
 # delete the created Kubernetes Namespace

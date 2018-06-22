@@ -123,7 +123,9 @@ sleep 10s
 echoBold 'Creating persistent volume and volume claim...'
 ${KUBECTL} create -f ../is/identity-server-volume-claims.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-volume-claims.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
 ${KUBECTL} create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 10s
 
 # Identity Server and Analytics
