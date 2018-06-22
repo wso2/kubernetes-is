@@ -2,6 +2,8 @@
 
 Core Kubernetes resources for a clustered deployment of WSO2 Identity Server.
 
+![A clustered deployment WSO2 Identity Server](is.png)
+
 ## Prerequisites
 
 * In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
@@ -77,6 +79,18 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     
     ```
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is/extras/confs/mysql/dbscripts/
+    ```
+    
+    Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
+    Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+    Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
+    named `wso2is-mysql-pv` in the file `<KUBERNETES_HOME>/is/extras/rdbms/volumes/persistent-volumes.yaml`.
+    
+    Then, deploy the persistent volume resource and volume claim as follows:
+    
+    ```
+    kubectl create -f <KUBERNETES_HOME>/is/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+    kubectl create -f <KUBERNETES_HOME>/is/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:

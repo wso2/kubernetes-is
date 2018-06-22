@@ -49,13 +49,13 @@ while [ "$1" != "" ]; do
             usage
             exit 1
             ;;
-        --free-trial-username | --ftu)
+        --ftu | --free-trial-username)
             FT_USERNAME=$VALUE
             ;;
-        --free-trial-password | --ftp)
+        --ftp | --free-trial-password)
             FT_PASSWORD=$VALUE
             ;;
-        --cluster-admin-password | --cap)
+        --cap | --cluster-admin-password)
             ADMIN_PASSWORD=$VALUE
             ;;
         *)
@@ -77,7 +77,7 @@ ${KUBECTL} create serviceaccount wso2svc-account -n wso2
 ${KUBECTL} config set-context $(kubectl config current-context) --namespace=wso2
 
 # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-#${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${FT_USERNAME} --docker-password=${FT_PASSWORD} --docker-email=${FT_USERNAME}
+${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${FT_USERNAME} --docker-password=${FT_PASSWORD} --docker-email=${FT_USERNAME}
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
@@ -104,6 +104,8 @@ sleep 10s
 echoBold 'Creating persistent volumes and volume claims...'
 ${KUBECTL} create -f ../identity-server-volume-claims.yaml
 ${KUBECTL} create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 10s
 
 # WSO2 Identity Server
