@@ -52,11 +52,6 @@ Add `wso2carbon` user to the group `wso2`.
 Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
 And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
 
-Finally, setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
-Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
-Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
-named `wso2is-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml`.
-
 ##### 4. Deploy Kubernetes resources:
 
 Change directory to `KUBERNETES_HOME/is-with-analytics/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:

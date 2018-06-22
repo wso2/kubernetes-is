@@ -84,18 +84,6 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     ```
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is-with-analytics/extras/confs/mysql/dbscripts/
     ```
-    
-    Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
-    Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
-    Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
-    named `wso2is-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml`.
-    
-    Then, deploy the persistent volume resource and volume claim as follows:
-    
-    ```
-    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml
-    ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
     
