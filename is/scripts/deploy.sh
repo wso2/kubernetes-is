@@ -49,13 +49,13 @@ while [ "$1" != "" ]; do
             usage
             exit 1
             ;;
-        --free-trial-username)
+        --ftu | --free-trial-username)
             FT_USERNAME=$VALUE
             ;;
-        --free-trial-password)
+        --ftp | --free-trial-password)
             FT_PASSWORD=$VALUE
             ;;
-        --cluster-admin-password)
+        --cap | --cluster-admin-password)
             ADMIN_PASSWORD=$VALUE
             ;;
         *)
@@ -84,10 +84,10 @@ ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rb
 
 # create Kubernetes ConfigMaps
 echoBold 'Creating Kubernetes ConfigMaps...'
-${KUBECTL} create configmap identity-server-conf --from-file=../confs/repository/conf/
-${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/repository/conf/axis2/
-${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/repository/conf/datasources/
-${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/repository/conf/identity/
+${KUBECTL} create configmap identity-server-conf --from-file=../confs/
+${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/axis2/
+${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/datasources/
+${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/identity/
 ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
 echoBold 'Deploying the Kubernetes Services...'
@@ -104,6 +104,8 @@ sleep 10s
 echoBold 'Creating persistent volumes and volume claims...'
 ${KUBECTL} create -f ../identity-server-volume-claims.yaml
 ${KUBECTL} create -f ../volumes/persistent-volumes.yaml
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 10s
 
 # WSO2 Identity Server
