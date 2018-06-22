@@ -30,9 +30,9 @@ function usage () {
     echoBold "This script automates the installation of WSO2 Identity Server pattern 1 Kubernetes resources\n"
     echoBold "Allowed arguments:\n"
     echoBold "-h | --help"
-    echoBold "--free-trial-username\t\tYour WSO2 Free Trial username"
-    echoBold "--free-trial-password\t\tYour WSO2 Free Trial password"
-    echoBold "--cluster-admin-password\tKubernetes cluster admin password\n\n"
+    echoBold "--ftu | --free-trial-username\t\tYour WSO2 Free Trial username"
+    echoBold "--ftp | --free-trial-password\t\tYour WSO2 Free Trial password"
+    echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
 }
 
 FT_USERNAME=''
@@ -49,13 +49,13 @@ while [ "$1" != "" ]; do
             usage
             exit 1
             ;;
-        --free-trial-username)
+        --ftu | --free-trial-username)
             FT_USERNAME=$VALUE
             ;;
-        --free-trial-password)
+        --ftp | --free-trial-password)
             FT_PASSWORD=$VALUE
             ;;
-        --cluster-admin-password)
+        --cap | --cluster-admin-password)
             ADMIN_PASSWORD=$VALUE
             ;;
         *)
