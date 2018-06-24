@@ -27,16 +27,16 @@ function echoBold () {
 }
 
 function usage () {
-    echoBold "This script automates the installation of WSO2 Identity Server pattern 1 Kubernetes resources\n"
+    echoBold "This script automates the installation of WSO2 EI Integrator Analytics Kubernetes resources\n"
     echoBold "Allowed arguments:\n"
     echoBold "-h | --help"
-    echoBold "--free-trial-username\t\tYour WSO2 Free Trial username"
-    echoBold "--free-trial-password\t\tYour WSO2 Free Trial password"
-    echoBold "--cluster-admin-password\tKubernetes cluster admin password\n\n"
+    echoBold "--wsu | --wso2-subscription-username\t\tYour WSO2 Subscription username"
+    echoBold "--wsp | --wso2-subscription-password\t\tYour WSO2 Subscription password"
+    echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
 }
 
-FT_USERNAME=''
-FT_PASSWORD=''
+WSO2_SUBSCRIPTION_USERNAME=''
+WSO2_SUBSCRIPTION_PASSWORD=''
 ADMIN_PASSWORD=''
 
 # capture named arguments
@@ -44,22 +44,22 @@ while [ "$1" != "" ]; do
     PARAM=`echo $1 | awk -F= '{print $1}'`
     VALUE=`echo $1 | awk -F= '{print $2}'`
 
-    case $PARAM in
+    case ${PARAM} in
         -h | --help)
             usage
             exit 1
             ;;
-        --ftu | --free-trial-username)
-            FT_USERNAME=$VALUE
+        --wsu | --wso2-subscription-username)
+            WSO2_SUBSCRIPTION_USERNAME=${VALUE}
             ;;
-        --ftp | --free-trial-password)
-            FT_PASSWORD=$VALUE
+        --wsp | --wso2-subscription-password)
+            WSO2_SUBSCRIPTION_PASSWORD=${VALUE}
             ;;
         --cap | --cluster-admin-password)
-            ADMIN_PASSWORD=$VALUE
+            ADMIN_PASSWORD=${VALUE}
             ;;
         *)
-            echoBold "ERROR: unknown parameter \"$PARAM\""
+            echoBold "ERROR: unknown parameter \"${PARAM}\""
             usage
             exit 1
             ;;
@@ -77,7 +77,7 @@ ${KUBECTL} create serviceaccount wso2svc-account -n wso2
 ${KUBECTL} config set-context $(kubectl config current-context) --namespace=wso2
 
 # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${FT_USERNAME} --docker-password=${FT_PASSWORD} --docker-email=${FT_USERNAME}
+${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
 
 # create Kubernetes Role and Role Binding necessary for the Kubernetes API requests made from Kubernetes membership scheme
 ${KUBECTL} create --username=admin --password=${ADMIN_PASSWORD} -f ../../rbac/rbac.yaml
