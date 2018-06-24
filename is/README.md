@@ -45,11 +45,11 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
 ```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<FT_USERNAME> --docker-password=<FT_PASSWORD> --docker-email=<FT_USERNAME>
+kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_SUB_USERNAME> --docker-password=<WSO2_SUB_PASSWORD> --docker-email=<WSO2_SUB_USERNAME>
 ```
 
-`FT_USERNAME`: Username of your Free Trial Subscription<br>
-`FT_PASSWORD`: Password of your Free Trial Subscription
+`WSO2_SUB_USERNAME`: Username of your WSO2 Subscription<br>
+`WSO2_SUB_PASSWORD`: Password of your WSO2 Subscription
 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.

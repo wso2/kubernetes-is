@@ -58,14 +58,14 @@ named `wso2is-mysql-pv` in the file `<KUBERNETES_HOME>/is/extras/rdbms/volumes/p
 Change directory to `KUBERNETES_HOME/is/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh --free-trial-username=<FT_USERNAME> --free-trial-password=<FT_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh --wso2-subscription-username=<WSO2_SUB_USERNAME> --wso2-subscription-password=<WSO2_SUB_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
 ```
 
 * A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
 The following details need to be replaced in the relevant command.
 
-`FT_USERNAME`: Username of your Free Trial Subscription<br>
-`FT_PASSWORD`: Password of your Free Trial Subscription
+`WSO2_SUB_USERNAME`: Username of your WSO2 Subscription<br>
+`WSO2_SUB_PASSWORD`: Password of your WSO2 Subscription
 
 * A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
