@@ -61,14 +61,14 @@ named `wso2is-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/is-with-an
 Change directory to `KUBERNETES_HOME/is-with-analytics/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh --wso2-subscription-username=<WSO2_SUB_USERNAME> --wso2-subscription-password=<WSO2_SUB_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh --wso2-subscription-username=<WSO2_USERNAME> --wso2-subscription-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
 ```
 
 * A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
 The following details need to be replaced in the relevant command.
 
-`WSO2_SUB_USERNAME`: Username of your WSO2 Subscription<br>
-`WSO2_SUB_PASSWORD`: Password of your WSO2 Subscription
+`WSO2_USERNAME`: Your WSO2 username<br>
+`WSO2_PASSWORD`: Your WSO2 password
 
 * A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
