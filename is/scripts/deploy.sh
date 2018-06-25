@@ -27,11 +27,11 @@ function echoBold () {
 }
 
 function usage () {
-    echoBold "This script automates the installation of WSO2 EI Integrator Analytics Kubernetes resources\n"
+    echoBold "This script automates the installation of WSO2 Identity Server Kubernetes resources\n"
     echoBold "Allowed arguments:\n"
     echoBold "-h | --help"
-    echoBold "--wsu | --wso2-subscription-username\t\tYour WSO2 Subscription username"
-    echoBold "--wsp | --wso2-subscription-password\t\tYour WSO2 Subscription password"
+    echoBold "--wu | --wso2-username\t\tYour WSO2 username"
+    echoBold "--wp | --wso2-password\t\tYour WSO2 password"
     echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
 }
 
@@ -49,10 +49,10 @@ while [ "$1" != "" ]; do
             usage
             exit 1
             ;;
-        --wsu | --wso2-subscription-username)
+        --wu | --wso2-username)
             WSO2_SUBSCRIPTION_USERNAME=${VALUE}
             ;;
-        --wsp | --wso2-subscription-password)
+        --wp | --wso2-password)
             WSO2_SUBSCRIPTION_PASSWORD=${VALUE}
             ;;
         --cap | --cluster-admin-password)
@@ -74,7 +74,7 @@ ${KUBECTL} create namespace wso2
 ${KUBECTL} create serviceaccount wso2svc-account -n wso2
 
 # switch the context to new 'wso2' namespace
-${KUBECTL} config set-context $(kubectl config current-context) --namespace=wso2
+${KUBECTL} config set-context $(${KUBECTL} config current-context) --namespace=wso2
 
 # create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
 ${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
