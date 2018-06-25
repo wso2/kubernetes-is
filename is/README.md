@@ -2,11 +2,12 @@
 
 Core Kubernetes resources for a clustered deployment of WSO2 Identity Server.
 
+![A clustered deployment WSO2 Identity Server](is.png)
+
 ## Prerequisites
 
-* In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
-from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Identity Server.
-You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
+subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
 (version 17.09.0 or above) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
@@ -43,11 +44,11 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
 ```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<FT_USERNAME> --docker-password=<FT_PASSWORD> --docker-email=<FT_USERNAME>
+kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_USERNAME> --docker-password=<WSO2_PASSWORD> --docker-email=<WSO2_USERNAME>
 ```
 
-`FT_USERNAME`: Username of your Free Trial Subscription<br>
-`FT_PASSWORD`: Password of your Free Trial Subscription
+`WSO2_USERNAME`: Your WSO2 username<br>
+`WSO2_PASSWORD`: Your WSO2 password
 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
@@ -77,6 +78,18 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     
     ```
     kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is/extras/confs/mysql/dbscripts/
+    ```
+    
+    Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
+    Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+    Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
+    named `wso2is-mysql-pv` in the file `<KUBERNETES_HOME>/is/extras/rdbms/volumes/persistent-volumes.yaml`.
+    
+    Then, deploy the persistent volume resource and volume claim as follows:
+    
+    ```
+    kubectl create -f <KUBERNETES_HOME>/is/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+    kubectl create -f <KUBERNETES_HOME>/is/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
