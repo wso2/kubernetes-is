@@ -27,11 +27,11 @@ function echoBold () {
 }
 
 function usage () {
-    echoBold "This script automates the installation of WSO2 EI Integrator Analytics Kubernetes resources\n"
+    echoBold "This script automates the installation of WSO2 Identity Server with Analytics Kubernetes resources\n"
     echoBold "Allowed arguments:\n"
     echoBold "-h | --help"
-    echoBold "--wsu | --wso2-subscription-username\t\tYour WSO2 Subscription username"
-    echoBold "--wsp | --wso2-subscription-password\t\tYour WSO2 Subscription password"
+    echoBold "--wu | --wso2-username\t\tYour WSO2 username"
+    echoBold "--wp | --wso2-password\t\tYour WSO2 password"
     echoBold "--cap | --cluster-admin-password\tKubernetes cluster admin password\n\n"
 }
 
@@ -49,10 +49,10 @@ while [ "$1" != "" ]; do
             usage
             exit 1
             ;;
-        --wsu | --wso2-subscription-username)
+        --wu | --wso2-username)
             WSO2_SUBSCRIPTION_USERNAME=${VALUE}
             ;;
-        --wsp | --wso2-subscription-password)
+        --wp | --wso2-password)
             WSO2_SUBSCRIPTION_PASSWORD=${VALUE}
             ;;
         --cap | --cluster-admin-password)

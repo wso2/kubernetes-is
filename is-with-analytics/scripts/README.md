@@ -51,19 +51,24 @@ Add `wso2carbon` user to the group `wso2`.
 Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
 And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
 
+Finally, setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
+Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
+named `wso2is-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml`.
+
 ##### 4. Deploy Kubernetes resources:
 
 Change directory to `KUBERNETES_HOME/is-with-analytics/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh --wso2-subscription-username=<WSO2_SUB_USERNAME> --wso2-subscription-password=<WSO2_SUB_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh --wso2-subscription-username=<WSO2_USERNAME> --wso2-subscription-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
 ```
 
 * A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
 The following details need to be replaced in the relevant command.
 
-`WSO2_SUB_USERNAME`: Username of your WSO2 Subscription<br>
-`WSO2_SUB_PASSWORD`: Password of your WSO2 Subscription
+`WSO2_USERNAME`: Your WSO2 username<br>
+`WSO2_PASSWORD`: Your WSO2 password
 
 * A Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
