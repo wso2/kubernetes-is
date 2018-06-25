@@ -126,6 +126,8 @@ spec:
           mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-datasources
         - name: is-analytics-2-deployment-portal
           mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-portal
+        - name: analytics-persistent-disk
+          mountPath: /home/wso2carbon/wso2is-analytics-5.5.0/repository/conf/analytics
         - name: data-persistent-disk
           mountPath: /home/wso2carbon/wso2is-analytics-5.5.0/repository/data
       serviceAccountName: "wso2svc-account"
@@ -150,6 +152,9 @@ spec:
       - name: is-analytics-2-deployment-portal
         configMap:
           name: is-analytics-2-deployment-portal
+      - name: analytics-persistent-disk
+        persistentVolumeClaim:
+          claimName: is-analytics-2-analytics-volume-claim
       - name: data-persistent-disk
         persistentVolumeClaim:
           claimName: is-analytics-2-data-volume-claim

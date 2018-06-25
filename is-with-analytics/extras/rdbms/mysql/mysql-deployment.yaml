@@ -27,6 +27,8 @@ spec:
       - name: wso2is-with-analytics-mysql
         image: mysql:5.7
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 999
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: root
@@ -40,9 +42,14 @@ spec:
         volumeMounts:
         - name: mysql-dbscripts
           mountPath: /docker-entrypoint-initdb.d
+        - name: is-rdbms-persistent-storage
+          mountPath: /var/lib/mysql
         args: ["--max-connections", "10000"]
       volumes:
       - name: mysql-dbscripts
         configMap:
           name: mysql-dbscripts
-          
+      - name: is-rdbms-persistent-storage
+        persistentVolumeClaim:
+          claimName: wso2is-with-analytics-rdbms-volume-claim
+      serviceAccountName: "wso2svc-account"
