@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: wso2is-with-analytics-is-analytics-1
-        image: docker.wso2.com/wso2is-analytics:5.5.0
+        image: docker.wso2.com/wso2is-analytics:5.6.0
         resources:
           limits:
             memory: "4Gi"
@@ -126,8 +126,10 @@ spec:
           mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-datasources
         - name: is-analytics-1-deployment-portal
           mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-portal
+        - name: analytics-persistent-disk
+          mountPath: /home/wso2carbon/wso2is-analytics-5.6.0/repository/conf/analytics
         - name: data-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-analytics-5.5.0/repository/data
+          mountPath: /home/wso2carbon/wso2is-analytics-5.6.0/repository/data
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -150,6 +152,9 @@ spec:
       - name: is-analytics-1-deployment-portal
         configMap:
           name: is-analytics-1-deployment-portal
+      - name: analytics-persistent-disk
+        persistentVolumeClaim:
+          claimName: is-analytics-1-analytics-volume-claim
       - name: data-persistent-disk
         persistentVolumeClaim:
           claimName: is-analytics-1-data-volume-claim
