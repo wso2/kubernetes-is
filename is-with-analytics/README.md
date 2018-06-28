@@ -2,18 +2,19 @@
 
 Core Kubernetes resources for a clustered deployment of WSO2 Identity Server with WSO2 Identity Server Analytics.
 
+![A clustered deployment WSO2 Identity Server with Identity Server Analytics support](is-with-analytics.png)
+
 ## Prerequisites
 
-* In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
-from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Enterprise Integrator.
-You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active WSO2
+subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Docker](https://www.docker.com/get-docker)
 (version 17.09.0 or above) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 in order to run the steps provided<br>in the following quick start guide.<br><br>
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/)<br><br>
- 
+
 ## Quick Start Guide
 
 >In the context of this document, `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
@@ -43,12 +44,11 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
 ```
-kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<username> --docker-password=<password> --docker-email=<email>
+kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_USERNAME> --docker-password=<WSO2_PASSWORD> --docker-email=<WSO2_USERNAME>
 ```
 
-`username`: Username of your Free Trial Subscription<br>
-`password`: Password of your Free Trial Subscription<br>
-`email`: Docker email
+`WSO2_USERNAME`: Your WSO2 username<br>
+`WSO2_PASSWORD`: Your WSO2 password
 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
@@ -73,7 +73,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 **Note**:
 
 * For **evaluation purposes**, you can use Kubernetes resources provided in the directory<br>
-`KUBERNETES_HOME/is-with-analytics/test/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
+`KUBERNETES_HOME/is-with-analytics/extras/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
 * For using these Kubernetes resources,
@@ -81,21 +81,35 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     first create a Kubernetes ConfigMap for passing database script(s) to the deployment.
     
     ```
-    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is-with-analytics/test/confs/mysql/dbscripts/
+    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/is-with-analytics/extras/confs/mysql/dbscripts/
+    ```
+    
+    Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
+    Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+    Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
+    named `wso2is-with-analytics-mysql-pv` in the file `<KUBERNETES_HOME>/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml`.
+    
+    Then, deploy the persistent volume resource and volume claim as follows:
+    
+    ```
+    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
     
     ```
-    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/test/rdbms/mysql/mysql-service.yaml
-    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/test/rdbms/mysql/mysql-deployment.yaml
+    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/extras/rdbms/mysql/mysql-service.yaml
+    kubectl create -f <KUBERNETES_HOME>/is-with-analytics/extras/rdbms/mysql/mysql-deployment.yaml
     ```
     
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
-kubectl create --username=admin --password=<cluster-admin-password> -f <KUBERNETES_HOME>/rbac/rbac.yaml
+kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
+
+`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
 ##### 6. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
 
@@ -105,6 +119,8 @@ Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`)
 * `wso2is-with-analytics-shared-tenants-pv`
 * `wso2is-with-analytics-is-analytics-data-pv-1`
 * `wso2is-with-analytics-is-analytics-data-pv-2`
+* `wso2is-with-analytics-is-analytics-pv-1`
+* `wso2is-with-analytics-is-analytics-pv-2`
 
 in `<KUBERNETES_HOME>/is-with-analytics/volumes/persistent-volumes.yaml` file.
 
@@ -160,12 +176,12 @@ kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-serv
 
 ##### 9. Deploy Kubernetes Ingress resource:
 
-The WSO2 Enterprise Integrator Kubernetes Ingress resource uses the NGINX Ingress Controller.
+The WSO2 Identity Server and Identity Server Analytics Kubernetes Ingress resources use the NGINX Ingress Controller.
 
 In order to enable the NGINX Ingress controller in the desired cloud or on-premise environment,
 please refer the official documentation, [NGINX Ingress Controller Installation Guide](https://kubernetes.github.io/ingress-nginx/deploy/).
 
-Finally, deploy the WSO2 Enterprise Integrator Kubernetes Ingress resources as follows:
+Finally, deploy the WSO2 Identity Server and Identity Server Analytics Kubernetes Ingress resources as follows:
 
 ```
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-ingress.yaml
@@ -199,12 +215,11 @@ wso2is-with-analytics-is-ingress             wso2is             <EXTERNAL-IP>   
 
 ##### 11. Scale up using `kubectl scale`:
 
-Default deployment runs two replicas (or pods) of WSO2 Identity server. To scale this deployment into any `<n>` number of
+Default deployment runs a single replica (or pod) of WSO2 Identity server. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
 
 ```
 kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml
 ```
 
-For example, If `<n>` is 3, you are here scaling up this deployment from 1 to 3 container replicas.
-
+For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.

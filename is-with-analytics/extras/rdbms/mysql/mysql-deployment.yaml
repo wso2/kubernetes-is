@@ -1,4 +1,4 @@
-# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,18 +15,20 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-mysql-deployment
+  name: wso2is-with-analytics-mysql-deployment
 spec:
   replicas: 1
   template:
     metadata:
       labels:
-        deployment: wso2is-mysql
+        deployment: wso2is-with-analytics-mysql
     spec:
       containers:
-      - name: wso2is-mysql
+      - name: wso2is-with-analytics-mysql
         image: mysql:5.7
         imagePullPolicy: IfNotPresent
+        securityContext:
+          runAsUser: 999
         env:
         - name: MYSQL_ROOT_PASSWORD
           value: root
@@ -40,8 +42,14 @@ spec:
         volumeMounts:
         - name: mysql-dbscripts
           mountPath: /docker-entrypoint-initdb.d
+        - name: is-rdbms-persistent-storage
+          mountPath: /var/lib/mysql
         args: ["--max-connections", "10000"]
       volumes:
       - name: mysql-dbscripts
         configMap:
           name: mysql-dbscripts
+      - name: is-rdbms-persistent-storage
+        persistentVolumeClaim:
+          claimName: wso2is-with-analytics-rdbms-volume-claim
+      serviceAccountName: "wso2svc-account"
