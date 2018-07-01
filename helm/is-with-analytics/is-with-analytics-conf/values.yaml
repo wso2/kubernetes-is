@@ -4,7 +4,7 @@ email: "<EMAIL>"
 
 namespace: "wso2"
 svcaccount: "wso2svc-account"
-serverIp: "SERVER_IP"
+serverIp: "<SERVER_IP>"
 sharedDeploymentLocationPath: "<NFS_LOCATION_PATH>"
 sharedTentsLocationPath: "<NFS_LOCATION_PATH>"
 analytics1DataLocationPath: "<NFS_LOCATION_PATH>"
