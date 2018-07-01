@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2is-with-analytics-shared-deployment-pv
+  name: wso2is-shared-deployment-pv
   namespace : {{ .Values.namespace }}
   labels:
     purpose: is-shared-deployment
@@ -34,7 +34,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: wso2is-with-analytics-shared-tenants-pv
+  name: wso2is-shared-tenants-pv
   namespace : {{ .Values.namespace }}
   labels:
     purpose: is-shared-tenants
