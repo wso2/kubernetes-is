@@ -75,7 +75,7 @@ Default deployment will expose following publicly accessible host, namely:<br>
 
 To access the console in a test environment,
 
-1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing`).
+1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing -n wso2`).
 
 e.g.
 

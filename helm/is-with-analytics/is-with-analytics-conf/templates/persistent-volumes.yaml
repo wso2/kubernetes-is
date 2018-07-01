@@ -60,7 +60,7 @@ metadata:
     node: wso2is-analytics-1
 spec:
   capacity:
-    storage: 1Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
@@ -80,10 +80,50 @@ metadata:
     node: wso2is-analytics-2
 spec:
   capacity:
-    storage: 1Gi
+    storage: 20Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: {{ .Values.serverIp }}
     path: {{ .Values.analytics2DataLocationPath }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2is-with-analytics-is-analytics-pv-1
+  namespace : {{ .Values.namespace }}	
+  labels:
+    purpose: analytics
+    node: wso2is-analytics-1
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+   server: {{ .Values.serverIp }}
+   path: {{ .Values.analytics1LocationPath }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2is-with-analytics-is-analytics-pv-2
+  namespace : {{ .Values.namespace }}
+  labels:
+    purpose: analytics
+    node: wso2is-analytics-2
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.serverIp }}
+    path: {{ .Values.analytics2LocationPath }}
