@@ -46,7 +46,7 @@ spec:
   persistentVolumeReclaimPolicy: Retain
   nfs:
     server: {{ .Values.serverIp }}
-    path: {{ .Values.sharedTentsLocationPath }}
+    path: {{ .Values.sharedTenantsLocationPath }}
 
 ---
 

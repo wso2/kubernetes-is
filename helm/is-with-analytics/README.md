@@ -40,7 +40,7 @@ configurations as necessary.
     `serverIp`: NFS Server IP<br>
     `locationPath`: NFS location path<br>
     `sharedDeploymentLocationPath`: NFS shared deployment directory(<IS_HOME>/repository/deployment) location for IS<br> 
-    `sharedTentsLocationPath`: NFS shared tenants directory(<IS_HOME>/repository/tenants) location for IS<br>
+    `sharedTenantsLocationPath`: NFS shared tenants directory(<IS_HOME>/repository/tenants) location for IS<br>
     `analytics1DataLocationPath`: NFS volume for Indexed data for Analytics node 1(<DAS_HOME>/repository/data)<br> 
     `analytics2DataLocationPath`: NFS volume for Indexed data for Analytics node 2(<DAS_HOME>/repository/data)<br> 
     `analytics1LocationPath`: NFS volume for Analytics data for Analytics node 1(<DAS_HOME>/repository/analytics)<br> 
