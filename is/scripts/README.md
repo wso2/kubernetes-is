@@ -19,7 +19,7 @@ in order to run the steps provided<br>in the following quick start guide.<br><br
 >In the context of this document, `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
 Git repository.<br>
 
-##### 1. Checkout Kubernetes Resources for WSO2 Identity Server Git repository:
+##### 1. Clone the Kubernetes Resources for WSO2 Identity Server Git repository:
 
 ```
 git clone https://github.com/wso2/kubernetes-is.git
@@ -34,30 +34,62 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 
 ##### 3. Setup a Network File System (NFS) to be used as the persistent volume for artifact sharing across Identity Server and Analytics instances.
 
-Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resources,
+Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of the following persistent volume resources
+defined in the `<KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml` file.
 
 * `wso2is-shared-deployment-pv`
 * `wso2is-shared-tenants-pv`
 
-in `<KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml` file.
-
-Create a user named `wso2carbon` with user id `802` and a group named `wso2` with group id `802` in the NFS node.
+Create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802` in the NFS node.
 Add `wso2carbon` user to the group `wso2`.
 
-Then, provide ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
-And provide read-write-executable permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+```
+groupadd --system -g 802 wso2
+useradd --system -g 802 -u 802 wso2carbon
+```
 
-Finally, setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
-Provide read-write-executable permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
-Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
-named `wso2is-mysql-pv` in the file `<KUBERNETES_HOME>/is/extras/rdbms/volumes/persistent-volumes.yaml`.
+Then, grant ownership of the exported folder `NFS_LOCATION_PATH` (used for artifact sharing) to `wso2carbon` user and `wso2` group.
+And grant read-write-execute permissions to owning `wso2carbon` user, for the folder `NFS_LOCATION_PATH`.
+
+```
+sudo chown -R wso2carbon:wso2 NFS_LOCATION_PATH
+chmod -R 700 NFS_LOCATION_PATH
+```
+
+##### 4. Setup product database(s):
+
+For **evaluation purposes**,
+
+* You can use Kubernetes resources provided in the directory `KUBERNETES_HOME/is/extras/rdbms/mysql`
+for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
+**not recommended** for a production setup.
+
+* For using these Kubernetes resources,
+
+    Setup a Network File System (NFS) to be used as the persistent volume for persisting MySQL DB data.
+    Provide read-write-execute permissions to `other` users, for the folder `NFS_LOCATION_PATH`.
+    Update the NFS server IP (`NFS_SERVER_IP`) and export path (`NFS_LOCATION_PATH`) of persistent volume resource
+    named `wso2is-mysql-pv` in the file `<KUBERNETES_HOME>/is/extras/rdbms/volumes/persistent-volumes.yaml`.
+    
+In a **production grade setup**,
+
+* Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS560/Setting+Up+Separate+Databases+for+Clustering)
+  on creating the required databases for the deployment.
   
-##### 4. Deploy Kubernetes resources:
+  Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
+  the following files:
+  
+  * `KUBERNETES_HOME/is/confs/is/datasources/master-datasources.xml`
+  * `KUBERNETES_HOME/is/confs/is/datasources/bps-datasources.xml`
+  
+  Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
+  
+##### 5. Deploy Kubernetes resources:
 
 Change directory to `KUBERNETES_HOME/is/scripts` and execute the `deploy.sh` shell script on the terminal, with the appropriate configurations as follows:
 
 ```
-./deploy.sh --wso2-subscription-username=<WSO2_USERNAME> --wso2-subscription-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
+./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
 ```
 
 * A Kubernetes Secret named `wso2creds` in the cluster to authenticate with the [`WSO2 Docker Registry`](https://docker.wso2.com), to pull the required images.
@@ -72,7 +104,7 @@ The following details need to be replaced in the relevant command.
 
 >To un-deploy, be on the same directory and execute the `undeploy.sh` shell script on the terminal.
 
-##### 5. Access Management Console:
+##### 6. Access Management Console:
 
 Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
 
@@ -95,7 +127,7 @@ wso2is-ingress             wso2is         <EXTERNAL-IP>  80, 443   3m
 
 3. Try navigating to `https://wso2is/carbon` from your favorite browser.
 
-##### 6. Scale up using `kubectl scale`:
+##### 7. Scale up using `kubectl scale`:
 
 Default deployment runs a single replica (or pod) of WSO2 Identity server. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
