@@ -1,10 +1,8 @@
 # Helm Charts for deployment of WSO2 Identity Server with Analytics
 
 ## Prerequisites
-
-* In order to use these Kubernetes resources, you will need an active [Free Trial Subscription](https://wso2.com/free-trial-subscription)
-from WSO2 since the referring Docker images hosted at docker.wso2.com contains the latest updates and fixes for WSO2 Enterprise Identity Server.
-You can sign up for a Free Trial Subscription [here](https://wso2.com/free-trial-subscription).<br><br>
+In order to use WSO2 Helm resources, you need an active WSO2 subscription. If you do not possess an active WSO2
+  subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md)
 (and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the 
@@ -42,10 +40,12 @@ configurations as necessary.
     `serverIp`: NFS Server IP<br>
     `locationPath`: NFS location path<br>
     `sharedDeploymentLocationPath`: NFS shared deployment directory(<IS_HOME>/repository/deployment) location for IS<br> 
-    `sharedTentsLocationPath`: NFS shared tenants directory(<IS_HOME>/repository/tenants) location for IS<br>
+    `sharedTenantsLocationPath`: NFS shared tenants directory(<IS_HOME>/repository/tenants) location for IS<br>
     `analytics1DataLocationPath`: NFS volume for Indexed data for Analytics node 1(<DAS_HOME>/repository/data)<br> 
-    `analytics2DataLocationPath`: NFS volume for Indexed data for Analytics node 2(<DAS_HOME>/repository/data)
-    
+    `analytics2DataLocationPath`: NFS volume for Indexed data for Analytics node 2(<DAS_HOME>/repository/data)<br> 
+    `analytics1LocationPath`: NFS volume for Analytics data for Analytics node 1(<DAS_HOME>/repository/analytics)<br> 
+    `analytics2LocationPath`: NFS volume for Analytics data for Analytics node 2(<DAS_HOME>/repository/analytics)
+        
 3. Open the `<HELM_HOME>/is-with-analytics-deployment/values.yaml` and provide the following values.
 
     `namespace`: Namespace<br>
@@ -57,7 +57,7 @@ configurations as necessary.
 helm install --name <RELEASE_NAME> <HELM_HOME>/is-with-analytics-conf
 ```
 
-##### 4. Deploy MySql:
+##### 4. Deploy MySQL:
 If there is an external product database(s), add those configurations as stated at `step 2.1`. Otherwise, run the below
  command to create the product database. 
 ```
@@ -80,7 +80,7 @@ Default deployment will expose two publicly accessible hosts, namely:<br>
 
 To access the console in a test environment,
 
-1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing`).
+1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses (using `kubectl get ing -n wso2`).
 
 e.g.
 
