@@ -57,7 +57,7 @@ configurations as necessary.
 helm install --name <RELEASE_NAME> <HELM_HOME>/is-with-analytics-conf
 ```
 
-##### 4. Deploy MySql:
+##### 4. Deploy MySQL:
 If there is an external product database(s), add those configurations as stated at `step 2.1`. Otherwise, run the below
  command to create the product database. 
 ```
