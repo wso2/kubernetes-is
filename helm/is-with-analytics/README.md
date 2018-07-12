@@ -37,14 +37,12 @@ git clone https://github.com/wso2/kubernetes-is.git
 ##### 2. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
-resources defined in the `<HELM_HOME>/is-conf/values.yaml` file:
+resources defined in the `<HELM_HOME>/is-with-analytics/values.yaml` file:
 
 * `sharedDeploymentLocationPath`
 * `sharedTenantsLocationPath`
 * `analytics1DataLocationPath`
 * `analytics2DataLocationPath`
-* `analytics1LocationPath`
-* `analytics2LocationPath`
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -77,8 +75,6 @@ b. Open the `<HELM_HOME>/is-with-analytics-conf/values.yaml` and provide the fol
 | `sharedTenantsLocationPath`     | NFS shared tenants directory(`<IS_HOME>/repository/tenants`) location for EI              |
 | `analytics1DataLocationPath`    | NFS volume for Indexed data for Analytics node 1(`<DAS_HOME>/repository/data`)            |
 | `analytics2DataLocationPath`    | NFS volume for Indexed data for Analytics node 2(`<DAS_HOME>/repository/data`)            |
-| `analytics1LocationPath`        | NFS volume for Analytics data for Analytics node 1(`<DAS_HOME>/repository/analytics`)     |
-| `analytics2LocationPath`        | NFS volume for Analytics data for Analytics node 2(`<DAS_HOME>/repository/analytics`)     |
 
 c. Open the `<HELM_HOME>/is-with-analytics-deployment/values.yaml` and provide the following values. 
     
