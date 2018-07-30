@@ -49,6 +49,8 @@ spec:
           initialDelaySeconds: 250
           periodSeconds: 10
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         - containerPort: 9763
           protocol: TCP
