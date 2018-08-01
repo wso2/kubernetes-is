@@ -22,7 +22,7 @@ ECHO=`which echo`
 oc=`which oc`
 
 # methods
-echoBold () {
+function echoBold () {
     ${ECHO} $'\e[1m'"${1}"$'\e[0m'
 }
 
