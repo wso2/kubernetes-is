@@ -45,3 +45,22 @@ spec:
   nfs:
     server: <NFS_SERVER_IP>
     path: "<NFS_LOCATION_PATH>"
+# unocomment following to mount the repository directory to NFS
+#
+# ---
+#
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: identity-server-additional-config-pv
+#   labels:
+#     purpose: is-additional-configs
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   nfs:
+#     server: <NFS_SERVER_IP>
+#     path: "<NFS_LOCATION_PATH>"

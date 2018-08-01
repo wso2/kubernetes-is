@@ -43,3 +43,22 @@ spec:
   selector:
     matchLabels:
       purpose: is-shared-tenants
+
+# unocomment following to mount the repository directory to NFS
+
+# ---
+#
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: identity-server-additional-config-volume-claim
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   storageClassName: ""
+#   selector:
+#     matchLabels:
+#       purpose: is-additional-configs

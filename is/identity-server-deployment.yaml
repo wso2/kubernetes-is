@@ -48,6 +48,10 @@ spec:
               - nc -z localhost 9443
           initialDelaySeconds: 250
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
         securityContext:
           runAsUser: 802
@@ -69,6 +73,9 @@ spec:
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
+        # unocomment following to mount the repository directory to NFS
+        # - name: is-additional-config-storage-volume
+        #   mountPath: /home/wso2carbon/wso2-server-volume
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -91,3 +98,7 @@ spec:
       - name: shared-tenants-persistent-disk
         persistentVolumeClaim:
           claimName: is-shared-tenants-volume-claim
+      # unocomment following to mount the repository directory to NFS
+      # - name: is-additional-config-storage-volume
+      #   persistentVolumeClaim:
+      #     claimName: identity-server-additional-config-volume-claim

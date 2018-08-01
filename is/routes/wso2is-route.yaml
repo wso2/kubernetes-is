@@ -16,6 +16,10 @@ apiVersion: v1
 kind: Route
 metadata:
   name: wso2is-route
+  annotations:
+    # Disable the Sticky Sessions
+    # haproxy.router.openshift.io/disable_cookies: "true"
+    haproxy.router.openshift.io/balance: "roundrobin"
 spec:
   host: wso2is
   port:
