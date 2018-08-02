@@ -13,7 +13,7 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-        
+
 <UserManager>
     <Realm>
         <Configuration>
@@ -26,7 +26,7 @@
             <EveryOneRoleName>everyone</EveryOneRoleName> <!-- By default users in this role sees the registry root -->
             <Property name="isCascadeDeleteEnabled">true</Property>
             <Property name="initializeNewClaimManager">true</Property>
-            <Property name="dataSource">jdbc/WSO2UserDS</Property>
+            <Property name="dataSource">jdbc/WSO2IdentityDS</Property>
         </Configuration>
 
 	    <!-- Following is the configuration for internal JDBC user store. This user store manager is based on JDBC.
@@ -40,10 +40,7 @@
 	    -->
         <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
-            <Property name="driverName">com.mysql.jdbc.Driver</Property>
-            <Property name="url">jdbc:mysql://wso2is-rdbms-service:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</Property>
-            <Property name="userName">wso2carbon</Property>
-            <Property encrypted="false" name="password">wso2carbon</Property>
+            <Property name="dataSource">jdbc/WSO2UserDS</Property>
             <Property name="ReadOnly">false</Property>
             <Property name="ReadGroups">true</Property>
             <Property name="WriteGroups">true</Property>
@@ -66,7 +63,7 @@
             <Property name="UserRolesCacheEnabled">true</Property>
             <Property name="UserNameUniqueAcrossTenants">false</Property>
         </UserStoreManager>
-	
+
 	    <!-- If product is using an external LDAP as the user store in READ ONLY mode, use following user manager.
 		     In case if user core cache domain is needed to identify uniquely set property
 		     <Property name="UserCoreCacheIdentifier">domain</Property>
@@ -104,7 +101,7 @@
             <Property name="RetryAttempts"/>
             <Property name="ReplaceEscapeCharactersAtUserLogin">true</Property>
         </UserStoreManager-->
-	
+
 	    <!-- Active directory configuration is as follows.
 	         In case if user core cache domain is needed to identify uniquely set property
 	         <Property name="UserCoreCacheIdentifier">domain</Property>
@@ -117,7 +114,7 @@
 	    -->
         <!--UserStoreManager class="org.wso2.carbon.user.core.ldap.ActiveDirectoryUserStoreManager">
             <Property name="TenantManager">org.wso2.carbon.user.core.tenant.CommonHybridLDAPTenantManager</Property>
-            <Property name="ConnectionURL">ldaps://10.100.1.100:636</Property> 
+            <Property name="ConnectionURL">ldaps://10.100.1.100:636</Property>
             <Property name="ConnectionName">CN=admin,CN=Users,DC=WSO2,DC=Com</Property>
             <Property name="ConnectionPassword">A1b2c3d4</Property>
             <Property name="AnonymousBind">false</Property>
@@ -153,8 +150,8 @@
             <Property name="MultiAttributeSeparator">,</Property>
             <Property name="isADLDSRole">false</Property>
             <Property name="userAccountControl">512</Property>
-            <Property name="MaxUserNameListLength">100</Property>     
-            <Property name="MaxRoleNameListLength">100</Property>                     
+            <Property name="MaxUserNameListLength">100</Property>
+            <Property name="MaxRoleNameListLength">100</Property>
             <Property name="MembershipAttributeRange">1500</Property>
             <Property name="kdcEnabled">false</Property>
             <Property name="defaultRealmName">WSO2.ORG</Property>

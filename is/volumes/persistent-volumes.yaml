@@ -45,3 +45,22 @@ spec:
   nfs:
     server: <NFS_SERVER_IP>
     path: "<NFS_LOCATION_PATH>"
+# uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
+#
+# ---
+#
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: identity-server-additional-config-pv
+#   labels:
+#     purpose: is-additional-configs
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteMany
+#   persistentVolumeReclaimPolicy: Retain
+#   nfs:
+#     server: <NFS_SERVER_IP>
+#     path: "<NFS_LOCATION_PATH>"
