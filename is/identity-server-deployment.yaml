@@ -73,8 +73,8 @@ spec:
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
-        # unocomment following to mount the repository directory to NFS
-        # - name: is-additional-config-storage-volume
+        # uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
+        # - name: is-additional-changes-storage-volume
         #   mountPath: /home/wso2carbon/wso2-server-volume
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
@@ -98,7 +98,7 @@ spec:
       - name: shared-tenants-persistent-disk
         persistentVolumeClaim:
           claimName: is-shared-tenants-volume-claim
-      # unocomment following to mount the repository directory to NFS
-      # - name: is-additional-config-storage-volume
+      # uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
+      # - name: is-additional-changes-storage-volume
       #   persistentVolumeClaim:
       #     claimName: identity-server-additional-config-volume-claim
