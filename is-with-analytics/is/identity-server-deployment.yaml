@@ -48,6 +48,10 @@ spec:
               - nc -z localhost 9443
           initialDelaySeconds: 250
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
         ports:
         - containerPort: 9763
@@ -56,15 +60,15 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: identity-server-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: identity-server-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: identity-server-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: identity-server-conf-identity
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-identity
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
         - name: identity-server-conf-event-publishers
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-event-publishers
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
         - name: shared-deployment-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk

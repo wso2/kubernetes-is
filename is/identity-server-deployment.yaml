@@ -62,20 +62,17 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: identity-server-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: identity-server-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: identity-server-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: identity-server-conf-identity
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-identity
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
         - name: shared-deployment-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
-        # uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
-        # - name: is-additional-changes-storage-volume
-        #   mountPath: /home/wso2carbon/wso2-server-volume
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -98,7 +95,3 @@ spec:
       - name: shared-tenants-persistent-disk
         persistentVolumeClaim:
           claimName: is-shared-tenants-volume-claim
-      # uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
-      # - name: is-additional-changes-storage-volume
-      #   persistentVolumeClaim:
-      #     claimName: identity-server-additional-config-volume-claim
