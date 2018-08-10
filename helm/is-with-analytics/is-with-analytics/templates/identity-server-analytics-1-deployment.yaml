@@ -131,7 +131,7 @@ spec:
           mountPath: /home/wso2carbon/wso2is-analytics-5.6.0/repository/conf/analytics
         - name: data-persistent-disk
           mountPath: /home/wso2carbon/wso2is-analytics-5.6.0/repository/data
-      serviceAccountName: "wso2svc-account"
+      serviceAccountName: {{ .Values.svcaccount }}
       imagePullSecrets:
       - name: wso2creds
       volumes:
