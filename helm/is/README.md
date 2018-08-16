@@ -69,8 +69,8 @@ b. Open the `<HELM_HOME>/is/values.yaml` and provide the following values.
 | `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
-| `sharedDeploymentLocationPath`  | NFS shared deployment directory(`<IS_HOME>/repository/deployment`) location for EI        |
-| `sharedTenantsLocationPath`     | NFS shared tenants directory(`<IS_HOME>/repository/tenants`) location for EI              |
+| `sharedDeploymentLocationPath`  | NFS shared deployment directory(`<IS_HOME>/repository/deployment`) location for IS       |
+| `sharedTenantsLocationPath`     | NFS shared tenants directory(`<IS_HOME>/repository/tenants`) location for IS             |
 
 
 ##### 4. Deploy product database(s) using MySQL in Kubernetes.
