@@ -71,8 +71,8 @@ b. Open the `<HELM_HOME>/is-with-analytics/values.yaml` and provide the followin
 | `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
 | `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
 | `serverIp`                      | NFS Server IP                                                                             |
-| `sharedDeploymentLocationPath`  | NFS shared deployment directory(`<IS_HOME>/repository/deployment`) location for EI        |
-| `sharedTenantsLocationPath`     | NFS shared tenants directory(`<IS_HOME>/repository/tenants`) location for EI              |
+| `sharedDeploymentLocationPath`  | NFS shared deployment directory(`<IS_HOME>/repository/deployment`) location for IS       |
+| `sharedTenantsLocationPath`     | NFS shared tenants directory(`<IS_HOME>/repository/tenants`) location for IS             |
 | `analytics1DataLocationPath`    | NFS volume for Indexed data for Analytics node 1(`<DAS_HOME>/repository/data`)            |
 | `analytics2DataLocationPath`    | NFS volume for Indexed data for Analytics node 2(`<DAS_HOME>/repository/data`)            |
 
