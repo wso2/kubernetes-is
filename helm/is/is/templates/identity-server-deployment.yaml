@@ -68,7 +68,7 @@ spec:
           mountPath: /home/wso2carbon/wso2is-5.6.0/repository/deployment
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.6.0/repository/tenants
-      serviceAccountName: "wso2svc-account"
+      serviceAccountName: {{ .Values.svcaccount }}
       imagePullSecrets:
       - name: wso2creds
       volumes:

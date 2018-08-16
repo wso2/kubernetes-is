@@ -1,0 +1,5 @@
+Thank you for installing WSO2 Identity Server.
+
+Your release is named {{ .Release.Name }}.
+
+Please refer the official documentation at https://docs.wso2.com/display/IS560/WSO2+Identity+Server+Documentation
