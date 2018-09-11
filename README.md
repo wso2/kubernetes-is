@@ -39,7 +39,7 @@ If you intend to pass on any additional files with configuration changes, third-
 related artifacts to the Kubernetes cluster, you may mount the desired content to `/home/wso2carbon/wso2-server-volume` directory path within
 a WSO2 product Docker container.
 
-The following example depicts how this can be achieved when passing additional configurations to WSO2 Identity Server nodes
+The following example depicts how this can be achieved when passing additional configurations to WSO2 Identity Server pods
 in a clustered deployment of WSO2 Identity Server:
 
 [1] In order to apply the updated configurations, WSO2 product server instances need to be restarted. Hence, un-deploy all the Kubernetes resources
