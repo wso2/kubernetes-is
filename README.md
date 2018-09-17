@@ -1,15 +1,17 @@
-# Kubernetes and Helm Resources for WSO2 Identity Server
-*Kubernetes and Helm Resources for container-based deployments of WSO2 Identity Server deployment patterns*
-
-This repository contains Kubernetes and Helm resources required for,
+# Kubernetes and Helm Resources for WSO2 Identity And Access Management
+*This repository contains Kubernetes and Helm Resources for container-based deployments of the following WSO2 Identity Server deployment patterns.*
 
 * A clustered deployment of WSO2 Identity Server
 
+![A clustered deployment WSO2 Identity Server](is/is.png)
+
 * A clustered deployment of WSO2 Identity Server with Analytics support
+
+![A clustered deployment WSO2 Identity Server with Identity Server Analytics support](is-with-analytics/is-with-analytics.png)
 
 ## Deploy Kubernetes resources
 
-In order to deploy Kubernetes resources for each deployment pattern, follow the **Quick Start Guide**s for each deployment pattern
+In order to deploy Kubernetes resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
 given below:
 
 * [A clustered deployment of WSO2 Identity Server](is/README.md)
@@ -18,7 +20,7 @@ given below:
 
 ## Deploy Helm resources
 
-In order to deploy Helm resources for each deployment pattern, follow the **Quick Start Guide**s for each deployment pattern
+In order to deploy Helm resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
 given below:
 
 * [A clustered deployment of WSO2 Identity Server](helm/is/README.md)
@@ -37,30 +39,30 @@ If you intend to pass on any additional files with configuration changes, third-
 related artifacts to the Kubernetes cluster, you may mount the desired content to `/home/wso2carbon/wso2-server-volume` directory path within
 a WSO2 product Docker container.
 
-The following example depicts how this can be achieved when passing additional configurations to WSO2 Identity Server
+The following example depicts how this can be achieved when passing additional configurations to WSO2 Identity Server pods
 in a clustered deployment of WSO2 Identity Server:
 
-a. In order to apply the updated configurations, WSO2 product server instances need to be restarted. Hence, un-deploy all the Kubernetes resources
+[1] In order to apply the updated configurations, WSO2 product server instances need to be restarted. Hence, un-deploy all the Kubernetes resources
 corresponding to the product deployment, if they are already deployed.
 
-b. Create and export a directory within the NFS server instance.
+[2] Create and export a directory within the NFS server instance.
    
-c. Add the additional configuration files, third-party libraries, OSGi bundles and security related artifacts, into appropriate
+[3] Add the additional configuration files, third-party libraries, OSGi bundles and security related artifacts, into appropriate
 folders matching that of the relevant WSO2 product home folder structure, within the previously created directory.
 
-d. Grant ownership to `wso2carbon` user and `wso2` group, for the directory created in step (b).
+[4] Grant ownership to `wso2carbon` user and `wso2` group, for the directory created in step (b).
       
    ```
    sudo chown -R wso2carbon:wso2 <directory_name>
    ```
       
-e. Grant read-write-execute permissions to the `wso2carbon` user, for the directory created in step (b).
+[5] Grant read-write-execute permissions to the `wso2carbon` user, for the directory created in step (b).
       
    ```
    chmod -R 700 <directory_name>
    ```
 
-f. Map the directory created in step (b) to a Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+[6] Map the directory created in step (b) to a Kubernetes [Persistent Volume](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 in the `<KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml` file. For example, append the following entry to the file:
 
 ```
@@ -83,7 +85,7 @@ spec:
 
 Provide the appropriate `NFS_SERVER_IP` and `NFS_LOCATION_PATH`.
 
-g. Create a Kubernetes Persistent Volume Claim to bind with the Kubernetes Persistent Volume created in step e. For example, append the following entry
+[7] Create a Kubernetes Persistent Volume Claim to bind with the Kubernetes Persistent Volume created in step e. For example, append the following entry
 to the file `<KUBERNETES_HOME>/is/identity-server-volume-claim.yaml`:
 
 ```
@@ -103,7 +105,7 @@ spec:
       purpose: is-additional-configs
 ```
 
-h. Update the appropriate Kubernetes [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) resource(s).
+[8] Update the appropriate Kubernetes [Deployment](https://kubernetes.io/docs/concepts/workloads/controllers/deployment/) resource(s).
 For example in the discussed scenario, update the volumes (`spec.template.spec.volumes`) and volume mounts (`spec.template.spec.containers[wso2is].volumeMounts`) in
 `<KUBERNETES_HOME>/is/identity-server-deployment.yaml` file as follows:
 
@@ -120,4 +122,4 @@ volumes:
     claimName: identity-server-additional-config-volume-claim
 ```
 
-i. Deploy the Kubernetes resources as defined in section **Quick Start Guide** for a clustered deployment of WSO2 Identity Server.
+[9] Deploy the Kubernetes resources as defined in section **Quick Start Guide** for a clustered deployment of WSO2 Identity Server.
