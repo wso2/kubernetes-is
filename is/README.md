@@ -1,6 +1,6 @@
 # Kubernetes Resources for deployment of WSO2 Identity Server
 
-Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS550/Setting+Up+Deployment+Pattern+1).
+Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS570/Setting+Up+Deployment+Pattern+1).
 
 ![A clustered deployment WSO2 Identity Server](is.png)
 
