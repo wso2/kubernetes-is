@@ -41,7 +41,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 7712
           initialDelaySeconds: 250
@@ -49,49 +49,55 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 7712
           initialDelaySeconds: 250
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         -
           containerPort: 9764
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 9444
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 7612
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 7712
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 11225
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 10006
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 11001
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 11002
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 11003
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 11501
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 8083
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 4041
-          protocol: "TCP"
+          protocol: TCP
         -
           containerPort: 10007
           protocol: TCP
@@ -115,17 +121,17 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: is-analytics-2-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: is-analytics-2-conf-analytics
-          mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-analytics
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/analytics
         - name: is-analytics-2-conf-spark-analytics
-          mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-spark-analytics
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/analytics/spark
         - name: is-analytics-2-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: is-analytics-2-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: is-analytics-2-deployment-portal
-          mountPath: /home/wso2carbon/kubernetes-volumes/is-analytics/conf-portal
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/portal/configs
         - name: data-persistent-disk
           mountPath: /home/wso2carbon/wso2is-analytics-5.5.0/repository/data
       serviceAccountName: "wso2svc-account"
