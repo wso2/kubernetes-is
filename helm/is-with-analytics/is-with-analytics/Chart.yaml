@@ -12,24 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Patterns to ignore when building packages.
-# This supports shell glob matching, relative path matching, and
-# negation (prefixed with !). Only one pattern per line.
-.DS_Store
-# Common VCS dirs
-.git/
-.gitignore
-.bzr/
-.bzrignore
-.hg/
-.hgignore
-.svn/
-# Common backup files
-*.swp
-*.bak
-*.tmp
-*~
-# Various IDEs
-.project
-.idea/
-*.tmproj
+apiVersion: v1
+appVersion: "5.6.0-2"
+description: A Helm chart for the deployment of WSO2 IS-Analytics Deployment
+name: is-with-analytics
+version: 5.6.0-2
