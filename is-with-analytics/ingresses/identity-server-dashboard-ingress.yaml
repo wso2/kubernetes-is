@@ -15,7 +15,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2is-with-analytics-is-analytics-ingress
+  name: wso2is-with-analytics-is-dashboard-ingress
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -25,16 +25,12 @@ metadata:
 spec:
   tls:
   - hosts:
-    - wso2is-analytics
+    - wso2is-dashboard
   rules:
-  - host: wso2is-analytics
+  - host: wso2is-dashboard
     http:
       paths:
       - path: /
         backend:
-          serviceName: wso2is-with-analytics-is-analytics-service
-          servicePort: 9444
-      - path: /spark
-        backend:
-          serviceName: wso2is-with-analytics-is-analytics-service
-          servicePort: 8082
+          serviceName: wso2is-with-analytics-is-dashboard-servic
+          servicePort: 9643

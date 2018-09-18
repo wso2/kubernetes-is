@@ -49,7 +49,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - nc -z localhost 7712
+            - nc -z localhost 9090
           initialDelaySeconds: 250
           periodSeconds: 10
         readinessProbe:
@@ -84,14 +84,14 @@ spec:
             containerPort: 9611
             protocol: TCP
           -
-            containerPort: 7711
+            containerPort: 7712
             protocol: TCP
           -
-            containerPort: 7611
+            containerPort: 7612
             protocol: TCP
         volumeMounts:
         - name: is-analytics-1-conf-worker
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds

@@ -25,8 +25,8 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/thilina/is-deployment"
 
 ---
 
@@ -43,43 +43,5 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
-
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2is-with-analytics-is-analytics-data-pv-1
-  labels:
-    purpose: analytics-data
-    node: wso2is-analytics-1
-spec:
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
-
----
-
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: wso2is-with-analytics-is-analytics-data-pv-2
-  labels:
-    purpose: analytics-data
-    node: wso2is-analytics-2
-spec:
-  capacity:
-    storage: 20Gi
-  accessModes:
-    - ReadWriteMany
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: <NFS_SERVER_IP>
-    path: "<NFS_LOCATION_PATH>"
+    server: 10.128.0.6
+    path: "/data/thilina/is-tenant"
