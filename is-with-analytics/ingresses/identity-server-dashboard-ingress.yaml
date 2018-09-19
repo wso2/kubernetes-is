@@ -32,5 +32,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: wso2is-with-analytics-is-dashboard-servic
+          serviceName: wso2is-with-analytics-is-dashboard-service
           servicePort: 9643

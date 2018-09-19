@@ -26,7 +26,7 @@ spec:
       protocol: TCP
     -
       name: 'thrift-ssl'
-      port: 9443
+      port: 9091
       protocol: TCP
     -
       name: 'spark-port-1'
@@ -43,9 +43,17 @@ spec:
     -
       name: 'spark-port-4'
       protocol: TCP
-      port: 7711
+      port: 7712
     -
       name: 'spark-port-5'
       protocol: TCP
-      port: 7611
+      port: 7612
+    -
+      name: 'spark-port-6'
+      protocol: TCP
+      port: 7070
+    -
+      name: 'spark-port-7'
+      protocol: TCP
+      port: 7443
 

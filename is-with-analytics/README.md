@@ -76,10 +76,8 @@ the following files:
 
 * `<KUBERNETES_HOME>/is-with-analytics/confs/is/datasources/master-datasources.xml`
 * `<KUBERNETES_HOME>/is-with-analytics/confs/is/datasources/bps-datasources.xml`
-* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/datasources/analytics-datasources.xml`
-* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/datasources/analytics-datasources.xml`
+* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/worker/deployment.yaml`
+* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/worker/deployment.yaml`
 
 Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
@@ -151,7 +149,6 @@ Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-volume-claims.yaml
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/volumes/persistent-volumes.yaml
 ```
     
@@ -164,19 +161,11 @@ kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETE
 kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/identity/
 kubectl create configmap identity-server-conf-event-publishers --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/deployment/server/eventpublishers/
 
-kubectl create configmap is-analytics-1-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf
-kubectl create configmap is-analytics-1-conf-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/analytics
-kubectl create configmap is-analytics-1-conf-spark-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/analytics/spark
-kubectl create configmap is-analytics-1-conf-axis2 --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/axis2
-kubectl create configmap is-analytics-1-conf-datasources --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/datasources
-kubectl create configmap is-analytics-1-deployment-portal --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/deployment/server/jaggeryapps/portal/configs
+kubectl create configmap is-analytics-1-conf-worker --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/woker
 
-kubectl create configmap is-analytics-2-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf
-kubectl create configmap is-analytics-2-conf-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/analytics
-kubectl create configmap is-analytics-2-conf-spark-analytics --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/analytics/spark
-kubectl create configmap is-analytics-2-conf-axis2 --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/axis2
-kubectl create configmap is-analytics-2-conf-datasources --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/datasources
-kubectl create configmap is-analytics-2-deployment-portal --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/deployment/server/jaggeryapps/portal/configs
+kubectl create configmap is-analytics-2-conf-worker --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/worker
+
+kubectl create configmap sp-dashboard-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/dashboard/conf/dashboard
 ```
 
 ##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server and Analytics.
@@ -189,6 +178,8 @@ kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-serv
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-deployment.yaml
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-service.yaml
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-service.yaml
+kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-service.yaml
+kubctl create -f  <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-deployment.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource.
@@ -202,12 +193,12 @@ Finally, deploy the WSO2 Identity Server and Identity Server Analytics Kubernete
 
 ```
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-ingress.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-analytics-ingress.yaml
+kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-dashboard-ingress.yaml
 ```
 
 ##### 10. Access Management Consoles.
 
-Default deployment will expose `wso2is` and `wso2is-analytics` hosts (to expose Administrative services and Management Console).
+Default deployment will expose `wso2is` and `wso2is-dashboard` hosts (to expose Administrative services and Management Console).
 
 To access the console in the environment,
 
@@ -219,18 +210,26 @@ kubectl get ing
 
 ```
 NAME                                         HOSTS              ADDRESS        PORTS     AGE
-wso2is-with-analytics-is-analytics-ingress   wso2is-analytics   <EXTERNAL-IP>   80, 443   3m
+identity-server-dashboard-ingress           wso2is-dashboard   <EXTERNAL-IP>   80, 443   3m
 wso2is-with-analytics-is-ingress             wso2is             <EXTERNAL-IP>   80, 443   3m
 ```
 
-b. Add the above host as an entry in /etc/hosts file as follows:
+b. Add the above host as an entry in /etc/hosts file as follows,
+
 
 ```
-<EXTERNAL-IP>	wso2is-analytics
+<EXTERNAL-IP>	wso2is-dashboard
 <EXTERNAL-IP>	wso2is
 ```
+c. Login to `https://wso2is-dashboard/monitoring` and add Identity server analytics nodes in the Dashboard server using following configurations,
+```
+<HOST>  wso2is-with-analytics-is-analytics-1-service
+<PORT>  9091
 
-c. Try navigating to `https://wso2is/carbon` and `https://wso2is-analytics/carbon` from your favorite browser.
+<HOST>  wso2is-with-analytics-is-analytics-2-service
+<PORT>  9091
+```
+d. Try navigating to `https://wso2is/carbon` and `https://wso2is-dashboard/monitoring` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`.
 

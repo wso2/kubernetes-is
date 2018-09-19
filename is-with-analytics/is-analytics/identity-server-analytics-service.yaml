@@ -25,8 +25,8 @@ spec:
     targetPort: 9764
     protocol: TCP
   - name: servlet-https
-    port: 9444
-    targetPort: 9444
+    port: 9091
+    targetPort: 9091
     protocol: TCP
   - name: spark-ui
     port: 4041
@@ -38,5 +38,13 @@ spec:
     protocol: TCP
   - name: spark-worker-webui
     port: 11501
+    targetPort: 11501
+    protocol: TCP
+  - name: siddhi-1
+    port: 7070
+    targetPort: 8082
+    protocol: TCP
+  - name: siddhi-2
+    port: 7443
     targetPort: 11501
     protocol: TCP

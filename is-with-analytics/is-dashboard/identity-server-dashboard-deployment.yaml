@@ -36,15 +36,16 @@ spec:
         -
           containerPort: 9643
           protocol: "TCP"
-
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - nc -z localhost 9643
         volumeMounts:
         - name: sp-dashboard-conf
           mountPath: "/home/wso2carbon/wso2-config-volume/conf/dashboard"
-        livenessProbe:
-          tcpSocket:
-            port: 9643
-          initialDelaySeconds: 300
-          periodSeconds: 20
+
 #      imagePullSecrets:
 #            - name: wso2creds
       volumes:

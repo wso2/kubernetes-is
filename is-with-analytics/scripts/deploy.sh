@@ -128,7 +128,7 @@ ${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
 ${KUBECTL} create -f ../is-dashboard/identity-server-dashboard-deployment.yaml
 sleep 30s
 
-echoBold 'Deploying Ingresses...'
+#echoBold 'Deploying Ingresses...'
 ${KUBECTL} create -f ../ingresses/identity-server-ingress.yaml
 ${KUBECTL} create -f ../ingresses/identity-server-dashboard-ingress.yaml
 sleep 30s

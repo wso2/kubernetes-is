@@ -50,7 +50,7 @@ spec:
             - /bin/sh
             - -c
             - nc -z localhost 9090
-          initialDelaySeconds: 250
+          initialDelaySeconds: 200
           periodSeconds: 10
         readinessProbe:
           exec:
@@ -58,7 +58,7 @@ spec:
               - /bin/sh
               - -c
               - nc -z localhost 7712
-          initialDelaySeconds: 250
+          initialDelaySeconds: 200
           periodSeconds: 10
         lifecycle:
           preStop:
@@ -72,7 +72,7 @@ spec:
             containerPort: 9090
             protocol: TCP
           -
-            containerPort: 9443
+            containerPort: 9091
             protocol: TCP
           -
             containerPort: 9543
@@ -89,12 +89,18 @@ spec:
           -
             containerPort: 7612
             protocol: TCP
+          -
+            containerPort: 7070
+            protocol: TCP
+          -
+            containerPort: 7443
+            protocol: TCP
         volumeMounts:
         - name: is-analytics-2-conf-worker
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
+#      imagePullSecrets:
+#      - name: wso2creds
       volumes:
       - name: is-analytics-2-conf-worker
         configMap:
