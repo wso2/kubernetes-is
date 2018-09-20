@@ -179,7 +179,7 @@ kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-serv
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-service.yaml
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-service.yaml
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-service.yaml
-kubctl create -f  <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-deployment.yaml
+kubectl create -f  <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-deployment.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource.
@@ -221,15 +221,8 @@ b. Add the above host as an entry in /etc/hosts file as follows,
 <EXTERNAL-IP>	wso2is-dashboard
 <EXTERNAL-IP>	wso2is
 ```
-c. Login to `https://wso2is-dashboard/monitoring` and add Identity server analytics nodes in the Dashboard server using following configurations,
-```
-<HOST>  wso2is-with-analytics-is-analytics-1-service
-<PORT>  9091
 
-<HOST>  wso2is-with-analytics-is-analytics-2-service
-<PORT>  9091
-```
-d. Try navigating to `https://wso2is/carbon` and `https://wso2is-dashboard/monitoring` from your favorite browser.
+c. Try navigating to `https://wso2is/carbon` and `https://wso2is-dashboard/portal` from your favorite browser.
 
 ##### 11. Scale up using `kubectl scale`.
 
