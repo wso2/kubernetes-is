@@ -46,7 +46,7 @@ spec:
         - name: sp-dashboard-conf
           mountPath: "/home/wso2carbon/wso2-config-volume/conf/dashboard"
       imagePullSecrets:
-            - name: wso2creds
+      - name: wso2creds
       volumes:
       - name: sp-dashboard-conf
         configMap:
