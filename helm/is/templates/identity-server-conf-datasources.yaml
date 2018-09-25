@@ -13,7 +13,18 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Namespace
+kind: ConfigMap
 metadata:
-  name: {{ .Values.namespace }}
-  namespace: ""
+  name: identity-server-conf-datasources
+  namespace : {{ .Values.namespace }}
+data:
+  {{- $file := .Files }}
+  {{- range $path, $byte := .Files.Glob "confs/datasources/*" }}
+  {{- $list := $path | splitList "/"}}
+  {{- $length := len $list }}
+  {{- $last := add $length -1 }}
+  {{ index $list $last }}: |-
+    {{- range $file.Lines $path }}
+    {{ . }}
+    {{- end }}
+  {{- end }}

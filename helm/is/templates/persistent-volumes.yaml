@@ -13,18 +13,37 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
+kind: PersistentVolume
 metadata:
-  name: identity-server-conf-identity
+  name: wso2is-shared-deployment-pv
   namespace : {{ .Values.namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/repository/conf/identity/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
-  {{- end }}
+  labels:
+    purpose: is-shared-deployment
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.serverIp }}
+    path: {{ .Values.sharedDeploymentLocationPath }}
+
+---
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: wso2is-shared-tenants-pv
+  namespace : {{ .Values.namespace }}
+  labels:
+    purpose: is-shared-tenants
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  nfs:
+    server: {{ .Values.serverIp }}
+    path: {{ .Values.sharedTenantsLocationPath }}

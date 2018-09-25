@@ -32,11 +32,11 @@ spec:
     spec:
       containers:
       - name: wso2is
-        image: docker.wso2.com/wso2is:5.5.0
+        image: gcr.io/research-n-development-209206/wso2is:5.7.0
         livenessProbe:
           exec:
             command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - nc -z localhost 9443
           initialDelaySeconds: 250
@@ -44,12 +44,18 @@ spec:
         readinessProbe:
           exec:
             command:
-              - /bin/bash
+              - /bin/sh
               - -c
               - nc -z localhost 9443
           initialDelaySeconds: 250
           periodSeconds: 10
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         imagePullPolicy: Always
+        securityContext:
+          runAsUser: 802
         ports:
         - containerPort: 9763
           protocol: TCP
@@ -57,13 +63,13 @@ spec:
           protocol: TCP
         volumeMounts:
         - name: identity-server-conf
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
         - name: identity-server-conf-axis2
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-axis2
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: identity-server-conf-datasources
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-datasources
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: identity-server-conf-identity
-          mountPath: /home/wso2carbon/kubernetes-volumes/is/conf-identity
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
         - name: shared-deployment-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk
