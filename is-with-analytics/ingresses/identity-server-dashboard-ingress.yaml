@@ -25,9 +25,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - wso2is-dashboard
+    - wso2is-analytics-dashboard
   rules:
-  - host: wso2is-dashboard
+  - host: wso2is-analytics-dashboard
     http:
       paths:
       - path: /

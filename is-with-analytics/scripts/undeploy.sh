@@ -35,11 +35,11 @@ ${KUBECTL} delete -f ../is/identity-server-service.yaml
 ${KUBECTL} delete -f ../is-analytics/identity-server-analytics-1-service.yaml
 ${KUBECTL} delete -f ../is-analytics/identity-server-analytics-2-service.yaml
 ${KUBECTL} delete -f ../is-analytics/identity-server-analytics-service.yaml
-${KUBECTL} delete -f ../is-dashboard/identity-server-dashboard-service.yaml
+${KUBECTL} delete -f ../is-analytics-dashboard/identity-server-dashboard-service.yaml
 ${KUBECTL} delete -f ../is/identity-server-deployment.yaml
 ${KUBECTL} delete -f ../is-analytics/identity-server-analytics-1-deployment.yaml
 ${KUBECTL} delete -f ../is-analytics/identity-server-analytics-2-deployment.yaml
-${KUBECTL} delete -f ../is-dashboard/identity-server-dashboard-deployment.yaml
+${KUBECTL} delete -f ../is-analytics-dashboard/identity-server-dashboard-deployment.yaml
 
 sleep 20s
 

@@ -94,7 +94,7 @@ ${KUBECTL} create configmap is-analytics-1-conf-worker --from-file=../confs/is-a
 
 ${KUBECTL} create configmap is-analytics-2-conf-worker --from-file=../confs/is-analytics-2/conf/worker
 
-${KUBECTL} create configmap sp-dashboard-conf --from-file=../confs/dashboard/conf/dashboard
+${KUBECTL} create configmap is-analytics-dashboard-conf --from-file=../confs/is-analytics-dashboard/conf/dashboard
 
 ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
@@ -104,13 +104,13 @@ ${KUBECTL} create -f ../is/identity-server-service.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-service.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-service.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-service.yaml
-${KUBECTL} create -f ../is-dashboard/identity-server-dashboard-service.yaml
+${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-service.yaml
 sleep 10s
 
 # MySQL
 echoBold 'Deploying WSO2 Identity Server and Identity Server Analytics Databases using MySQL...'
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
-sleep 10s
+sleep 30s
 
 # persistent storage
 echoBold 'Creating persistent volume and volume claim...'
@@ -125,7 +125,7 @@ echoBold 'Deploying WSO2 Identity Server and Analytics...'
 ${KUBECTL} create -f ../is/identity-server-deployment.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
-${KUBECTL} create -f ../is-dashboard/identity-server-dashboard-deployment.yaml
+${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-deployment.yaml
 sleep 30s
 
 #echoBold 'Deploying Ingresses...'

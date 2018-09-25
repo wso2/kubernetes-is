@@ -20,25 +20,9 @@ spec:
   selector:
     deployment: wso2is-with-analytics-is-analytics
   ports:
-  - name: servlet-http
-    port: 9764
-    targetPort: 9764
-    protocol: TCP
   - name: servlet-https
     port: 9091
     targetPort: 9091
-    protocol: TCP
-  - name: spark-ui
-    port: 4041
-    targetPort: 4041
-    protocol: TCP
-  - name: spark-master-webui
-    port: 8082
-    targetPort: 8082
-    protocol: TCP
-  - name: spark-worker-webui
-    port: 11501
-    targetPort: 11501
     protocol: TCP
   - name: siddhi-1
     port: 7070
@@ -47,4 +31,12 @@ spec:
   - name: siddhi-2
     port: 7443
     targetPort: 11501
+    protocol: TCP
+  - name: data-reciver-1
+    port: 7612
+    targetPort: 7612
+    protocol: TCP
+  - name: data-receiver-2
+    port: 7712
+    targetPort: 7712
     protocol: TCP

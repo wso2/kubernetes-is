@@ -29,7 +29,7 @@ spec:
         deployment: wso2is-with-analytics-dashboard
     spec:
       containers:
-      - image: docker.wso2.com/wso2sp-dashboard:4.3.0
+      - image: docker.wso2.com/wso2is-analytics-dashboard:5.7.0
         name: wso2is-with-analytics-dashboard
         imagePullPolicy: Always
         ports:
@@ -43,12 +43,12 @@ spec:
             - -c
             - nc -z localhost 9643
         volumeMounts:
-        - name: sp-dashboard-conf
+        - name: is-analytics-dashboard-conf
           mountPath: "/home/wso2carbon/wso2-config-volume/conf/dashboard"
       imagePullSecrets:
       - name: wso2creds
       volumes:
-      - name: sp-dashboard-conf
+      - name: is-analytics-dashboard-conf
         configMap:
-          name: sp-dashboard-conf
+          name: is-analytics-dashboard-conf
       serviceAccountName: "wso2svc-account"
