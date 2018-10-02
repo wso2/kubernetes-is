@@ -89,6 +89,7 @@ ${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/is/c
 ${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/is/conf/datasources/
 ${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/is/conf/identity/
 ${KUBECTL} create configmap identity-server-conf-event-publishers --from-file=../confs/is/deployment/server/eventpublishers/
+${KUBECTL} create configmap identity-server-conf-tomcat --from-file=../confs/is/conf/tomcat/
 
 ${KUBECTL} create configmap is-analytics-1-conf-worker --from-file=../confs/is-analytics-1/conf/worker
 
@@ -125,6 +126,7 @@ echoBold 'Deploying WSO2 Identity Server and Analytics...'
 ${KUBECTL} create -f ../is/identity-server-deployment.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
+sleep 30s
 ${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-deployment.yaml
 sleep 30s
 
