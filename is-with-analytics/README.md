@@ -165,7 +165,7 @@ kubectl create configmap is-analytics-1-conf-worker --from-file=<KUBERNETES_HOME
 
 kubectl create configmap is-analytics-2-conf-worker --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/worker
 
-kubectl create configmap sp-dashboard-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/dashboard/conf/dashboard
+kubectl create configmap is-analytics-dashboard-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard
 ```
 
 ##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server and Analytics.
