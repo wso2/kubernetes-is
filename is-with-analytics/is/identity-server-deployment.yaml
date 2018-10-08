@@ -29,9 +29,13 @@ spec:
       labels:
         deployment: wso2is-with-analytics-is
     spec:
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "wso2is"
       containers:
       - name: wso2is-with-analytics-is
-        image: docker.wso2.com/wso2is:5.5.0
+        image: docker.wso2.com/wso2is:5.7.0
         livenessProbe:
           exec:
             command:
@@ -67,14 +71,16 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: identity-server-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+        - name: identity-server-conf-tomcat
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
         - name: identity-server-conf-event-publishers
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
         - name: shared-deployment-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
+          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/deployment
         - name: shared-tenants-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
+          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/tenants
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
@@ -91,6 +97,9 @@ spec:
       - name: identity-server-conf-identity
         configMap:
           name: identity-server-conf-identity
+      - name: identity-server-conf-tomcat
+        configMap:
+          name: identity-server-conf-tomcat
       - name: identity-server-conf-event-publishers
         configMap:
           name: identity-server-conf-event-publishers
