@@ -5,9 +5,6 @@
 
 ![A clustered deployment WSO2 Identity Server](is/is.png)
 
-* A clustered deployment of WSO2 Identity Server with Analytics support
-
-![A clustered deployment WSO2 Identity Server with Identity Server Analytics support](is-with-analytics/is-with-analytics.png)
 
 ## Deploy Kubernetes resources
 
