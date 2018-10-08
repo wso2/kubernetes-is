@@ -13,35 +13,19 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: PersistentVolumeClaim
+kind: Service
 metadata:
-  name: is-analytics-1-data-volume-claim
+  name: wso2is-with-analytics-is-dashboard-service
+  labels:
+    deployment: wso2is-with-analytics-dashboard
 spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: analytics-data
-      node: wso2is-analytics-1
+  ports:
+    # ports that this service should serve on
+    -
+      name: 'https'
+      port: 9643
+      protocol: TCP
 
----
-
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: is-analytics-2-data-volume-claim
-spec:
-  accessModes:
-    - ReadWriteMany
-  resources:
-    requests:
-      storage: 20Gi
-  storageClassName: ""
+  # label keys and values that must match in order to receive traffic for this service
   selector:
-    matchLabels:
-      purpose: analytics-data
-      node: wso2is-analytics-2
+    deployment: wso2is-with-analytics-dashboard
