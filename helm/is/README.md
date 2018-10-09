@@ -37,7 +37,7 @@ git clone https://github.com/wso2/kubernetes-is.git
 ##### 2. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
-resources defined in the `<HELM_HOME>/is-conf/values.yaml` file:
+resources defined in the `<HELM_HOME>/is/values.yaml` file:
 
 * `sharedDeploymentLocationPath`
 * `sharedTenantsLocationPath`
