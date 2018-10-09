@@ -89,20 +89,13 @@ ${KUBECTL} create configmap identity-server-conf-axis2 --from-file=../confs/is/c
 ${KUBECTL} create configmap identity-server-conf-datasources --from-file=../confs/is/conf/datasources/
 ${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/is/conf/identity/
 ${KUBECTL} create configmap identity-server-conf-event-publishers --from-file=../confs/is/deployment/server/eventpublishers/
+${KUBECTL} create configmap identity-server-conf-tomcat --from-file=../confs/is/conf/tomcat/
 
-${KUBECTL} create configmap is-analytics-1-conf --from-file=../confs/is-analytics-1/conf
-${KUBECTL} create configmap is-analytics-1-conf-analytics --from-file=../confs/is-analytics-1/conf/analytics
-${KUBECTL} create configmap is-analytics-1-conf-spark-analytics --from-file=../confs/is-analytics-1/conf/analytics/spark
-${KUBECTL} create configmap is-analytics-1-conf-axis2 --from-file=../confs/is-analytics-1/conf/axis2
-${KUBECTL} create configmap is-analytics-1-conf-datasources --from-file=../confs/is-analytics-1/conf/datasources
-${KUBECTL} create configmap is-analytics-1-deployment-portal --from-file=../confs/is-analytics-1/deployment/server/jaggeryapps/portal/configs
+${KUBECTL} create configmap is-analytics-1-conf-worker --from-file=../confs/is-analytics-1/conf/worker
 
-${KUBECTL} create configmap is-analytics-2-conf --from-file=../confs/is-analytics-2/conf
-${KUBECTL} create configmap is-analytics-2-conf-analytics --from-file=../confs/is-analytics-2/conf/analytics
-${KUBECTL} create configmap is-analytics-2-conf-spark-analytics --from-file=../confs/is-analytics-2/conf/analytics/spark
-${KUBECTL} create configmap is-analytics-2-conf-axis2 --from-file=../confs/is-analytics-2/conf/axis2
-${KUBECTL} create configmap is-analytics-2-conf-datasources --from-file=../confs/is-analytics-2/conf/datasources
-${KUBECTL} create configmap is-analytics-2-deployment-portal --from-file=../confs/is-analytics-2/deployment/server/jaggeryapps/portal/configs
+${KUBECTL} create configmap is-analytics-2-conf-worker --from-file=../confs/is-analytics-2/conf/worker
+
+${KUBECTL} create configmap is-analytics-dashboard-conf --from-file=../confs/is-analytics-dashboard/conf/dashboard
 
 ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/mysql/dbscripts/
 
@@ -112,17 +105,17 @@ ${KUBECTL} create -f ../is/identity-server-service.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-service.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-service.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-service.yaml
+${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-service.yaml
 sleep 10s
 
 # MySQL
 echoBold 'Deploying WSO2 Identity Server and Identity Server Analytics Databases using MySQL...'
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
-sleep 10s
+sleep 30s
 
 # persistent storage
 echoBold 'Creating persistent volume and volume claim...'
 ${KUBECTL} create -f ../is/identity-server-volume-claims.yaml
-${KUBECTL} create -f ../is-analytics/identity-server-analytics-volume-claims.yaml
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
 ${KUBECTL} create -f ../volumes/persistent-volumes.yaml
 ${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
@@ -134,12 +127,14 @@ ${KUBECTL} create -f ../is/identity-server-deployment.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
 ${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
 sleep 30s
+${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-deployment.yaml
+sleep 30s
 
-echoBold 'Deploying Ingresses...'
+#echoBold 'Deploying Ingresses...'
 ${KUBECTL} create -f ../ingresses/identity-server-ingress.yaml
-${KUBECTL} create -f ../ingresses/identity-server-analytics-ingress.yaml
+${KUBECTL} create -f ../ingresses/identity-server-dashboard-ingress.yaml
 sleep 30s
 
 echoBold 'Finished'
 echo 'To access the WSO2 Identity Server management console, try https://wso2is/carbon in your browser.'
-echo 'To access the WSO2 Identity Server Analytics management console, try https://wso2is-analytics/carbon in your browser.'
+echo 'To access the WSO2 Identity Server Analytics management console, try https://wso2is-dashboard/portal in your browser.'

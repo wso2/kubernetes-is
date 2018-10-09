@@ -1,6 +1,6 @@
 # Kubernetes Resources for deployment of WSO2 Identity Server
 
-Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS560/Setting+Up+Deployment+Pattern+1).
+Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS570/Setting+Up+Deployment+Pattern+1).
 
 ![A clustered deployment WSO2 Identity Server](is.png)
 
@@ -69,7 +69,7 @@ for further details.
 
 ##### 4. Setup product database(s):
 
-Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS560/Setting+Up+Separate+Databases+for+Clustering)
+Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS550/Setting+Up+Separate+Databases+for+Clustering)
 on creating the required databases for the deployment.
 
 Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in

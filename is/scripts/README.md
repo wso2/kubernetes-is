@@ -1,7 +1,7 @@
 # Kubernetes Test Resources for deployment of WSO2 Identity Server
 
 Kubernetes Test Resources for WSO2 Identity Server contain artifacts, which can be used to test the core
-Kubernetes resources provided for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS560/Setting+Up+Deployment+Pattern+1).
+Kubernetes resources provided for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS550/Setting+Up+Deployment+Pattern+1).
 
 ## Contents
 
@@ -85,7 +85,7 @@ for deploying the product databases, using MySQL in Kubernetes. However, this ap
   
 In a **production grade setup**,
 
-* Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS560/Setting+Up+Separate+Databases+for+Clustering)
+* Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS550/Setting+Up+Separate+Databases+for+Clustering)
   on creating the required databases for the deployment.
   
   Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in

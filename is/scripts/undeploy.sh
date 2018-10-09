@@ -16,8 +16,6 @@
 # limitations under the License
 # ------------------------------------------------------------------------
 
-set -e
-
 ECHO=`which echo`
 KUBECTL=`which kubectl`
 

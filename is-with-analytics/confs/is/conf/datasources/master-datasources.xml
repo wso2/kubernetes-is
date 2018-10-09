@@ -34,7 +34,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -56,7 +56,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_COMMON_DB?autoReconnect=true&amp;useSSL=false</url>
+                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false</url>
                     <username>wso2carbon</username>
                     <password>wso2carbon</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
