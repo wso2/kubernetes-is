@@ -1,9 +1,9 @@
-username: "thilinama@wso2.com"
-password: "maanaDev!"
-email: "thilinama@wso2.com"
+username: "<USERNAME>"
+password: "<PASSWORD>"
+email: "<EMAIL>"
 
 namespace: "wso2"
 svcaccount: "wso2svc-account"
-serverIp: 10.128.0.6
-sharedDeploymentLocationPath: "/data/thilina/is-deployment"
-sharedTenantsLocationPath: "/data/thilina/is-tenant"
+serverIp: "<SERVER_IP>"
+sharedDeploymentLocationPath: "<NFS_LOCATION_PATH>"
+sharedTenantsLocationPath: "<NFS_LOCATION_PATH>"
