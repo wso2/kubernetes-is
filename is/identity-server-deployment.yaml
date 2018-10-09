@@ -72,7 +72,7 @@ spec:
         - name: shared-deployment-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.5.0/repository/deployment
         - name: shared-tenants-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.5.0/repository/tenants
+          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/tenants
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds
