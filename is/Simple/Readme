@@ -1,5 +1,0 @@
-Setup process:
-
-step 1: ./deploy.sh --wso2-username=<WSO2_USERNAME> --wso2-password=<WSO2_PASSWORD> --cluster-admin-password=<K8S_CLUSTER_ADMIN_PASSWORD>
-
-step 2: kubectl create -f deployment.yaml
