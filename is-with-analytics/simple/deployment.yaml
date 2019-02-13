@@ -1,0 +1,336 @@
+#deploying kubernetes services
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2is-with-analytics-is-service
+spec:
+  selector:
+    deployment: wso2is-with-analytics-is
+  ports:
+    - name: servlet-http
+      port: 9763
+      targetPort: 9763
+      protocol: TCP
+    - name: servlet-https
+      port: 9443
+      targetPort: 9443
+      protocol: TCP
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2is-with-analytics-is-analytics-service
+spec:
+  selector:
+    node: wso2is-with-analytics-is-analytics
+  ports:
+    -
+      name: 'thrift'
+      port: 9090
+      protocol: TCP
+    -
+      name: 'thrift-ssl'
+      port: 9091
+      protocol: TCP
+    -
+      name: 'spark-port-1'
+      port: 9543
+      protocol: TCP
+    -
+      name: 'spark-port-2'
+      port: 9711
+      protocol: TCP
+    -
+      name: 'spark-port-3'
+      port: 9611
+      protocol: TCP
+    -
+      name: 'spark-port-4'
+      protocol: TCP
+      port: 7712
+    -
+      name: 'spark-port-5'
+      protocol: TCP
+      port: 7612
+    -
+      name: 'spark-port-6'
+      protocol: TCP
+      port: 7070
+    -
+      name: 'spark-port-7'
+      protocol: TCP
+      port: 7443
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2is-with-analytics-is-dashboard-service
+  labels:
+    deployment: wso2is-with-analytics-dashboard
+spec:
+  ports:
+    # ports that this service should serve on
+    -
+      name: 'https'
+      port: 9643
+      protocol: TCP
+
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2is-with-analytics-dashboard
+
+---
+
+#deploying wso2 identity server and analytics
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: wso2is-with-analytics-is-deployment
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: wso2is-with-analytics-is
+    spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "wso2is"
+      containers:
+        - name: wso2is-with-analytics-is
+          image: docker.wso2.com/wso2is:5.7.0
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: 250
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: 250
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 9763
+              protocol: TCP
+            - containerPort: 9443
+              protocol: TCP
+      initContainers:
+        - name: wso2-is-init
+          image: busybox
+          command: ['sh', '-c', 'until nslookup wso2is-with-analytics-is-service; do echo waiting for wso2-is-service; sleep 2; done']
+      serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+        - name: wso2creds
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: wso2is-with-analytics-is-analytics-deployment
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        deployment: wso2is-with-analytics-is-analytics
+        node: wso2is-with-analytics-is-analytics
+    spec:
+      containers:
+        - name: wso2is-with-analytics-is-analytics
+          image: docker.wso2.com/wso2is-analytics-worker:5.7.0
+          env:
+            -
+              name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          resources:
+            limits:
+              memory: "4Gi"
+            requests:
+              memory: "4Gi"
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9090
+            initialDelaySeconds: 200
+            periodSeconds: 10
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 7712
+            initialDelaySeconds: 200
+            periodSeconds: 10
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+          imagePullPolicy: Always
+          securityContext:
+            runAsUser: 802
+          ports:
+            -
+              containerPort: 9090
+              protocol: TCP
+            -
+              containerPort: 9091
+              protocol: TCP
+            -
+              containerPort: 9543
+              protocol: TCP
+            -
+              containerPort: 9711
+              protocol: TCP
+            -
+              containerPort: 9611
+              protocol: TCP
+            -
+              containerPort: 7712
+              protocol: TCP
+            -
+              containerPort: 7612
+              protocol: TCP
+            -
+              containerPort: 7070
+              protocol: TCP
+            -
+              containerPort: 7443
+              protocol: TCP
+      initContainers:
+        - name: wso2-analytics-init
+          image: busybox
+          command: ['sh', '-c', 'until nslookup wso2is-with-analytics-is-analytics-service; do echo waiting for wso2-is-analytics-service; sleep 2; done']
+      serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+        - name: wso2creds
+
+---
+
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: wso2is-with-analytics-dashboard
+  labels:
+    deployment: wso2is-with-analytics-dashboard
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        deployment: wso2is-with-analytics-dashboard
+    spec:
+      containers:
+        - image: docker.wso2.com/wso2is-analytics-dashboard:5.7.0
+          name: wso2is-with-analytics-dashboard
+          imagePullPolicy: Always
+          ports:
+            -
+              containerPort: 9643
+              protocol: "TCP"
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9643
+      initContainers:
+      - name: wso2-dashboard-init
+        image: busybox
+        command: ['sh', '-c', 'until nslookup wso2is-with-analytics-is-dashboard-service; do echo waiting for wso2-is-dashboard-service; sleep 2; done']
+      imagePullSecrets:
+        - name: wso2creds
+      serviceAccountName: "wso2svc-account"
+
+---
+
+#deploying ingresses
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: wso2is-with-analytics-is-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+spec:
+  tls:
+    - hosts:
+        - wso2is
+  rules:
+    - host: wso2is
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: wso2is-with-analytics-is-service
+              servicePort: 9443
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: wso2is-with-analytics-is-dashboard-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/affinity: "cookie"
+    nginx.ingress.kubernetes.io/session-cookie-name: "route"
+    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+spec:
+  tls:
+    - hosts:
+        - wso2is-analytics-dashboard
+  rules:
+    - host: wso2is-analytics-dashboard
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: wso2is-with-analytics-is-dashboard-service
+              servicePort: 9643
+
+---

@@ -1,0 +1,7 @@
+This content describes how to set up a simplified version of WSO2 kubernetes Identity Server with analytics on your kubernetes cluster.
+
+    1. kubectl create -f init.yaml
+
+    2. kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME} -n wso2
+
+    3. kubectl create -f deployment.yaml
