@@ -269,13 +269,16 @@ spec:
 
 # Deploying wso2 identity server
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-deployment
   namespace: wso2
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      deployment: wso2is
   minReadySeconds: 30
   strategy:
     rollingUpdate:
