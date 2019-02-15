@@ -263,8 +263,6 @@ spec:
       targetPort: 9443
       protocol: TCP
 
-#SLEEP 10S
-
 ---
 
 # Deploying wso2 identity server
@@ -324,11 +322,6 @@ spec:
           volumeMounts:
             - name: identity-server-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-
-      initContainers:
-        - name: init-wso2is
-          image: busybox
-          command: ['sh', '-c', 'until nslookup identity-server-conf-axis2; do echo waiting for configs; sleep2; done']
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
         - name: wso2creds
@@ -336,8 +329,6 @@ spec:
         - name: identity-server-conf
           configMap:
             name: identity-server-conf
-
-#SLEEP 30
 
 ---
 # create Kubernetes Ingress resources
