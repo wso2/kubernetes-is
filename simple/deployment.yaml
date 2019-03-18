@@ -1,4 +1,33 @@
-# deploying kubernetes configmaps
+#kubernetes namespaces
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: wso2
+spec:
+  finalizers:
+    - kubernetes
+---
+
+# kubernetes service account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: wso2svc-account
+  namespace: wso2
+secrets:
+  - name: wso2svc-account-token-t7s49
+---
+
+# kubernetes secret
+apiVersion: v1
+data:
+  .dockerconfigjson: "wso2.secret&auth.base64"
+kind: Secret
+metadata:
+  name: wso2creds
+  namespace: wso2
+type: kubernetes.io/dockerconfigjson
+---
 
 # configmap identity-server-conf from carbon.xml
 apiVersion: v1
@@ -1844,6 +1873,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-mysql-deployment
+  namespace: wso2
 spec:
   replicas: 1
   selector:
@@ -1904,6 +1934,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-is-deployment
+  namespace: wso2
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -1982,6 +2013,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: wso2is-is-ingress
+  namespace: wso2
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
@@ -2006,6 +2038,7 @@ apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
   name: wso2is-is-dashboard-ingress
+  namespace: wso2
   annotations:
     kubernetes.io/ingress.class: "nginx"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"
