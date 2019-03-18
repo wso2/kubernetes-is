@@ -3,7 +3,6 @@
 set -e
 
 ECHO=`which echo`
-KUBECTL=`which kubectl`
 
 # methods
 function echoBold () {
@@ -11,7 +10,7 @@ function echoBold () {
 }
 
 function usage () {
-    echoBold "This script automates the installation of WSO2 Identity Server with Analytics Kubernetes resources\n"
+    echoBold "This script creates the base64 encoded authorisation code in kubernetes secrets for WSO2 Identity Server \n"
     echoBold "Allowed arguments:\n"
     echoBold "-h | --help"
     echoBold "--wu | --wso2-username\t\tYour WSO2 username"
@@ -51,20 +50,15 @@ while [ "$1" != "" ]; do
     shift
 done
 
-# create a new Kubernetes Namespace
-${KUBECTL} create namespace wso2
+# create and encode username/password pair
+auth="$WSO2_SUBSCRIPTION_USERNAME:$WSO2_SUBSCRIPTION_PASSWORD"
+authb64=`echo -n $auth | base64`
 
-# create a new service account in 'wso2' Kubernetes Namespace
-${KUBECTL} create serviceaccount wso2svc-account -n wso2
+# create authorisation code
+authstring='{"auths":{"docker.wso2.com": {"username":"'$WSO2_SUBSCRIPTION_USERNAME'","password":"'$WSO2_SUBSCRIPTION_PASSWORD'","email":"'$WSO2_SUBSCRIPTION_USERNAME'","auth":"'$authb64'"}}}'
 
-# switch the context to new 'wso2' namespace
-${KUBECTL} config set-context $(${KUBECTL} config current-context) --namespace=wso2
+# encode in base64
+secdata=`echo -n $authstring | base64`
 
-# create a Kubernetes Secret for passing WSO2 Private Docker Registry credentials
-${KUBECTL} create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=${WSO2_SUBSCRIPTION_USERNAME} --docker-password=${WSO2_SUBSCRIPTION_PASSWORD} --docker-email=${WSO2_SUBSCRIPTION_USERNAME}
-
-# deploy wso2-is
-${KUBECTL} create -f deployment.yaml
-
-echoBold 'Finished'
-
+# add the code to deployment.yaml
+sed -i -e 's/"wso2.secret&auth.base64"/'$secdata'/g' deployment.yaml
