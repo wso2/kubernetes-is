@@ -3,6 +3,7 @@
 set -e
 
 ECHO=`which echo`
+KUBECTL=`which kubectl`
 
 # methods
 function echoBold () {
@@ -62,3 +63,6 @@ secdata=`echo -n $authstring | base64`
 
 # add the code to deployment.yaml
 sed -i -e 's/"wso2.secret&auth.base64"/'$secdata'/g' deployment.yaml
+
+# deploy WSO2 Identity Server in kubernetes
+${KUBECTL} create -f deployment.yaml
