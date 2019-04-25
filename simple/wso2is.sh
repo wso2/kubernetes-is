@@ -2047,13 +2047,14 @@ function deploy(){
        display_msg "Please install base64 before you start with the setup\n"
     fi
 
-    echoBold "Checking for an enabled cluster.... Your patience is appreciated.\n"
+    echoBold "Checking for an enabled cluster... Your patience is appreciated..."
     cluster_isReady=$(${KUBECTL} cluster-info) > /dev/null 2>&1  || true
 
     if [[ ! $cluster_isReady == *"KubeDNS"* ]]
     then
         display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow the link below.\n  Link: https://kubernetes.io/docs/setup/\n\n"
     fi
+    echoBold "Done.\n"
 
     # copy kubernetes object yamls to deployment.yaml
     echo "$deployment" > ${k8s_obj_file}
