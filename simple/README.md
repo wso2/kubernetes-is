@@ -1,5 +1,7 @@
 # Simplified setup for WSO2 kubernetes Identity Server
 
+![WSO2 simplified Identity Server deployment](extra/is_simple.png)
+
 ## Contents
 * Prerequisites
 
