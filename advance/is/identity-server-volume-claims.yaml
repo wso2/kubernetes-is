@@ -1,0 +1,64 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-shared-deployment-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: is-shared-deployment
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: is-shared-tenants-volume-claim
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  storageClassName: ""
+  selector:
+    matchLabels:
+      purpose: is-shared-tenants
+
+#uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
+
+# ---
+#
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: identity-server-additional-config-volume-claim
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   storageClassName: ""
+#   selector:
+#     matchLabels:
+#       purpose: is-additional-configs
