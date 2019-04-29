@@ -17,8 +17,84 @@
 #--------------------------------------------------------------------------------
 
 # yaml object authstring
-IFS='' read -r -d '' deployment<<"EOF"
 
+set -e
+
+# bash variables
+NODE_IP=""
+k8s_obj_file="deployment.yaml"; str_sec=""
+
+# bash functions
+function usage(){
+  echo "Usage: "
+  echo -e "-d, --deploy     Deploy WSO2 Identity Server"
+  echo -e "-u, --undeploy   Undeploy WSO2 Identity Server"
+  echo -e "-h, --help       Display usage instrusctions"
+}
+function undeploy(){
+  echoBold "Undeploying WSO2 Identity Server ... \n"
+  kubectl delete -f deployment.yaml
+  exit 0
+}
+function display_msg(){
+    msg=$@
+    echoBold "${msg}"
+    exit 1
+}
+function echoBold () {
+    echo -en $'\e[1m'"${1}"$'\e[0m'
+}
+function st(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold "* "
+    let "i=i+1"
+  done
+}
+function sp(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold " "
+    let "i=i+1"
+  done
+}
+function product_name(){
+  #wso2is
+  echo -e "\n"
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; st 5; sp 2; sp 1; st 3; sp 3; echo ""
+  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 4; st 1; echo ""
+  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 8; echo ""
+  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; sp 4; st 1; sp 4; sp 2; sp 1; st 3; sp 1; echo ""
+  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; sp 4; st 1; sp 4; sp 2; sp 6; st 1; echo ""
+  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 4; st 1; echo ""
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 5; sp 2; sp 1; st 3; sp 1; echo -e "\n"
+}
+function validate_ip(){
+    ip_check=$1
+    if [[ $ip_check =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+      IFS='.'
+      ip=$ip_check
+      set -- $ip
+      if [[ $1 -le 255 ]] && [[ $2 -le 255 ]] && [[ $3 -le 255 ]] && [[ $4 -le 255 ]]; then
+        IFS=''
+        NODE_IP=$ip_check
+      else
+        IFS=''
+        echo "Invalid IP. Please try again."
+        NODE_IP=""
+      fi
+    else
+      echo "Invalid IP. Please try again."
+      NODE_IP=""
+    fi
+}
+function create_yaml(){
+
+cat > ${k8s_obj_file} << "EOF"
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -64,7 +140,7 @@ data:
                 <LDAPServerPort>10389</LDAPServerPort>
                 <KDCServerPort>8000</KDCServerPort>
             </EmbeddedLDAP>
-    	<ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
+        <ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
         </Ports>
         <JNDI>
             <DefaultInitialContextFactory>org.wso2.carbon.tomcat.jndi.CarbonJavaURLContextFactory</DefaultInitialContextFactory>
@@ -144,9 +220,9 @@ data:
             <NetworkAuthenticatorConfig>
             </NetworkAuthenticatorConfig>
             <TomcatRealm>UserManager</TomcatRealm>
-    	<DisableTokenStore>false</DisableTokenStore>
+        <DisableTokenStore>false</DisableTokenStore>
      <STSCallBackHandlerName>org.wso2.carbon.identity.provider.AttributeCallbackHandler</STSCallBackHandlerName>
-    	<TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName>
+        <TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName>
             <XSSPreventionConfig>
                 <Enabled>true</Enabled>
                 <Rule>allow</Rule>
@@ -233,12 +309,12 @@ data:
         <RequireCarbonServlet>${require.carbon.servlet}</RequireCarbonServlet>
         <StatisticsReporterDisabled>true</StatisticsReporterDisabled>
         <FeatureRepository>
-    	    <RepositoryName>default repository</RepositoryName>
-    	    <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
+            <RepositoryName>default repository</RepositoryName>
+            <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
         </FeatureRepository>
        <APIManagement>
-    	<Enabled>true</Enabled>
-    	<LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
+        <Enabled>true</Enabled>
+        <LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
        </APIManagement>
     </Server>
 kind: ConfigMap
@@ -274,7 +350,7 @@ data:
                         <validationQuery>SELECT 1</validationQuery>
                         <validationInterval>30000</validationInterval>
                         <useDataSourceFactory>false</useDataSourceFactory>
-    		            <defaultAutoCommit>true</defaultAutoCommit>
+                        <defaultAutoCommit>true</defaultAutoCommit>
                     </configuration>
                 </definition>
             </datasource>
@@ -416,14 +492,14 @@ data:
     GRANT ALL ON IS_ANALYTICS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
     USE WSO2IS_USER_DB;
     CREATE TABLE UM_TENANT (
-    			UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    	        UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
                 UM_EMAIL VARCHAR(255),
                 UM_ACTIVE BOOLEAN DEFAULT FALSE,
-    	        UM_CREATED_DATE TIMESTAMP NOT NULL,
-    	        UM_USER_CONFIG LONGBLOB,
-    			PRIMARY KEY (UM_ID),
-    			UNIQUE(UM_DOMAIN_NAME)
+                UM_CREATED_DATE TIMESTAMP NOT NULL,
+                UM_USER_CONFIG LONGBLOB,
+                PRIMARY KEY (UM_ID),
+                UNIQUE(UM_DOMAIN_NAME)
     )ENGINE INNODB;
     CREATE TABLE UM_DOMAIN(
                 UM_DOMAIN_ID INTEGER NOT NULL AUTO_INCREMENT,
@@ -459,29 +535,29 @@ data:
                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                  UM_ROLE_NAME VARCHAR(255) NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    		UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
+            UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID),
                  UNIQUE(UM_ROLE_NAME, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_MODULE(
-    	UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
-    	UM_MODULE_NAME VARCHAR(100),
-    	UNIQUE(UM_MODULE_NAME),
-    	PRIMARY KEY(UM_ID)
+        UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
+        UM_MODULE_NAME VARCHAR(100),
+        UNIQUE(UM_MODULE_NAME),
+        PRIMARY KEY(UM_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_MODULE_ACTIONS(
-    	UM_ACTION VARCHAR(255) NOT NULL,
-    	UM_MODULE_ID INTEGER NOT NULL,
-    	PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
-    	FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
+        UM_ACTION VARCHAR(255) NOT NULL,
+        UM_MODULE_ID INTEGER NOT NULL,
+        PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
+        FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE UM_PERMISSION (
                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                  UM_RESOURCE_ID VARCHAR(255) NOT NULL,
                  UM_ACTION VARCHAR(255) NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    		UM_MODULE_ID INTEGER DEFAULT 0,
-    			       UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
+            UM_MODULE_ID INTEGER DEFAULT 0,
+                       UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE INDEX INDEX_UM_PERMISSION_UM_RESOURCE_ID_UM_ACTION ON UM_PERMISSION (UM_RESOURCE_ID, UM_ACTION, UM_TENANT_ID);
@@ -491,10 +567,10 @@ data:
                  UM_ROLE_NAME VARCHAR(255) NOT NULL,
                  UM_IS_ALLOWED SMALLINT NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    	     UM_DOMAIN_ID INTEGER,
+             UM_DOMAIN_ID INTEGER,
                  UNIQUE (UM_PERMISSION_ID, UM_ROLE_NAME, UM_TENANT_ID, UM_DOMAIN_ID),
-    	     FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
-    	     FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+             FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+             FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_USER_PERMISSION (
@@ -526,14 +602,14 @@ data:
         FOREIGN KEY(UM_USER_ID,UM_USER_TENANT_ID) REFERENCES UM_USER(UM_ID,UM_TENANT_ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE UM_ACCOUNT_MAPPING(
-    	UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    	UM_USER_NAME VARCHAR(255) NOT NULL,
-    	UM_TENANT_ID INTEGER NOT NULL,
-    	UM_USER_STORE_DOMAIN VARCHAR(100),
-    	UM_ACC_LINK_ID INTEGER NOT NULL,
-    	UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
-    	FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
-    	PRIMARY KEY (UM_ID)
+        UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+        UM_USER_NAME VARCHAR(255) NOT NULL,
+        UM_TENANT_ID INTEGER NOT NULL,
+        UM_USER_STORE_DOMAIN VARCHAR(100),
+        UM_ACC_LINK_ID INTEGER NOT NULL,
+        UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
+        FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
+        PRIMARY KEY (UM_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_USER_ATTRIBUTE (
                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
@@ -565,7 +641,7 @@ data:
                 UM_SUPPORTED SMALLINT,
                 UM_REQUIRED SMALLINT,
                 UM_DISPLAY_ORDER INTEGER,
-    	    UM_CHECKED_ATTRIBUTE SMALLINT,
+            UM_CHECKED_ATTRIBUTE SMALLINT,
                 UM_READ_ONLY SMALLINT,
                 UM_TENANT_ID INTEGER DEFAULT 0,
                 UNIQUE(UM_DIALECT_ID, UM_CLAIM_URI, UM_TENANT_ID,UM_MAPPED_ATTRIBUTE_DOMAIN),
@@ -601,10 +677,10 @@ data:
                 UM_USER_NAME VARCHAR(255),
                 UM_ROLE_ID INTEGER NOT NULL,
                 UM_TENANT_ID INTEGER DEFAULT 0,
-    	    UM_DOMAIN_ID INTEGER,
+            UM_DOMAIN_ID INTEGER,
                 UNIQUE (UM_USER_NAME, UM_ROLE_ID, UM_TENANT_ID, UM_DOMAIN_ID),
                 FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_HYBRID_ROLE(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
-    	    FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+            FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_SYSTEM_ROLE(
@@ -625,22 +701,22 @@ data:
     )ENGINE INNODB;
     CREATE TABLE UM_HYBRID_REMEMBER_ME(
                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    			UM_USER_NAME VARCHAR(255) NOT NULL,
-    			UM_COOKIE_VALUE VARCHAR(1024),
-    			UM_CREATED_TIME TIMESTAMP,
+                UM_USER_NAME VARCHAR(255) NOT NULL,
+                UM_COOKIE_VALUE VARCHAR(1024),
+                UM_CREATED_TIME TIMESTAMP,
                 UM_TENANT_ID INTEGER DEFAULT 0,
-    			PRIMARY KEY (UM_ID, UM_TENANT_ID)
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     USE WSO2IS_IDENTITY_DB;
     CREATE TABLE UM_TENANT (
-    			UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    	        UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
                 UM_EMAIL VARCHAR(255),
                 UM_ACTIVE BOOLEAN DEFAULT FALSE,
-    	        UM_CREATED_DATE TIMESTAMP NOT NULL,
-    	        UM_USER_CONFIG LONGBLOB,
-    			PRIMARY KEY (UM_ID),
-    			UNIQUE(UM_DOMAIN_NAME)
+                UM_CREATED_DATE TIMESTAMP NOT NULL,
+                UM_USER_CONFIG LONGBLOB,
+                PRIMARY KEY (UM_ID),
+                UNIQUE(UM_DOMAIN_NAME)
     )ENGINE INNODB;
     CREATE TABLE UM_DOMAIN(
                 UM_DOMAIN_ID INTEGER NOT NULL AUTO_INCREMENT,
@@ -676,29 +752,29 @@ data:
                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                  UM_ROLE_NAME VARCHAR(255) NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    		UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
+            UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID),
                  UNIQUE(UM_ROLE_NAME, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_MODULE(
-    	UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
-    	UM_MODULE_NAME VARCHAR(100),
-    	UNIQUE(UM_MODULE_NAME),
-    	PRIMARY KEY(UM_ID)
+        UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
+        UM_MODULE_NAME VARCHAR(100),
+        UNIQUE(UM_MODULE_NAME),
+        PRIMARY KEY(UM_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_MODULE_ACTIONS(
-    	UM_ACTION VARCHAR(255) NOT NULL,
-    	UM_MODULE_ID INTEGER NOT NULL,
-    	PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
-    	FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
+        UM_ACTION VARCHAR(255) NOT NULL,
+        UM_MODULE_ID INTEGER NOT NULL,
+        PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
+        FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE UM_PERMISSION (
                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                  UM_RESOURCE_ID VARCHAR(255) NOT NULL,
                  UM_ACTION VARCHAR(255) NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    		UM_MODULE_ID INTEGER DEFAULT 0,
-    			       UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
+            UM_MODULE_ID INTEGER DEFAULT 0,
+                       UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE INDEX INDEX_UM_PERMISSION_UM_RESOURCE_ID_UM_ACTION ON UM_PERMISSION (UM_RESOURCE_ID, UM_ACTION, UM_TENANT_ID);
@@ -708,10 +784,10 @@ data:
                  UM_ROLE_NAME VARCHAR(255) NOT NULL,
                  UM_IS_ALLOWED SMALLINT NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    	     UM_DOMAIN_ID INTEGER,
+             UM_DOMAIN_ID INTEGER,
                  UNIQUE (UM_PERMISSION_ID, UM_ROLE_NAME, UM_TENANT_ID, UM_DOMAIN_ID),
-    	     FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
-    	     FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+             FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+             FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_USER_PERMISSION (
@@ -743,14 +819,14 @@ data:
         FOREIGN KEY(UM_USER_ID,UM_USER_TENANT_ID) REFERENCES UM_USER(UM_ID,UM_TENANT_ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE UM_ACCOUNT_MAPPING(
-    	UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    	UM_USER_NAME VARCHAR(255) NOT NULL,
-    	UM_TENANT_ID INTEGER NOT NULL,
-    	UM_USER_STORE_DOMAIN VARCHAR(100),
-    	UM_ACC_LINK_ID INTEGER NOT NULL,
-    	UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
-    	FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
-    	PRIMARY KEY (UM_ID)
+        UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+        UM_USER_NAME VARCHAR(255) NOT NULL,
+        UM_TENANT_ID INTEGER NOT NULL,
+        UM_USER_STORE_DOMAIN VARCHAR(100),
+        UM_ACC_LINK_ID INTEGER NOT NULL,
+        UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
+        FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
+        PRIMARY KEY (UM_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_USER_ATTRIBUTE (
                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
@@ -782,7 +858,7 @@ data:
                 UM_SUPPORTED SMALLINT,
                 UM_REQUIRED SMALLINT,
                 UM_DISPLAY_ORDER INTEGER,
-    	    UM_CHECKED_ATTRIBUTE SMALLINT,
+            UM_CHECKED_ATTRIBUTE SMALLINT,
                 UM_READ_ONLY SMALLINT,
                 UM_TENANT_ID INTEGER DEFAULT 0,
                 UNIQUE(UM_DIALECT_ID, UM_CLAIM_URI, UM_TENANT_ID,UM_MAPPED_ATTRIBUTE_DOMAIN),
@@ -818,10 +894,10 @@ data:
                 UM_USER_NAME VARCHAR(255),
                 UM_ROLE_ID INTEGER NOT NULL,
                 UM_TENANT_ID INTEGER DEFAULT 0,
-    	    UM_DOMAIN_ID INTEGER,
+            UM_DOMAIN_ID INTEGER,
                 UNIQUE (UM_USER_NAME, UM_ROLE_ID, UM_TENANT_ID, UM_DOMAIN_ID),
                 FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_HYBRID_ROLE(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
-    	    FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+            FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE UM_SYSTEM_ROLE(
@@ -842,11 +918,11 @@ data:
     )ENGINE INNODB;
     CREATE TABLE UM_HYBRID_REMEMBER_ME(
                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    			UM_USER_NAME VARCHAR(255) NOT NULL,
-    			UM_COOKIE_VALUE VARCHAR(1024),
-    			UM_CREATED_TIME TIMESTAMP,
+                UM_USER_NAME VARCHAR(255) NOT NULL,
+                UM_COOKIE_VALUE VARCHAR(1024),
+                UM_CREATED_TIME TIMESTAMP,
                 UM_TENANT_ID INTEGER DEFAULT 0,
-    			PRIMARY KEY (UM_ID, UM_TENANT_ID)
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDN_BASE_TABLE (
                 PRODUCT_NAME VARCHAR(20),
@@ -875,10 +951,10 @@ data:
                 PRIMARY KEY (ID)
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDN_OAUTH2_SCOPE_VALIDATORS (
-    	APP_ID INTEGER NOT NULL,
-    	SCOPE_VALIDATOR VARCHAR (128) NOT NULL,
-    	PRIMARY KEY (APP_ID,SCOPE_VALIDATOR),
-    	FOREIGN KEY (APP_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
+        APP_ID INTEGER NOT NULL,
+        SCOPE_VALIDATOR VARCHAR (128) NOT NULL,
+        PRIMARY KEY (APP_ID,SCOPE_VALIDATOR),
+        FOREIGN KEY (APP_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDN_OAUTH1A_REQUEST_TOKEN (
                 REQUEST_TOKEN VARCHAR(255),
@@ -1096,22 +1172,22 @@ data:
     CREATE TABLE IF NOT EXISTS SP_APP (
             ID INTEGER NOT NULL AUTO_INCREMENT,
             TENANT_ID INTEGER NOT NULL,
-    	    	APP_NAME VARCHAR (255) NOT NULL ,
-    	    	USER_STORE VARCHAR (255) NOT NULL,
+                APP_NAME VARCHAR (255) NOT NULL ,
+                USER_STORE VARCHAR (255) NOT NULL,
             USERNAME VARCHAR (255) NOT NULL ,
             DESCRIPTION VARCHAR (1024),
-    	    	ROLE_CLAIM VARCHAR (512),
+                ROLE_CLAIM VARCHAR (512),
             AUTH_TYPE VARCHAR (255) NOT NULL,
-    	    	PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
-    	    	IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
-    	    	IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
-    	    	IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
+                PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
+                IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
+                IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
+                IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
             IS_USE_TENANT_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
             IS_USE_USER_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
             ENABLE_AUTHORIZATION CHAR(1) DEFAULT '0',
-    	    	SUBJECT_CLAIM_URI VARCHAR (512),
-    	    	IS_SAAS_APP CHAR(1) DEFAULT '0',
-    	    	IS_DUMB_MODE CHAR(1) DEFAULT '0',
+                SUBJECT_CLAIM_URI VARCHAR (512),
+                IS_SAAS_APP CHAR(1) DEFAULT '0',
+                IS_DUMB_MODE CHAR(1) DEFAULT '0',
             PRIMARY KEY (ID)
     )ENGINE INNODB;
     ALTER TABLE SP_APP ADD CONSTRAINT APPLICATION_NAME_CONSTRAINT UNIQUE(APP_NAME, TENANT_ID);
@@ -1156,11 +1232,11 @@ data:
     )ENGINE INNODB;
     ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE;
     CREATE TABLE IF NOT EXISTS SP_CLAIM_DIALECT (
-    	   	ID INTEGER NOT NULL AUTO_INCREMENT,
-    	   	TENANT_ID INTEGER NOT NULL,
-    	   	SP_DIALECT VARCHAR (512) NOT NULL,
-    	   	APP_ID INTEGER NOT NULL,
-    	   	PRIMARY KEY (ID));
+            ID INTEGER NOT NULL AUTO_INCREMENT,
+            TENANT_ID INTEGER NOT NULL,
+            SP_DIALECT VARCHAR (512) NOT NULL,
+            APP_ID INTEGER NOT NULL,
+            PRIMARY KEY (ID));
     ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE;
     CREATE TABLE IF NOT EXISTS SP_CLAIM_MAPPING (
                 ID INTEGER NOT NULL AUTO_INCREMENT,
@@ -1169,7 +1245,7 @@ data:
                 SP_CLAIM VARCHAR (512) NOT NULL ,
                 APP_ID INTEGER NOT NULL,
                 IS_REQUESTED VARCHAR(128) DEFAULT '0',
-    	    IS_MANDATORY VARCHAR(128) DEFAULT '0',
+            IS_MANDATORY VARCHAR(128) DEFAULT '0',
                 DEFAULT_VALUE VARCHAR(255),
                 PRIMARY KEY (ID)
     )ENGINE INNODB;
@@ -1230,56 +1306,56 @@ data:
       PRIMARY KEY (ID),
       CONSTRAINT IDN_AUTH_WAIT_STATUS_KEY UNIQUE (LONG_WAIT_KEY));
     CREATE TABLE IF NOT EXISTS IDP (
-    			ID INTEGER AUTO_INCREMENT,
-    			TENANT_ID INTEGER,
-    			NAME VARCHAR(254) NOT NULL,
-    			IS_ENABLED CHAR(1) NOT NULL DEFAULT '1',
-    			IS_PRIMARY CHAR(1) NOT NULL DEFAULT '0',
-    			HOME_REALM_ID VARCHAR(254),
-    			IMAGE MEDIUMBLOB,
-    			CERTIFICATE BLOB,
-    			ALIAS VARCHAR(254),
-    			INBOUND_PROV_ENABLED CHAR (1) NOT NULL DEFAULT '0',
-    			INBOUND_PROV_USER_STORE_ID VARCHAR(254),
-     			USER_CLAIM_URI VARCHAR(254),
-     			ROLE_CLAIM_URI VARCHAR(254),
-      			DESCRIPTION VARCHAR (1024),
-     			DEFAULT_AUTHENTICATOR_NAME VARCHAR(254),
-     			DEFAULT_PRO_CONNECTOR_NAME VARCHAR(254),
-     			PROVISIONING_ROLE VARCHAR(128),
-     			IS_FEDERATION_HUB CHAR(1) NOT NULL DEFAULT '0',
-     			IS_LOCAL_CLAIM_DIALECT CHAR(1) NOT NULL DEFAULT '0',
+                ID INTEGER AUTO_INCREMENT,
+                TENANT_ID INTEGER,
+                NAME VARCHAR(254) NOT NULL,
+                IS_ENABLED CHAR(1) NOT NULL DEFAULT '1',
+                IS_PRIMARY CHAR(1) NOT NULL DEFAULT '0',
+                HOME_REALM_ID VARCHAR(254),
+                IMAGE MEDIUMBLOB,
+                CERTIFICATE BLOB,
+                ALIAS VARCHAR(254),
+                INBOUND_PROV_ENABLED CHAR (1) NOT NULL DEFAULT '0',
+                INBOUND_PROV_USER_STORE_ID VARCHAR(254),
+                USER_CLAIM_URI VARCHAR(254),
+                ROLE_CLAIM_URI VARCHAR(254),
+                DESCRIPTION VARCHAR (1024),
+                DEFAULT_AUTHENTICATOR_NAME VARCHAR(254),
+                DEFAULT_PRO_CONNECTOR_NAME VARCHAR(254),
+                PROVISIONING_ROLE VARCHAR(128),
+                IS_FEDERATION_HUB CHAR(1) NOT NULL DEFAULT '0',
+                IS_LOCAL_CLAIM_DIALECT CHAR(1) NOT NULL DEFAULT '0',
                 DISPLAY_NAME VARCHAR(255),
-    			PRIMARY KEY (ID),
-    			UNIQUE (TENANT_ID, NAME)
+                PRIMARY KEY (ID),
+                UNIQUE (TENANT_ID, NAME)
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDP_ROLE (
-    			ID INTEGER AUTO_INCREMENT,
-    			IDP_ID INTEGER,
-    			TENANT_ID INTEGER,
-    			ROLE VARCHAR(254),
-    			PRIMARY KEY (ID),
-    			UNIQUE (IDP_ID, ROLE),
-    			FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
+                ID INTEGER AUTO_INCREMENT,
+                IDP_ID INTEGER,
+                TENANT_ID INTEGER,
+                ROLE VARCHAR(254),
+                PRIMARY KEY (ID),
+                UNIQUE (IDP_ID, ROLE),
+                FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDP_ROLE_MAPPING (
-    			ID INTEGER AUTO_INCREMENT,
-    			IDP_ROLE_ID INTEGER,
-    			TENANT_ID INTEGER,
-    			USER_STORE_ID VARCHAR (253),
-    			LOCAL_ROLE VARCHAR(253),
-    			PRIMARY KEY (ID),
-    			UNIQUE (IDP_ROLE_ID, TENANT_ID, USER_STORE_ID, LOCAL_ROLE),
-    			FOREIGN KEY (IDP_ROLE_ID) REFERENCES IDP_ROLE(ID) ON DELETE CASCADE
+                ID INTEGER AUTO_INCREMENT,
+                IDP_ROLE_ID INTEGER,
+                TENANT_ID INTEGER,
+                USER_STORE_ID VARCHAR (253),
+                LOCAL_ROLE VARCHAR(253),
+                PRIMARY KEY (ID),
+                UNIQUE (IDP_ROLE_ID, TENANT_ID, USER_STORE_ID, LOCAL_ROLE),
+                FOREIGN KEY (IDP_ROLE_ID) REFERENCES IDP_ROLE(ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDP_CLAIM (
-    			ID INTEGER AUTO_INCREMENT,
-    			IDP_ID INTEGER,
-    			TENANT_ID INTEGER,
-    			CLAIM VARCHAR(254),
-    			PRIMARY KEY (ID),
-    			UNIQUE (IDP_ID, CLAIM),
-    			FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
+                ID INTEGER AUTO_INCREMENT,
+                IDP_ID INTEGER,
+                TENANT_ID INTEGER,
+                CLAIM VARCHAR(254),
+                PRIMARY KEY (ID),
+                UNIQUE (IDP_ID, CLAIM),
+                FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
     )ENGINE INNODB;
     CREATE TABLE IF NOT EXISTS IDP_CLAIM_MAPPING (
                 ID INTEGER AUTO_INCREMENT,
@@ -1814,81 +1890,6 @@ spec:
             name: identity-server-conf-datasources
 ---
 EOF
-
-set -e
-
-# bash variables
-KUBECTL=`which kubectl`
-NODE_IP=""
-k8s_obj_file="deployment.yaml"
-
-# bash functions
-function usage(){
-  echo "Usage: "
-  echo -e "-d, --deploy     Deploy WSO2 Identity Server"
-  echo -e "-u, --undeploy   Undeploy WSO2 Identity Server"
-  echo -e "-h, --help       Display usage instrusctions"
-}
-function undeploy(){
-  echoBold "Undeploying WSO2 Identity Server ... \n"
-  ${KUBECTL} delete -f deployment.yaml
-  exit 0
-}
-function display_msg(){
-    msg=$@
-    echoBold "${msg}"
-    exit 1
-}
-function echoBold () {
-    echo -en $'\e[1m'"${1}"$'\e[0m'
-}
-function st(){
-  cycles=${1}
-  i=0
-  while [[ i -lt $cycles ]]
-  do
-    echoBold "* "
-    let "i=i+1"
-  done
-}
-function sp(){
-  cycles=${1}
-  i=0
-  while [[ i -lt $cycles ]]
-  do
-    echoBold " "
-    let "i=i+1"
-  done
-}
-function product_name(){
-  #wso2is
-  echo -e "\n"
-  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; st 5; sp 2; sp 1; st 3; sp 3; echo ""
-  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 4; st 1; echo ""
-  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 8; echo ""
-  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; sp 4; st 1; sp 4; sp 2; sp 1; st 3; sp 1; echo ""
-  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; sp 4; st 1; sp 4; sp 2; sp 6; st 1; echo ""
-  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 4; st 1; echo ""
-  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 5; sp 2; sp 1; st 3; sp 1; echo -e "\n"
-}
-function validate_ip(){
-    ip_check=$1
-    if [[ $ip_check =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
-      IFS='.'
-      ip=$ip_check
-      set -- $ip
-      if [[ $1 -le 255 ]] && [[ $2 -le 255 ]] && [[ $3 -le 255 ]] && [[ $4 -le 255 ]]; then
-        IFS=''
-        NODE_IP=$ip_check
-      else
-        IFS=''
-        echo "invalid_ip. please try again."
-        NODE_IP=""
-      fi
-    else
-      echo "invalid_ip. please try again."
-      NODE_IP=""
-    fi
 }
 function get_node_ip(){
   NODE_IP=$(kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}')
@@ -1899,7 +1900,7 @@ function get_node_ip(){
       then
           NODE_IP=$(minikube ip)
       else
-        echo "We couldn't find your cluster node-ip."
+        echo "We could not find your cluster node-ip."
         while [[ -z "$NODE_IP" ]]
         do
               read -p "$(echo "Enter one of your cluster Node IPs to provision instant access to server: ")" NODE_IP
@@ -2002,22 +2003,19 @@ function progress_bar(){
 }
 function deploy(){
     #cheking for required command line tools
-    if [[ ! $(KUBECTL) ]]
+    if [[ ! $(which kubectl) ]]
     then
         display_msg "Please install Kubernetes command-line tool (kubectl)"
     fi
 
     echoBold "Checking for an enabled cluster... Your patience is appreciated..."
-    cluster_isReady=$(${KUBECTL} cluster-info) > /dev/null 2>&1  || true
+    cluster_isReady=$(kubectl cluster-info) > /dev/null 2>&1  || true
 
     if [[ ! $cluster_isReady == *"KubeDNS"* ]]
     then
-        display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow the link below.\n  Link: https://kubernetes.io/docs/setup/\n\n"
+        display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow: https://kubernetes.io/docs/setup/\n\n"
     fi
     echoBold "Done.\n"
-
-    # copy kubernetes object yaml files to deployment.yaml
-    echo "$deployment" > ${k8s_obj_file}
 
     #displaying wso2 product name
     product_name
@@ -2025,24 +2023,22 @@ function deploy(){
     # getting cluster node ip
     get_node_ip
 
-    # add node ip to deployment.yaml
-    sed -i -e 's/"wso2.k8s&node_ip"/'$NODE_IP'/g' deployment.yaml
+    create_yaml
 
-    echoBold "Deploying wso2 Identity Server...\n"
-
+    echoBold "Deploying WSO2 Identity Server...\n"
 
     # create kubernetes deployment
-    ${KUBECTL} create -f ${k8s_obj_file}
+    kubectl create -f ${k8s_obj_file}
 
     # waiting until the deployment is ready.
     progress_bar
 
-    echoBold "Successfully deployed WSO2 Identity Server\n\n"
+    echoBold "Successfully deployed WSO2 Identity Server.\n\n"
 
     echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
     echoBold "\tusername: admin\n"
     echoBold "\tpassword: admin\n"
-    echoBold "2. Follow <getting-started-link> to get start using WSO2 Identity Server.\n "
+    echoBold "2. Follow <getting-started-link> to start using WSO2 Identity Server.\n "
 }
 
 arg=$1
