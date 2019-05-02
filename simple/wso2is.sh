@@ -1995,15 +1995,15 @@ function progress_bar(){
           fi
       done
 
-      printf "\rProcessing WSO2 Identity Server ... |"
+      printf "Processing WSO2 Identity Server ... |"
 
-      printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' % '
+      printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' %\r'
 
-      printf "\rProcessing WSO2 Identity Server ... |"
+      printf "Processing WSO2 Identity Server ... |"
       s=$(printf "%-$((5 * ${num_true_const}))s" "H")
       echo -en "${s// /H}"
 
-      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' % '
+      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' %\r '
 
       if [ $num_true -ne $num_true_const ]
       then
@@ -2012,9 +2012,9 @@ function progress_bar(){
           do
               let "i=i+1"
               progress_unit=$progress_unit"H"
-              printf "\rProcessing WSO2 Identity Server ... |"
+              printf "Processing WSO2 Identity Server ... |"
               echo -n $progress_unit
-              printf "%-$((5 * $((${length_total} - ${num_true_const})) - $i))s| $(($(( 100 * $(($num_true_const))/ $length_total)) + 2 * $i ))"; echo -en ' % '
+              printf "%-$((5 * $((${length_total} - ${num_true_const})) - $i))s| $(($(( 100 * $(($num_true_const))/ $length_total)) + 2 * $i ))"; echo -en ' %\r '
               sleep 0.25
           done
           num_true_const=$num_true
@@ -2022,15 +2022,15 @@ function progress_bar(){
       else
           let "time_proc=time_proc + 5"
       fi
-      printf "\rProcessing WSO2 Identity Server ... |"
+      printf "Processing WSO2 Identity Server ... |"
 
-      printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' % '
+      printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' %\r '
 
-      printf "\rProcessing WSO2 Identity Server ... |"
+      printf "Processing WSO2 Identity Server ... |"
       s=$(printf "%-$((5 * ${num_true_const}))s" "H")
       echo -en "${s// /H}"
 
-      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' % '
+      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' % \r'
 
       sleep 1
 
@@ -2093,7 +2093,7 @@ function deploy(){
     #create kubernetes object yaml
     create_yaml
 
-    echoBold "Deploying WSO2 Identity Server\n"
+    echoBold "\nDeploying WSO2 Identity Server\n"
 
     # create kubernetes deployment
     kubectl create -f ${k8s_obj_file}
@@ -2106,22 +2106,28 @@ function deploy(){
     echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
     echoBold "\tusername: admin\n"
     echoBold "\tpassword: admin\n"
-    echoBold "2. Follow <getting-started-link> to start using WSO2 Identity Server.\n "
+    echoBold "2. Follow <getting-started-link> to start using WSO2 Identity Server.\n\n "
 }
 
 arg=$1
-case $arg in
-  -d|--deploy)
-    deploy
-    ;;
-  -u|--undeploy)
-    undeploy
-    ;;
-  -h|--help)
+if [[ -z $arg ]]
+then
+    echoBold "Expected parameter is missing\n"
     usage
-    ;;
-  *)
-    echo "invalid argument"
-    usage
-    ;;
-esac
+else
+  case $arg in
+    -d|--deploy)
+      deploy
+      ;;
+    -u|--undeploy)
+      undeploy
+      ;;
+    -h|--help)
+      usage
+      ;;
+    *)
+      echoBold "Invalid parameter\n"
+      usage
+      ;;
+  esac
+fi
