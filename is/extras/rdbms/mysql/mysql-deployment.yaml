@@ -24,7 +24,7 @@ spec:
         deployment: wso2is-mysql
     spec:
       containers:
-      - name: wso2is-with-analytics-mysql
+      - name: wso2is-mysql
         image: mysql:5.7
         imagePullPolicy: IfNotPresent
         securityContext:
