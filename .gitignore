@@ -18,6 +18,9 @@
 *.iws
 *.swp
 
+# Atom
+.DS_Store
+
 # Backup files
 *~
 *.bck
