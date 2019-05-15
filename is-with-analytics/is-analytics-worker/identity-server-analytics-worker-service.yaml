@@ -18,7 +18,7 @@ metadata:
   name: wso2is-with-analytics-is-analytics-service
 spec:
   selector:
-    deployment: wso2is-with-analytics-is-analytics
+    deployment: wso2is-with-analytics-is-analytics-worker
   ports:
   - name: servlet-https
     port: 9091

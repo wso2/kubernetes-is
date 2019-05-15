@@ -30,12 +30,9 @@ spec:
         deployment: wso2is-with-analytics-is
     spec:
       hostAliases:
-      - ip: "127.0.0.1"
-        hostnames:
-        - "wso2is"
       containers:
       - name: wso2is-with-analytics-is
-        image: docker.wso2.com/wso2is:5.7.0
+        image: docker.wso2.com/wso2is:5.8.0
         livenessProbe:
           exec:
             command:
@@ -78,9 +75,9 @@ spec:
         - name: identity-server-conf-event-publishers
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
         - name: shared-deployment-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/deployment
+          mountPath: /home/wso2carbon/wso2is-5.8.0/repository/deployment
         - name: shared-tenants-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/tenants
+          mountPath: /home/wso2carbon/wso2is-5.8.0/repository/tenants
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
       - name: wso2creds

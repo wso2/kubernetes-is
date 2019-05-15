@@ -91,9 +91,7 @@ ${KUBECTL} create configmap identity-server-conf-identity --from-file=../confs/i
 ${KUBECTL} create configmap identity-server-conf-event-publishers --from-file=../confs/is/deployment/server/eventpublishers/
 ${KUBECTL} create configmap identity-server-conf-tomcat --from-file=../confs/is/conf/tomcat/
 
-${KUBECTL} create configmap is-analytics-1-conf-worker --from-file=../confs/is-analytics-1/conf/worker
-
-${KUBECTL} create configmap is-analytics-2-conf-worker --from-file=../confs/is-analytics-2/conf/worker
+${KUBECTL} create configmap is-analytics-worker-conf --from-file=../confs/is-analytics-worker/conf/worker
 
 ${KUBECTL} create configmap is-analytics-dashboard-conf --from-file=../confs/is-analytics-dashboard/conf/dashboard
 
@@ -102,16 +100,9 @@ ${KUBECTL} create configmap mysql-dbscripts --from-file=../extras/confs/rdbms/my
 echoBold 'Deploying the Kubernetes Services...'
 ${KUBECTL} create -f ../extras/rdbms/mysql/mysql-service.yaml
 ${KUBECTL} create -f ../is/identity-server-service.yaml
-${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-service.yaml
-${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-service.yaml
-${KUBECTL} create -f ../is-analytics/identity-server-analytics-service.yaml
-${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-service.yaml
+${KUBECTL} create -f ../is-analytics-worker/identity-server-analytics-worker-service.yaml
+${KUBECTL} create -f ../is-analytics-dashboard/identity-server-analytics-dashboard-service.yaml
 sleep 10s
-
-# MySQL
-echoBold 'Deploying WSO2 Identity Server and Identity Server Analytics Databases using MySQL...'
-${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
-sleep 30s
 
 # persistent storage
 echoBold 'Creating persistent volume and volume claim...'
@@ -121,13 +112,17 @@ ${KUBECTL} create -f ../volumes/persistent-volumes.yaml
 ${KUBECTL} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 10s
 
+# MySQL
+echoBold 'Deploying WSO2 Identity Server and Identity Server Analytics Databases using MySQL...'
+${KUBECTL} create -f ../extras/rdbms/mysql/mysql-deployment.yaml
+sleep 60s
+
 # Identity Server and Analytics
 echoBold 'Deploying WSO2 Identity Server and Analytics...'
 ${KUBECTL} create -f ../is/identity-server-deployment.yaml
-${KUBECTL} create -f ../is-analytics/identity-server-analytics-1-deployment.yaml
-${KUBECTL} create -f ../is-analytics/identity-server-analytics-2-deployment.yaml
+${KUBECTL} create -f ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml
 sleep 30s
-${KUBECTL} create -f ../is-analytics-dashboard/identity-server-dashboard-deployment.yaml
+${KUBECTL} create -f ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml
 sleep 30s
 
 #echoBold 'Deploying Ingresses...'
