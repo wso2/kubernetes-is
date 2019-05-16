@@ -32,7 +32,7 @@ spec:
     spec:
       containers:
       - name: wso2is
-        image: docker.wso2.com/wso2is:5.7.0
+        image: gcr.io/research-n-development-209206/wso2is:5.8.0
         livenessProbe:
           exec:
             command:
@@ -71,12 +71,10 @@ spec:
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
         - name: shared-deployment-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/deployment
+          mountPath: /home/wso2carbon/wso2is-5.8.0/repository/deployment
         - name: shared-tenants-persistent-disk
-          mountPath: /home/wso2carbon/wso2is-5.7.0/repository/tenants
+          mountPath: /home/wso2carbon/wso2is-5.8.0/repository/tenants
       serviceAccountName: {{ .Values.svcaccount }}
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: identity-server-conf
         configMap:
