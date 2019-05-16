@@ -1,3 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <!--
   ~ Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
   ~
@@ -13,30 +14,29 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
 <ConsentManager xmlns="http://wso2.org/carbon/consent/management">
-    <DataSource>
-        <!-- Include a data source name (jndiConfigName) from the set of data sources defined in master-datasources
+  <DataSource>
+    <!-- Include a data source name (jndiConfigName) from the set of data sources defined in master-datasources
         .xml -->
-        <Name>jdbc/WSO2ConsentDS</Name>
-    </DataSource>
-    <PIIController>
-        <PiiController>change-me</PiiController>
-        <Contact>change-me</Contact>
-        <Email>change-me</Email>
-        <Phone>change-me</Phone>
-        <OnBehalf>false</OnBehalf>
-        <PiiControllerUrl>change-me</PiiControllerUrl>
-        <Address>
-            <Country>change-me</Country>
-            <Locality>change-me</Locality>
-            <Region>change-me</Region>
-            <PostOfficeBoxNumber>change-me</PostOfficeBoxNumber>
-            <PostalCode>change-me</PostalCode>
-            <StreetAddress>change-me</StreetAddress>
-        </Address>
-    </PIIController>
-    <SearchLimits>
-        <Purpose>100</Purpose>
-    </SearchLimits>
+    <Name>jdbc/WSO2ConsentDS</Name>
+  </DataSource>
+  <PIIController>
+    <PiiController>change-me</PiiController>
+    <Contact>change-me</Contact>
+    <Email>change-me</Email>
+    <Phone>change-me</Phone>
+    <OnBehalf>false</OnBehalf>
+    <PiiControllerUrl>change-me</PiiControllerUrl>
+    <Address>
+      <Country>change-me</Country>
+      <Locality>change-me</Locality>
+      <Region>change-me</Region>
+      <PostOfficeBoxNumber>change-me</PostOfficeBoxNumber>
+      <PostalCode>change-me</PostalCode>
+      <StreetAddress>change-me</StreetAddress>
+    </Address>
+  </PIIController>
+  <SearchLimits>
+    <Purpose>100</Purpose>
+  </SearchLimits>
 </ConsentManager>
