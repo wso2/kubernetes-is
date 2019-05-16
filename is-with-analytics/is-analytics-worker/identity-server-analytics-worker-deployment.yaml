@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: wso2is-with-analytics-is-analytics-worker
-        image: docker.wso2.com/wso2is-analytics-worker:5.8.0
+        image: wso2/wso2is-analytics-worker:5.8.0
         env:
         -
           name: NODE_IP
@@ -101,8 +101,6 @@ spec:
         - name: is-analytics-worker-conf
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: is-analytics-worker-conf
         configMap:
