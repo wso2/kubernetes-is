@@ -13,20 +13,18 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: wso2is-with-analytics-is-dashboard-service
+  name: is-analytics-worker-conf
   namespace : {{ .Values.namespace }}
-  labels:
-    deployment: wso2is-with-analytics-dashboard
-spec:
-  ports:
-    # ports that this service should serve on
-    -
-      name: 'https'
-      port: 9643
-      protocol: TCP
-
-  # label keys and values that must match in order to receive traffic for this service
-  selector:
-    deployment: wso2is-with-analytics-dashboard
+data:
+  {{- $file := .Files }}
+  {{- range $path, $byte := .Files.Glob "confs/is-analytics-worker/conf/worker/*" }}
+  {{- $list := $path | splitList "/"}}
+  {{- $length := len $list }}
+  {{- $last := add $length -1 }}
+  {{ index $list $last }}: |-
+    {{- range $file.Lines $path }}
+    {{ . }}
+    {{- end }}
+  {{- end }}

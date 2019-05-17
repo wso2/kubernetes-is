@@ -15,46 +15,18 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2is-with-analytics-is-analytics-1-service
+  name: wso2is-with-analytics-is-dashboard-service
   namespace : {{ .Values.namespace }}
+  labels:
+    deployment: wso2is-with-analytics-is-analytics-dashboard
 spec:
-  selector:
-    node: wso2is-with-analytics-is-analytics-1
   ports:
+    # ports that this service should serve on
     -
-      name: 'thrift'
-      port: 9090
+      name: 'https'
+      port: 9643
       protocol: TCP
-    -
-      name: 'thrift-ssl'
-      port: 9091
-      protocol: TCP
-    -
-      name: 'spark-port-1'
-      port: 9543
-      protocol: TCP
-    -
-      name: 'spark-port-2'
-      port: 9711
-      protocol: TCP
-    -
-      name: 'spark-port-3'
-      port: 9611
-      protocol: TCP
-    -
-      name: 'spark-port-4'
-      protocol: TCP
-      port: 7712
-    -
-      name: 'spark-port-5'
-      protocol: TCP
-      port: 7612
-    -
-      name: 'spark-port-6'
-      protocol: TCP
-      port: 7070
-    -
-      name: 'spark-port-7'
-      protocol: TCP
-      port: 7443
 
+  # label keys and values that must match in order to receive traffic for this service
+  selector:
+    deployment: wso2is-with-analytics-is-analytics-dashboard

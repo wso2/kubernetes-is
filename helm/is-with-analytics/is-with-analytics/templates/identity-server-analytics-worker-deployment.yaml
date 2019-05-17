@@ -15,28 +15,30 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-with-analytics-is-analytics-2-deployment
+  name: wso2is-with-analytics-is-analytics-worker-deployment
   namespace : {{ .Values.namespace }}
 spec:
-  replicas: 1
-  minReadySeconds: 30
+  replicas: 2
   strategy:
     rollingUpdate:
-      maxSurge: 1
+      maxSurge: 2
       maxUnavailable: 0
     type: RollingUpdate
   template:
     metadata:
       labels:
-        deployment: wso2is-with-analytics-is-analytics
-        node: wso2is-with-analytics-is-analytics-2
+        deployment: wso2is-with-analytics-is-analytics-worker
     spec:
       containers:
-      - name: wso2is-with-analytics-is-analytics-2
-        image: docker.wso2.com/wso2is-analytics-worker:5.7.0
+      - name: wso2is-with-analytics-is-analytics-worker
+        image: gcr.io/research-n-development-209206/wso2is-analytics-worker:5.8.0
         env:
         -
           name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_ID
           valueFrom:
             fieldRef:
               fieldPath: status.podIP
@@ -50,7 +52,7 @@ spec:
             command:
             - /bin/sh
             - -c
-            - nc -z localhost 9090
+            - nc -z localhost 9091
           initialDelaySeconds: 200
           periodSeconds: 10
         readinessProbe:
@@ -97,12 +99,10 @@ spec:
             containerPort: 7443
             protocol: TCP
         volumeMounts:
-        - name: is-analytics-2-conf-worker
+        - name: is-analytics-worker-conf
           mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
       serviceAccountName: "wso2svc-account"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
-      - name: is-analytics-2-conf-worker
+      - name: is-analytics-worker-conf
         configMap:
-          name: is-analytics-2-conf-worker
+          name: is-analytics-worker-conf
