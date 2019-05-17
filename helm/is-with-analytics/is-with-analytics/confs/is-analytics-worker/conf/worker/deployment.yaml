@@ -16,13 +16,36 @@
   # Carbon Configuration Parameters
 wso2.carbon:
     # value to uniquely identify a server
-  id: wso2-analytics-is
+  id: ${NODE_ID}
     # server name
   name: WSO2 Analytics Identity Server
+    # dashboard type
+  type: wso2-is-analytics
     # ports used by this server
   ports:
       # port offset
-    offset: 2
+    offset: 0
+wso2.transport.http:
+  transportProperties:
+  - name: server.bootstrap.socket.timeout
+    value: 60
+  - name: client.bootstrap.socket.timeout
+    value: 60
+  - name: latency.metrics.enabled
+    value: true
+  listenerConfigurations:
+  - id: default
+    host: 0.0.0.0
+    port: 9090
+  - id: msf4j-https
+    host: 0.0.0.0
+    port: 9091
+    scheme: https
+    keyStoreFile: ${carbon.home}/resources/security/wso2carbon.jks
+    keyStorePassword: wso2carbon
+    certPass: wso2carbon
+  senderConfigurations:
+  - id: http-sender
   # Configuration used for the databridge communication
 databridge.config:
     # No of worker threads to consume events
@@ -66,7 +89,7 @@ databridge.config:
         sslPort: '9711'
         tcpReceiverThreadPoolSize: '100'
         sslReceiverThreadPoolSize: '100'
-        hostName: 0.0.0.0
+        hostName: ${NODE_IP}
   # Configuration of the Data Agents - to publish events through databridge
 data.agent.config:
     # Data agent configurations
@@ -168,18 +191,65 @@ data.agent.config:
       sslEnabledProtocols: TLSv1.1,TLSv1.2
         # Ciphers
       ciphers: TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_RSA_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_RSA_WITH_AES_128_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_RSA_WITH_AES_128_GCM_SHA256
+# This is the main configuration for metrics
+wso2.metrics:
+  # Enable Metrics
+  enabled: true
+  reporting:
+    console:
+        # The name for the Console Reporter
+    - name: Console
+        # Enable Console Reporter
+      enabled: false
+        # Polling Period in seconds.
+        # This is the period for polling metrics from the metric registry and printing in the console
+      pollingPeriod: 5
+wso2.metrics.jdbc:
+  # Data Source Configurations for JDBC Reporters
+  dataSource:
+      # JNDI name of the data source to be used by the JDBC Reporter.
+      # This data source should be defined in a *-datasources.xml file in conf/datasources directory.
+  - &JDBC01
+    dataSourceName: java:comp/env/jdbc/WSO2MetricsDB
+      # Schedule regular deletion of metrics data older than a set number of days.
+      # It is recommended that you enable this job to ensure your metrics tables do not get extremely large.
+      # Deleting data older than seven days should be sufficient.
+    scheduledCleanup:
+        # Enable scheduled cleanup to delete Metrics data in the database.
+      enabled: true
+        # The scheduled job will cleanup all data older than the specified days
+      daysToKeep: 7
+        # This is the period for each cleanup operation in seconds.
+      scheduledCleanupPeriod: 86400
+  # The JDBC Reporter is in the Metrics JDBC Core feature
+  reporting:
+    # The JDBC Reporter configurations will be ignored if the Metrics JDBC Core feature is not available in runtime
+    jdbc:
+        # The name for the JDBC Reporter
+    - name: JDBC
+        # Enable JDBC Reporter
+      enabled: true
+        # Source of Metrics, which will be used to identify each metric in database -->
+        # Commented to use the hostname by default
+        # source: Carbon
+        # Alias referring to the Data Source configuration
+      dataSource: *JDBC01
+        # Polling Period in seconds.
+        # This is the period for polling metrics from the metric registry and updating the database with the values
+      pollingPeriod: 60
   # Deployment configuration parameters
 wso2.artifact.deployment:
     # Scheduler update interval
   updateInterval: 5
-  # HA Configuration
+  # Periodic Persistence Configuration
 state.persistence:
-  enabled: false
+  enabled: true
   intervalInMin: 1
   revisionsToKeep: 2
-  persistenceStore: org.wso2.carbon.stream.processor.core.persistence.FileSystemPersistenceStore
+  persistenceStore: org.wso2.carbon.stream.processor.core.persistence.DBPersistenceStore
   config:
-    location: siddhi-app-persistence
+    datasource: WSO2_PERSISTENCE_DB
+    table: PERSISTENCE_TABLE
   # Secure Vault Configuration
 wso2.securevault:
   secretRepository:
@@ -192,63 +262,24 @@ wso2.securevault:
     type: org.wso2.carbon.secvault.reader.DefaultMasterKeyReader
     parameters:
       masterKeyReaderFile: ${sys:carbon.home}/conf/${sys:wso2.runtime}/master-keys.yaml
-# Data Sources Configuration
+  # Datasource Configurations
 wso2.datasources:
   dataSources:
-  # Dashboard data source
-  - name: WSO2_DASHBOARD_DB
-    description: The datasource used for dashboard feature
-    jndiConfig:
-      name: jdbc/DASHBOARD_DB
-      useJndiReference: true
-    definition:
-      type: RDBMS
-      configuration:
-        jdbcUrl: jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/DASHBOARD_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE
-        username: wso2carbon
-        password: wso2carbon
-        driverClassName: org.h2.Driver
-        maxPoolSize: 20
-        idleTimeout: 60000
-        connectionTestQuery: SELECT 1
-        validationTimeout: 30000
-        isAutoCommit: false
-  - name: BUSINESS_RULES_DB
-    description: The datasource used for business rules feature
-    jndiConfig:
-      name: jdbc/BUSINESS_RULES_DB
-      useJndiReference: true
-    definition:
-      type: RDBMS
-      configuration:
-        jdbcUrl: jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/BUSINESS_RULES_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE
-        username: wso2carbon
-        password: wso2carbon
-        driverClassName: org.h2.Driver
-        maxPoolSize: 20
-        idleTimeout: 60000
-        connectionTestQuery: SELECT 1
-        validationTimeout: 30000
-        isAutoCommit: false
-  # Dashboard data source
-  - name: WSO2_STATUS_DASHBOARD_DB
-    description: The datasource used for dashboard feature
-    jndiConfig:
-      name: jdbc/wso2_status_dashboard
-      useJndiReference: true
-    definition:
-      type: RDBMS
-      configuration:
-        jdbcUrl: jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/wso2_status_dashboard;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE
-        username: wso2carbon
-        password: wso2carbon
-        driverClassName: org.h2.Driver
-        maxPoolSize: 20
-        idleTimeout: 60000
-        connectionTestQuery: SELECT 1
-        validationTimeout: 30000
-        isAutoCommit: false
-  # carbon metrics data source
+#  - name: WSO2_CLUSTER_DB
+#    description: The datasource used by cluster coordinators in HA deployment
+#    definition:
+#      type: RDBMS
+#      configuration:
+#        connectionTestQuery: SELECT 1
+#        driverClassName: org.h2.Driver
+#        idleTimeout: 60000
+#        isAutoCommit: false
+#        jdbcUrl: jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/WSO2_CLUSTER_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;AUTO_SERVER=TRUE
+#        maxPoolSize: 10
+#        password: wso2carbon
+#        username: wso2carbon
+#        validationTimeout: 30000
+    # carbon metrics data source
   - name: WSO2_METRICS_DB
     description: The datasource used for dashboard feature
     jndiConfig:
@@ -260,13 +291,13 @@ wso2.datasources:
         username: wso2carbon
         password: wso2carbon
         driverClassName: org.h2.Driver
-        maxPoolSize: 20
+        maxPoolSize: 30
         idleTimeout: 60000
         connectionTestQuery: SELECT 1
         validationTimeout: 30000
         isAutoCommit: false
   - name: WSO2_PERMISSIONS_DB
-    description: The datasource used for dashboard feature
+    description: The datasource used for permission feature
     jndiConfig:
       name: jdbc/PERMISSION_DB
       useJndiReference: true
@@ -297,64 +328,84 @@ wso2.datasources:
         idleTimeout: 60000
         validationTimeout: 30000
         isAutoCommit: false
-#  - name: SAMPLE_DB
-#    description: Sample datasource used for gadgets generation wizard
-#    jndiConfig:
-#      name: jdbc/SAMPLE_DB
-#      useJndiReference: true
-#    definition:
-#      type: RDBMS
-#      configuration:
-#        jdbcUrl: 'jdbc:h2:${sys:carbon.home}/wso2/${sys:wso2.runtime}/database/SAMPLE_DB;IFEXISTS=TRUE;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000;MVCC=TRUE'
-#        username: wso2carbon
-#        password: wso2carbon
-#        driverClassName: org.h2.Driver
-#        maxPoolSize: 10
-#        idleTimeout: 60000
-#        connectionTestQuery: SELECT 1
-#        validationTimeout: 30000
-#        isAutoCommit: false
-wso2.business.rules.manager:
-  datasource: BUSINESS_RULES_DB
-  # rule template wise configuration for deploying business rules
-  deployment_configs:
-     # <IP>:<HTTPS Port> of the Worker node
-  - localhost:9443:
-       # UUIDs of rule templates that are needed to be deployed on the node
-    - stock-data-analysis
-    - stock-exchange-input
-    - stock-exchange-output
-    - identifying-continuous-production-decrease
-    - popular-tweets-analysis
-    - http-analytics-processing
-    - message-tracing-source-template
-    - message-tracing-app-template
-  # credentials for worker nodes
-  username: admin
-  password: admin
-wso2.status.dashboard:
-  pollingInterval: 5
-  metricsDatasourceName: WSO2_METRICS_DB
-  dashboardDatasourceName: WSO2_STATUS_DASHBOARD_DB
-  workerAccessCredentials:
-    username: admin
-    password: admin
-wso2.transport.http:
-  transportProperties:
-  - name: server.bootstrap.socket.timeout
-    value: 60
-  - name: client.bootstrap.socket.timeout
-    value: 60
-  - name: latency.metrics.enabled
-    value: true
-  listenerConfigurations:
-  - id: default-https
-    host: 0.0.0.0
-    port: 9643
-    scheme: https
-    keyStoreFile: ${carbon.home}/resources/security/wso2carbon.jks
-    keyStorePassword: wso2carbon
-    certPass: wso2carbon
+  - name: GEO_LOCATION_DATA
+    description: The data source used for geo location database
+    jndiConfig:
+      name: jdbc/GEO_LOCATION_DATA
+    definition:
+      type: RDBMS
+      configuration:
+        jdbcUrl: jdbc:h2:${sys:carbon.home}/wso2/worker/database/GEO_LOCATION_DATA;AUTO_SERVER=TRUE
+        username: wso2carbon
+        password: wso2carbon
+        driverClassName: org.h2.Driver
+        maxPoolSize: 50
+        idleTimeout: 60000
+        validationTimeout: 30000
+        isAutoCommit: false
+  - name: WSO2_CLUSTER_DB
+    description: The MySQL datasource used for Cluster Coordination
+    jndiConfig:
+      name: jdbc/WSO2ClusterDB
+    definition:
+      type: RDBMS
+      configuration:
+        jdbcUrl: 'jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2_CLUSTER_DB?useSSL=false'
+        username: wso2carbon
+        password: wso2carbon
+        driverClassName: com.mysql.jdbc.Driver
+        maxPoolSize: 50
+        idleTimeout: 60000
+        connectionTestQuery: SELECT 1
+        validationTimeout: 30000
+        isAutoCommit: false
+
+  - name: WSO2_PERSISTENCE_DB
+    description: The MySQL datasource used for system persistence
+    jndiConfig:
+      name: jdbc/WSO2PersistenceDB
+    definition:
+      type: RDBMS
+      configuration:
+        jdbcUrl: 'jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2_PERSISTENCE_DB?useSSL=false'
+        username: wso2carbon
+        password: wso2carbon
+        driverClassName: com.mysql.jdbc.Driver
+        maxPoolSize: 50
+        idleTimeout: 60000
+        connectionTestQuery: SELECT 1
+        validationTimeout: 30000
+        isAutoCommit: false
+siddhi:
+  extensions:
+  - extension:
+      name: findCountryFromIP
+      namespace: geo
+      properties:
+        geoLocationResolverClass: org.wso2.extension.siddhi.execution.geo.internal.impl.DefaultDBBasedGeoLocationResolver
+        isCacheEnabled: true
+        cacheSize: 10000
+        isPersistInDatabase: true
+        datasource: GEO_LOCATION_DATA
+  - extension:
+      name: findCityFromIP
+      namespace: geo
+      properties:
+        geoLocationResolverClass: org.wso2.extension.siddhi.execution.geo.internal.impl.DefaultDBBasedGeoLocationResolver
+        isCacheEnabled: true
+        cacheSize: 10000
+        isPersistInDatabase: true
+        datasource: GEO_LOCATION_DATA
+  # Cluster Configuration
+cluster.config:
+  enabled: true
+  groupId: is.analytics
+  coordinationStrategyClass: org.wso2.carbon.cluster.coordinator.rdbms.RDBMSCoordinationStrategy
+  strategyConfig:
+    datasource: WSO2_CLUSTER_DB
+    heartbeatInterval: 1000
+    heartbeatMaxRetry: 2
+    eventPollingInterval: 1000
 # Authentication configuration
 auth.configs:
   type: local          # Type of the IdP client used
@@ -370,3 +421,71 @@ auth.configs:
       - role:
           id: 1
           displayName: admin
+  # Sample of deployment.config for Two node HA
+#deployment.config:
+#  type: ha
+#  eventSyncServer:
+#    host: localhost
+#    port: 9893
+#    advertisedHost: localhost
+#    advertisedPort: 9893
+#    bossThreads: 10
+#    workerThreads: 10
+#  eventSyncClientPool:
+#    maxActive: 10
+#    maxTotal: 10
+#    maxIdle: 10
+#    maxWait: 60000
+#    minEvictableIdleTimeMillis: 120000
+  # Sample of deployment.config for Distributed deployment
+#deployment.config:
+#  type: distributed
+#  httpsInterface:
+#    host: 192.168.1.3
+#    port: 9443
+#    username: admin
+#    password: admin
+#  leaderRetryInterval: 10000
+#  resourceManagers:
+#    - host: 192.168.1.1
+#      port: 9543
+#      username: admin
+#      password: admin
+#    - host: 192.168.1.2
+#      port: 9543
+#      username: admin
+#      password: admin
+siddhi.stores.query.api:
+  listenerConfigurations:
+  - host: 0.0.0.0
+    id: default
+    port: 7070
+  - scheme: https
+    port: 7443
+    host: 0.0.0.0
+    keyStoreFile: ${carbon.home}/resources/security/wso2carbon.jks
+    certPass: wso2carbon
+    keyStorePassword: wso2carbon
+    id: msf4j-https
+  transportProperties:
+  - name: server.bootstrap.socket.timeout
+    value: 60
+  - name: client.bootstrap.socket.timeout
+    value: 60
+  - name: latency.metrics.enabled
+    value: true
+deployment.config:
+  byteBufferExtractorThreadPoolSize: 5
+  eventByteBufferQueueCapacity: 20000
+  type: ha
+  eventSyncClientPool:
+    maxTotal: 10
+    maxActive: 10
+    minEvictableIdleTimeMillis: 120000
+    maxWait: 60000
+    maxIdle: 10
+  eventSyncServer:
+    host: ${NODE_IP}
+    workerThreads: 10
+    port: 9894
+    bossThreads: 10
