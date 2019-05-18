@@ -1,10 +1,10 @@
 # Kubernetes and Helm Resources for WSO2 Identity And Access Management
-*This repository contains Kubernetes and Helm Resources for container-based deployments of the following WSO2 Identity Server deployment patterns.*
+
+*Kubernetes and Helm Resources for container-based deployments of WSO2 Identity Server deployment patterns.*
 
 * A clustered deployment of WSO2 Identity Server
 
-![A clustered deployment WSO2 Identity Server](is/is.png)
-
+* A clustered deployment of WSO2 Identity Server with Analytics support
 
 ## Deploy Kubernetes resources
 
