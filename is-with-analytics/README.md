@@ -2,8 +2,6 @@
 
 Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server with WSO2 Identity Server Analytics](https://docs.wso2.com/display/IS580/Setting+Up+Deployment+Pattern+2).
 
-![A clustered deployment WSO2 Identity Server with Identity Server Analytics support](is-with-analytics.png)
-
 ## Contents
 
 * [Prerequisites](#prerequisites)
