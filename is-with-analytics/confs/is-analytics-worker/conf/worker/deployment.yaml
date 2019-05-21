@@ -343,39 +343,38 @@ wso2.datasources:
         idleTimeout: 60000
         validationTimeout: 30000
         isAutoCommit: false
-  - name: WSO2_CLUSTER_DB
-    description: The MySQL datasource used for Cluster Coordination
+  - definition:
+      configuration:
+        username: wso2carbon
+        driverClassName: com.mysql.jdbc.Driver
+        validationTimeout: 30000
+        connectionTestQuery: SELECT 1
+        idleTimeout: 60000
+        isAutoCommit: false
+        maxPoolSize: 50
+        password: wso2carbon
+        jdbcUrl: jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2_CLUSTER_DB?useSSL=false
+      type: RDBMS
+    name: WSO2_CLUSTER_DB
     jndiConfig:
       name: jdbc/WSO2ClusterDB
-    definition:
-      type: RDBMS
+    description: The MySQL datasource used for Cluster Coordination
+  - definition:
       configuration:
-        jdbcUrl: 'jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2_CLUSTER_DB?useSSL=false'
         username: wso2carbon
-        password: wso2carbon
         driverClassName: com.mysql.jdbc.Driver
-        maxPoolSize: 50
-        idleTimeout: 60000
-        connectionTestQuery: SELECT 1
         validationTimeout: 30000
+        connectionTestQuery: SELECT 1
+        idleTimeout: 60000
         isAutoCommit: false
-
-  - name: WSO2_PERSISTENCE_DB
-    description: The MySQL datasource used for system persistence
+        maxPoolSize: 50
+        password: wso2carbon
+        jdbcUrl: jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2_PERSISTENCE_DB?useSSL=false
+      type: RDBMS
+    name: WSO2_PERSISTENCE_DB
     jndiConfig:
       name: jdbc/WSO2PersistenceDB
-    definition:
-      type: RDBMS
-      configuration:
-        jdbcUrl: 'jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2_PERSISTENCE_DB?useSSL=false'
-        username: wso2carbon
-        password: wso2carbon
-        driverClassName: com.mysql.jdbc.Driver
-        maxPoolSize: 50
-        idleTimeout: 60000
-        connectionTestQuery: SELECT 1
-        validationTimeout: 30000
-        isAutoCommit: false
+    description: The MySQL datasource used for system persistence
 siddhi:
   extensions:
   - extension:

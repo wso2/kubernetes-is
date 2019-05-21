@@ -32,7 +32,7 @@ spec:
       hostAliases:
       containers:
       - name: wso2is-with-analytics-is
-        image: wso2/wso2is:5.8.0
+        image: gcr.io/research-n-development-209206/wso2is:5.8.0
         livenessProbe:
           exec:
             command:

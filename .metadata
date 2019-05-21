@@ -104,6 +104,8 @@ files:
 #        current_value: "{$arg.existing_version}"
 #        new_value: "{$arg.new_version}"
 
+
+  # Kubernetes resources for a HA clustered deployment of WSO2 Identity Server
     - file_path: "is/confs/axis2/axis2.xml"
       relative_path: "{$arg.wso2is}/repository/conf/axis2/axis2.xml"
       file_type: xml
@@ -405,6 +407,7 @@ files:
           current_value: "{$arg.existing_version_wso2is}"
           new_value: "{$arg.new_version_wso2is}"
 
+  # Kubernetes resources for a HA clustered deployment of WSO2 Identity Server with Analytics
     - file_path: "is-with-analytics/confs/is/conf/carbon.xml"
       relative_path: "{$arg.wso2is}/repository/conf/carbon.xml"
       file_type: "xml"
