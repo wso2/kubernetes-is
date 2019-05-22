@@ -2,9 +2,9 @@
 IS_OPEN_SOURCE=false
 
 if $IS_OPEN_SOURCE; then
-    SCRIPT="wso2is-ga.sh"
+    SCRIPT="../wso2is-ga.sh"
 else
-    SCRIPT="wso2is-latest.sh"
+    SCRIPT="../wso2is-latest.sh"
 fi
 
 cat > $SCRIPT << "EOF"
@@ -58,21 +58,21 @@ echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT; echo 'EOF' >> $SCRIPT
 echo 'if [ "$namespace" == "wso2" ]; then' >> $SCRIPT
 
 echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
-cat ../pre-req/wso2is-namespace.yaml >> $SCRIPT
+cat ../../pre-req/wso2is-namespace.yaml >> $SCRIPT
 echo -e "EOF\nfi">> $SCRIPT
 
 echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
-cat ../pre-req/wso2is-serviceaccount.yaml >> $SCRIPT
+cat ../../pre-req/wso2is-serviceaccount.yaml >> $SCRIPT
 if ! $IS_OPEN_SOURCE ; then
-  cat ../pre-req/wso2is-secret.yaml >> $SCRIPT
+  cat ../../pre-req/wso2is-secret.yaml >> $SCRIPT
 fi
-cat ../confs/is-confs.yaml >> $SCRIPT
-cat ../confs/is-conf-ds.yaml >> $SCRIPT
-cat ../confs/mysql-conf-db.yaml >> $SCRIPT
-cat ../mysql/wso2is-mysql-service.yaml >> $SCRIPT
-cat ../is/wso2is-service.yaml >> $SCRIPT
-cat ../mysql/wso2is-mysql-deployment.yaml >> $SCRIPT
-cat ../is/wso2is-deployment.yaml >> $SCRIPT
+cat ../../confs/is-confs.yaml >> $SCRIPT
+cat ../../confs/is-conf-ds.yaml >> $SCRIPT
+cat ../../confs/mysql-conf-db.yaml >> $SCRIPT
+cat ../../mysql/wso2is-mysql-service.yaml >> $SCRIPT
+cat ../../is/wso2is-service.yaml >> $SCRIPT
+cat ../../mysql/wso2is-mysql-deployment.yaml >> $SCRIPT
+cat ../../is/wso2is-deployment.yaml >> $SCRIPT
 echo 'EOF' >> $SCRIPT
 echo "}" >> $SCRIPT
 
