@@ -12,6 +12,10 @@ Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](h
 
 ## Prerequisites
 
+* In order to use Docker images with WSO2 updates, you need an active WSO2 subscription. If you do not possess an active WSO2
+  subscription, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
+  Otherwise, you can proceed with Docker images which are created using GA releases.<br><br>
+
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
 
@@ -50,7 +54,32 @@ Then, switch the context to new `wso2` namespace.
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
 
-##### 3. Setup product database(s):
+##### 3. [Optional] If you are using Docker images with WSO2 updates, create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com):
+
+Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
+
+```
+kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com --docker-username=<WSO2_USERNAME> --docker-password=<WSO2_PASSWORD> --docker-email=<WSO2_USERNAME>
+```
+
+`WSO2_USERNAME`: Your WSO2 username<br>
+`WSO2_PASSWORD`: Your WSO2 password
+
+Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
+for further details.
+
+Also, add the created `wso2creds` Kubernetes Secret as an entry to Kubernetes Deployment resources. Please add the following entry
+under the [Kubernetes Pod Specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#podspec-v1-core) `PodSpec` in each Deployment resource.
+
+```
+imagePullSecrets:
+- name: wso2creds
+```
+The Kubernetes Deployment definition file(s) that need to be updated are as follows:
+
+* `<KUBERNETES_HOME>/is/identity-server-deployment.yaml` 
+
+##### 4. Setup product database(s):
 
 Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS580/Setting+Up+Separate+Databases+for+Clustering)
 on creating the required databases for the deployment.
@@ -100,13 +129,13 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     kubectl create -f <KUBERNETES_HOME>/is/extras/rdbms/mysql/mysql-deployment.yaml
     ```
     
-##### 4. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
+##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
 kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
 
-##### 5. Setup a Network File System (NFS) to be used for persistent storage.
+##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
 `<KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml` file.
@@ -132,7 +161,7 @@ kubectl create -f <KUBERNETES_HOME>/is/identity-server-volume-claims.yaml
 kubectl create -f <KUBERNETES_HOME>/is/volumes/persistent-volumes.yaml
 ```
 
-##### 6. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster:
+##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster:
 
 ```
 kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/is/confs/
@@ -141,14 +170,14 @@ kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETE
 kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/is/confs/identity/
 ```
 
-##### 7. Create Kubernetes Services and Deployments for WSO2 Identity Server:
+##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server:
 
 ```
 kubectl create -f <KUBERNETES_HOME>/is/identity-server-service.yaml
 kubectl create -f <KUBERNETES_HOME>/is/identity-server-deployment.yaml
 ```
 
-##### 8. Deploy Kubernetes Ingress resource:
+##### 9. Deploy Kubernetes Ingress resource:
 
 The WSO2 Identity Server Kubernetes Ingress resource uses the NGINX Ingress Controller.
 
@@ -161,7 +190,7 @@ Finally, deploy the WSO2 Identity Server Kubernetes Ingress resources as follows
 kubectl create -f <KUBERNETES_HOME>/is/ingresses/identity-server-ingress.yaml
 ```
 
-##### 9. Access Management Console:
+##### 10. Access Management Console:
 
 Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
 
@@ -186,7 +215,7 @@ b. Add the above host as an entry in /etc/hosts file as follows:
 
 c. Try navigating to `https://wso2is/carbon` from your favorite browser.
 
-##### 10. Scale up using `kubectl scale`:
+##### 11. Scale up using `kubectl scale`:
 
 Default deployment runs a single replica (or pod) of WSO2 Identity server. To scale this deployment into any `<n>` number of
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
