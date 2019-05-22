@@ -1,8 +1,13 @@
 #!/bin/bash
+IS_OPEN_SOURCE=false
 
-DEPLOY_SCRIPT="wso2is-latest.sh"
+if $IS_OPEN_SOURCE; then
+    SCRIPT="wso2is-ga.sh"
+else
+    SCRIPT="wso2is-latest.sh"
+fi
 
-cat > $DEPLOY_SCRIPT << "EOF"
+cat > $SCRIPT << "EOF"
 #!/bin/bash
 
 #-------------------------------------------------------------------------------
@@ -24,9 +29,18 @@ cat > $DEPLOY_SCRIPT << "EOF"
 set -e
 EOF
 
-cat >> $DEPLOY_SCRIPT << "EOF"
+cat >> $SCRIPT << "EOF"
 # bash variables
 k8s_obj_file="deployment.yaml"; NODE_IP=''; str_sec=""
+EOF
+
+if $IS_OPEN_SOURCE; then
+  echo 'IMG_DEST="wso2"' >> $SCRIPT
+else
+  echo 'IMG_DEST="docker.wso2.com"' >> $SCRIPT
+fi
+
+cat >> $SCRIPT << "EOF"
 
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
@@ -38,31 +52,37 @@ WUMUsername=''; WUMPassword=''
 OUTPUT_DIR=$4; INPUT_DIR=$2; TG_PROP="$INPUT_DIR/infrastructure.properties"
 EOF
 
-echo "function create_yaml(){" >> $DEPLOY_SCRIPT
+echo "function create_yaml(){" >> $SCRIPT
 
-echo 'cat > $k8s_obj_file << "EOF"' >> $DEPLOY_SCRIPT; echo 'EOF' >> $DEPLOY_SCRIPT
-echo 'if [ "$namespace" == "wso2" ]; then' >> $DEPLOY_SCRIPT
+echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT; echo 'EOF' >> $SCRIPT
+echo 'if [ "$namespace" == "wso2" ]; then' >> $SCRIPT
 
-echo 'cat >> $k8s_obj_file << "EOF"' >> $DEPLOY_SCRIPT
-cat ../pre-req/wso2is-namespace.yaml >> $DEPLOY_SCRIPT
-echo -e "EOF\nfi">> $DEPLOY_SCRIPT
+echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
+cat ../pre-req/wso2is-namespace.yaml >> $SCRIPT
+echo -e "EOF\nfi">> $SCRIPT
 
-echo 'cat >> $k8s_obj_file << "EOF"' >> $DEPLOY_SCRIPT
-cat ../pre-req/wso2is-serviceaccount.yaml >> $DEPLOY_SCRIPT
-cat ../pre-req/wso2is-secret.yaml >> $DEPLOY_SCRIPT
-cat ../confs/is-confs.yaml >> $DEPLOY_SCRIPT
-cat ../confs/is-conf-ds.yaml >> $DEPLOY_SCRIPT
-cat ../confs/mysql-conf-db.yaml >> $DEPLOY_SCRIPT
-cat ../mysql/wso2is-mysql-service.yaml >> $DEPLOY_SCRIPT
-cat ../is/wso2is-service.yaml >> $DEPLOY_SCRIPT
-cat ../mysql/wso2is-mysql-deployment.yaml >> $DEPLOY_SCRIPT
-cat ../is/wso2is-deployment.yaml >> $DEPLOY_SCRIPT
-echo 'EOF' >> $DEPLOY_SCRIPT
-echo "}" >> $DEPLOY_SCRIPT
+echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
+cat ../pre-req/wso2is-serviceaccount.yaml >> $SCRIPT
+if ! $IS_OPEN_SOURCE ; then
+  cat ../pre-req/wso2is-secret.yaml >> $SCRIPT
+fi
+cat ../confs/is-confs.yaml >> $SCRIPT
+cat ../confs/is-conf-ds.yaml >> $SCRIPT
+cat ../confs/mysql-conf-db.yaml >> $SCRIPT
+cat ../mysql/wso2is-mysql-service.yaml >> $SCRIPT
+cat ../is/wso2is-service.yaml >> $SCRIPT
+cat ../mysql/wso2is-mysql-deployment.yaml >> $SCRIPT
+cat ../is/wso2is-deployment.yaml >> $SCRIPT
+echo 'EOF' >> $SCRIPT
+echo "}" >> $SCRIPT
 
-cat functions >> $DEPLOY_SCRIPT
+if $IS_OPEN_SOURCE; then
+    cat funcs4opensource >> $SCRIPT
+else
+    cat funcs >> $SCRIPT
+fi
 
-cat >> $DEPLOY_SCRIPT << "EOF"
+cat >> $SCRIPT << "EOF"
 arg=$1
 if [[ -z $arg ]]
 then

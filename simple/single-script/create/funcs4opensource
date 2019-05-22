@@ -47,26 +47,6 @@ function display_msg(){
     echoBold "${msg}"
     exit 1
 }
-function get_creds(){
-  while [[ -z "$WSO2_SUBSCRIPTION_USERNAME" ]]
-  do
-        read -p "$(echoBold "Enter your WSO2 subscription username: ")" WSO2_SUBSCRIPTION_USERNAME
-        if [[ -z "$WSO2_SUBSCRIPTION_USERNAME" ]]
-        then
-           echo "wso2-subscription-username cannot be empty"
-        fi
-  done
-
-  while [[ -z "$WSO2_SUBSCRIPTION_PASSWORD" ]]
-  do
-        read -sp "$(echoBold "Enter your WSO2 subscription password: ")" WSO2_SUBSCRIPTION_PASSWORD
-        echo ""
-        if [[ -z "$WSO2_SUBSCRIPTION_PASSWORD" ]]
-        then
-          echo "wso2-subscription-password cannot be empty"
-        fi
-  done
-}
 function validate_ip(){
     ip_check=$1
     if [[ $ip_check =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
@@ -236,26 +216,10 @@ function deploy(){
 
     if test -f $TG_PROP; then
         source $TG_PROP
-    else
-        get_creds  # get wso2 subscription parameters
     fi
 
     # getting cluster node ip
     get_node_ip
-
-    # create and encode username/password pair
-    auth="$WSO2_SUBSCRIPTION_USERNAME:$WSO2_SUBSCRIPTION_PASSWORD"
-    authb64=`echo -n $auth | base64`
-
-    # create authorisation code
-    authstring='{"auths":{"docker.wso2.com": {"username":"'${WSO2_SUBSCRIPTION_USERNAME}'","password":"'${WSO2_SUBSCRIPTION_PASSWORD}'","email":"'${WSO2_SUBSCRIPTION_USERNAME}'","auth":"'${authb64}'"}}}'
-
-    # encode in base64
-    secdata=`echo -n $authstring | base64`
-
-    for i in $secdata; do
-      str_sec=$str_sec$i
-    done
 
     # if TG randomPort else default
     get_nodePorts
@@ -267,6 +231,7 @@ function deploy(){
     sed -i '' 's/"$ns.k8s&wso2.is"/'$namespace'/g' $k8s_obj_file
     sed -i '' 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
     sed -i '' 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
+    sed -i '' 's/"$image.pull.@.wso2"/'$IMG_DEST'/g' $k8s_obj_file
 
     if ! test -f $TG_PROP; then
         echoBold "\nDeploying WSO2 Identity Server...\n"
