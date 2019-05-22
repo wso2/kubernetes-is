@@ -32,7 +32,11 @@ spec:
     spec:
       containers:
       - name: wso2is
-        image: gcr.io/research-n-development-209206/wso2is:5.8.0
+        {{- if or (eq .Values.username "") (eq .Values.password "") }}
+        image: wso2/wso2is:5.8.0
+        {{- else }}
+        image: docker.wso2.com/wso2is:5.8.0
+        {{- end }}
         livenessProbe:
           exec:
             command:
