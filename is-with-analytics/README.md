@@ -1,8 +1,6 @@
 # Kubernetes Resources for deployment of WSO2 Identity Server with WSO2 Identity Server Analytics
 
-Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server with WSO2 Identity Server Analytics](https://docs.wso2.com/display/IS550/Setting+Up+Deployment+Pattern+2).
-
-![A clustered deployment WSO2 Identity Server with Identity Server Analytics support](is-with-analytics.png)
+Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server with WSO2 Identity Server Analytics](https://docs.wso2.com/display/IS580/Setting+Up+Deployment+Pattern+2).
 
 ## Contents
 
@@ -11,8 +9,9 @@ Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server wi
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
-WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use Docker images with WSO2 updates, you need an active WSO2 subscription. If you do not possess an active WSO2
+  subscription, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
+  Otherwise, you can proceed with Docker images which are created using GA releases.<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
@@ -52,7 +51,7 @@ Then, switch the context to new `wso2` namespace.
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
 
-##### 3. Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com).
+##### 3. [Optional] If you are using Docker images with WSO2 updates, create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com):
 
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
@@ -66,6 +65,19 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
 
+Also, add the created `wso2creds` Kubernetes Secret as an entry to Kubernetes Deployment resources. Please add the following entry
+under the [Kubernetes Pod Specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#podspec-v1-core) `PodSpec` in each Deployment resource.
+
+```
+imagePullSecrets:
+- name: wso2creds
+```
+The Kubernetes Deployment definition file(s) that need to be updated are as follows:
+
+* `<KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml` 
+* `<KUBERNETES_HOME>/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml`
+* `<KUBERNETES_HOME>/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-deployment.yaml`
+
 ##### 4. Setup product database(s).
 
 Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS550/Setting+Up+Separate+Databases+for+Clustering)
@@ -76,8 +88,8 @@ the following files:
 
 * `<KUBERNETES_HOME>/is-with-analytics/confs/is/datasources/master-datasources.xml`
 * `<KUBERNETES_HOME>/is-with-analytics/confs/is/datasources/bps-datasources.xml`
-* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/worker/deployment.yaml`
-* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/worker/deployment.yaml`
+* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard/deployment.yaml`
+* `<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-worker/conf/worker/deployment.yaml`
 
 Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
@@ -121,10 +133,8 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
-kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBERNETES_HOME>/rbac/rbac.yaml
+kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
-
-`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
 ##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
@@ -159,11 +169,10 @@ kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/is-w
 kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/axis2/
 kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/datasources/
 kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/identity/
+kubectl create configmap identity-server-conf-tomcat --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/conf/tomcat/
 kubectl create configmap identity-server-conf-event-publishers --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is/deployment/server/eventpublishers/
 
-kubectl create configmap is-analytics-1-conf-worker --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-1/conf/woker
-
-kubectl create configmap is-analytics-2-conf-worker --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-2/conf/worker
+kubectl create configmap is-analytics-worker-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-worker/conf/woker
 
 kubectl create configmap is-analytics-dashboard-conf --from-file=<KUBERNETES_HOME>/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard
 ```
@@ -173,13 +182,10 @@ kubectl create configmap is-analytics-dashboard-conf --from-file=<KUBERNETES_HOM
 ```
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-service.yaml
 kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is/identity-server-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-1-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-1-service.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-2-service.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics/identity-server-analytics-service.yaml
-kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-service.yaml
-kubectl create -f  <KUBERNETES_HOME>/is-with-analytics/is-dashboard/identity-server-dashboard-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-service.yaml
+kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-service.yaml
+kubectl create -f <KUBERNETES_HOME>/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource.
@@ -198,7 +204,7 @@ kubectl create -f <KUBERNETES_HOME>/is-with-analytics/ingresses/identity-server-
 
 ##### 10. Access Management Consoles.
 
-Default deployment will expose `wso2is` and `wso2is-dashboard` hosts (to expose Administrative services and Management Console).
+Default deployment will expose `wso2is` and `wso2is-analytics-dashboard` hosts (to expose Administrative services and Management Console).
 
 To access the console in the environment,
 

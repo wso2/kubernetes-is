@@ -15,22 +15,24 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-with-analytics-dashboard
+  name: wso2is-with-analytics-is-analytics-dashboard-deployment
   labels:
-    deployment: wso2is-with-analytics-dashboard
+    deployment: wso2is-with-analytics-is-analytics-dashboard
 spec:
   replicas: 1
-  minReadySeconds: 30
   strategy:
-    type: Recreate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
   template:
     metadata:
       labels:
-        deployment: wso2is-with-analytics-dashboard
+        deployment: wso2is-with-analytics-is-analytics-dashboard
     spec:
       containers:
-      - image: docker.wso2.com/wso2is-analytics-dashboard:5.7.0
-        name: wso2is-with-analytics-dashboard
+      - image: wso2/wso2is-analytics-dashboard:5.8.0
+        name: wso2is-with-analytics-is-analytics-dashboard
         imagePullPolicy: Always
         ports:
         -
@@ -45,8 +47,6 @@ spec:
         volumeMounts:
         - name: is-analytics-dashboard-conf
           mountPath: "/home/wso2carbon/wso2-config-volume/conf/dashboard"
-      imagePullSecrets:
-      - name: wso2creds
       volumes:
       - name: is-analytics-dashboard-conf
         configMap:

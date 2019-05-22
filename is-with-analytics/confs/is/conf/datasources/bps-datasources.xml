@@ -1,32 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
 <datasources-configuration xmlns:svns="http://org.wso2.securevault/configuration">
-  
-   <providers>
-        <provider>org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceReader</provider>
-    </providers>
-  
-  <datasources>      
-        <datasource>
-            <name>BPS_DS</name>
-            <description></description>
-            <jndiConfig>
-                <name>bpsds</name>
-            </jndiConfig>
-            <definition type="RDBMS">
-                <configuration>
-                    <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false</url>
-                    <username>wso2carbon</username>
-                    <password>wso2carbon</password>
-                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                    <testOnBorrow>true</testOnBorrow>
-                    <validationQuery>SELECT 1</validationQuery>
-                    <validationInterval>30000</validationInterval>
-                    <useDataSourceFactory>false</useDataSourceFactory>
-		    <defaultAutoCommit>true</defaultAutoCommit>
- 		    <maxActive>100</maxActive>
-                    <maxIdle>20</maxIdle>
-		    <maxWait>10000</maxWait>
-                </configuration>
-            </definition>
-        </datasource>
-    </datasources>
+  <providers>
+    <provider>org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceReader</provider>
+  </providers>
+  <datasources>
+    <!--<datasource xmlns:svns="http://org.wso2.securevault/configuration">
+  <name>BPS_DS</name>
+  <description/>
+  <jndiConfig>
+    <name>bpsds</name>
+  </jndiConfig>
+  <definition type="RDBMS">
+    <configuration>
+      <url>jdbc:h2:file:repository/database/jpadb;DB_CLOSE_ON_EXIT=FALSE;MVCC=TRUE</url>
+      <username>wso2carbon</username>
+      <password>wso2carbon</password>
+      <driverClassName>org.h2.Driver</driverClassName>
+      <testOnBorrow>true</testOnBorrow>
+      <validationQuery>SELECT 1</validationQuery>
+      <validationInterval>30000</validationInterval>
+      <useDataSourceFactory>false</useDataSourceFactory>
+      <defaultAutoCommit>true</defaultAutoCommit>
+      <maxActive>100</maxActive>
+      <maxIdle>20</maxIdle>
+      <maxWait>10000</maxWait>
+    </configuration>
+  </definition>
+</datasource>
+-->
+    <datasource>
+      <name>BPS_DS</name>
+      <description/>
+      <jndiConfig>
+        <name>bpsds</name>
+      </jndiConfig>
+      <definition type="RDBMS">
+        <configuration>
+          <url>jdbc:mysql://wso2is-with-analytics-rdbms-service:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false</url>
+          <username>wso2carbon</username>
+          <password>wso2carbon</password>
+          <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+          <maxActive>100</maxActive>
+          <maxWait>10000</maxWait>
+          <maxIdle>20</maxIdle>
+          <testOnBorrow>true</testOnBorrow>
+          <validationQuery>SELECT 1</validationQuery>
+          <validationInterval>30000</validationInterval>
+          <useDataSourceFactory>false</useDataSourceFactory>
+          <defaultAutoCommit>false</defaultAutoCommit>
+        </configuration>
+      </definition>
+    </datasource>
+  </datasources>
 </datasources-configuration>

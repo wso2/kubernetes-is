@@ -1,6 +1,6 @@
 # Kubernetes Resources for deployment of WSO2 Identity Server
 
-Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS570/Setting+Up+Deployment+Pattern+1).
+Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS580/Setting+Up+Deployment+Pattern+1).
 
 ![A clustered deployment WSO2 Identity Server](is.png)
 
@@ -12,8 +12,9 @@ Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](h
 
 ## Prerequisites
 
-* In order to use WSO2 Kubernetes resources, you need an active WSO2 subscription. If you do not possess an active
-WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).<br><br>
+* In order to use Docker images with WSO2 updates, you need an active WSO2 subscription. If you do not possess an active WSO2
+  subscription, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
+  Otherwise, you can proceed with Docker images which are created using GA releases.<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
 in order to run the steps provided in the following quick start guide.<br><br>
@@ -53,7 +54,7 @@ Then, switch the context to new `wso2` namespace.
 kubectl config set-context $(kubectl config current-context) --namespace=wso2
 ```
 
-##### 3. Create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com):
+##### 3. [Optional] If you are using Docker images with WSO2 updates, create a Kubernetes Secret for pulling the required Docker images from [`WSO2 Docker Registry`](https://docker.wso2.com):
 
 Create a Kubernetes Secret named `wso2creds` in the cluster to authenticate with the WSO2 Docker Registry, to pull the required images.
 
@@ -67,9 +68,20 @@ kubectl create secret docker-registry wso2creds --docker-server=docker.wso2.com 
 Please see [Kubernetes official documentation](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/#create-a-secret-in-the-cluster-that-holds-your-authorization-token)
 for further details.
 
+Also, add the created `wso2creds` Kubernetes Secret as an entry to Kubernetes Deployment resources. Please add the following entry
+under the [Kubernetes Pod Specification](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.14/#podspec-v1-core) `PodSpec` in each Deployment resource.
+
+```
+imagePullSecrets:
+- name: wso2creds
+```
+The Kubernetes Deployment definition file(s) that need to be updated are as follows:
+
+* `<KUBERNETES_HOME>/is/identity-server-deployment.yaml` 
+
 ##### 4. Setup product database(s):
 
-Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS550/Setting+Up+Separate+Databases+for+Clustering)
+Setup the external product databases. Please refer to WSO2 Identity Server's [official documentation](https://docs.wso2.com/display/IS580/Setting+Up+Separate+Databases+for+Clustering)
 on creating the required databases for the deployment.
 
 Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
@@ -120,10 +132,8 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
 
 ```
-kubectl create --username=admin --password=<K8S_CLUSTER_ADMIN_PASSWORD> -f <KUBERNETES_HOME>/rbac/rbac.yaml
+kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ```
-
-`K8S_CLUSTER_ADMIN_PASSWORD`: Kubernetes cluster admin password
 
 ##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
