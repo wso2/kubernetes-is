@@ -1,5 +1,5 @@
 #!/bin/bash
-IS_OPEN_SOURCE=false
+IS_OPEN_SOURCE=False
 
 if $IS_OPEN_SOURCE; then
     SCRIPT="../wso2is-ga.sh"
@@ -46,7 +46,7 @@ cat >> $SCRIPT << "EOF"
 WUMUsername=''; WUMPassword=''
 
 : ${namespace:="wso2"}
-: ${randomPort:=true}; : ${NP_1:=30443};
+: ${randomPort:="False"}; : ${NP_1:=30443};
 
 # testgrid directory
 OUTPUT_DIR=$4; INPUT_DIR=$2; TG_PROP="$INPUT_DIR/infrastructure.properties"
