@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2is
-        image: gcr.io/research-n-development-209206/wso2is:5.8.0
+        image: wso2/wso2is:5.8.0
         livenessProbe:
           exec:
             command:
