@@ -45,3 +45,22 @@ spec:
   selector:
     matchLabels:
       purpose: is-shared-tenants
+
+#uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
+
+# ---
+#
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: identity-server-additional-config-volume-claim
+# spec:
+#   accessModes:
+#     - ReadWriteMany
+#   resources:
+#     requests:
+#       storage: 1Gi
+#   storageClassName: ""
+#   selector:
+#     matchLabels:
+#       purpose: is-additional-configs
