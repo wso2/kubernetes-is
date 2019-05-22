@@ -3,7 +3,7 @@
 
 * A clustered deployment of WSO2 Identity Server
 
-![A clustered deployment WSO2 Identity Server](is/is.png)
+![A clustered deployment WSO2 Identity Server](advance/is/is.png)
 
 
 ## Deploy Kubernetes resources
@@ -11,18 +11,18 @@
 In order to deploy Kubernetes resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
 given below:
 
-* [A clustered deployment of WSO2 Identity Server](is/README.md)
+* [A clustered deployment of WSO2 Identity Server](advance/is/README.md)
 
-* [A clustered deployment of WSO2 Identity Server with Analytics support](is-with-analytics/README.md)
+* [A clustered deployment of WSO2 Identity Server with Analytics support](advance/is-with-analytics/README.md)
 
 ## Deploy Helm resources
 
 In order to deploy Helm resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
 given below:
 
-* [A clustered deployment of WSO2 Identity Server](helm/is/README.md)
+* [A clustered deployment of WSO2 Identity Server](advance/helm/is/README.md)
 
-* [A clustered deployment of WSO2 Identity Server with Analytics support](helm/is-with-analytics/README.md)
+* [A clustered deployment of WSO2 Identity Server with Analytics support](advance/helm/is-with-analytics/README.md)
 
 ## How to update configurations
 
@@ -32,7 +32,7 @@ to pass on the minimum set of configurations required to setup a product deploym
 For example, the minimum set of configurations required to setup a clustered deployment of WSO2 Identity Server can be found
 in `<KUBERNETES_HOME>/is/confs` directory. The Kubernetes ConfigMaps are generated from these files.
 
-If you intend to pass on any additional configuration changes, you may use Kubernetes ConfigMaps. Follow the 
+If you intend to pass on any additional configuration changes, you may use Kubernetes ConfigMaps. Follow the
 steps below to achieve it.
 
 **[1] In order to apply the updated configurations, WSO2 product server instances need to be restarted. Hence, un-deploy all the Kubernetes resources
@@ -121,18 +121,18 @@ in a clustered deployment of WSO2 Identity Server:
 corresponding to the product deployment, if they are already deployed.**
 
 **[2] Create and export a directory within the NFS server instance.**
-   
+
 **[3] Add the additional third-party libraries, OSGi bundles and security related artifacts, into appropriate
 folders matching that of the relevant WSO2 product home folder structure, within the previously created directory.**
 
 **[4] Grant ownership to `wso2carbon` user and `wso2` group, for the directory created in step [2].**
-      
+
    ```
    sudo chown -R wso2carbon:wso2 <directory_name>
    ```
-      
+
 **[5] Grant read-write-execute permissions to the `wso2carbon` user, for the directory created in step [2].**
-      
+
    ```
    chmod -R 700 <directory_name>
    ```
