@@ -9,7 +9,7 @@
 
 * In order to use WSO2 Helm resources, you need an active WSO2 subscription. If you do not possess an active WSO2
   subscription already, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription)
-  . Otherwise you can proceed with docker images which are created using GA releases.<br><br><br><br>
+  . Otherwise you can proceed with docker images which are created using GA releases.<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md)
 (and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10) in order to run the 
