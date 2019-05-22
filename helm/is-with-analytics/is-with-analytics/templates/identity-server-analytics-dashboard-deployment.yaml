@@ -32,8 +32,12 @@ spec:
         deployment: wso2is-with-analytics-is-analytics-dashboard
     spec:
       containers:
-      - image: gcr.io/research-n-development-209206/wso2is-analytics-dashboard:5.8.0
-        name: wso2is-with-analytics-is-analytics-dashboard
+      - name: wso2is-with-analytics-is-analytics-dashboard
+        {{- if or (eq .Values.username "") (eq .Values.password "") }}
+        image: gcr.io/research-n-development-209206/wso2is-analytics-dashboard:5.8.0
+        {{- else }}
+        image: docker.wso2.com/wso2is-analytics-dashboard:5.8.0
+        {{- end }}
         imagePullPolicy: Always
         ports:
         -
