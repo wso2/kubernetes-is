@@ -11,11 +11,11 @@
 In order to deploy Kubernetes resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
 given below:
 
-#Simple
+### Simple
 
-* [A Simplified Setup for  WSO2 Identity Server] (simple/single-script/README.md)
+* [A Simplified Setup for  WSO2 Identity Server](simple/single-script/README.md)
 
-#Advance
+### Advance
 
 * [A clustered deployment of WSO2 Identity Server](advance/is/README.md)
 
