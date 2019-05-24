@@ -53,22 +53,44 @@ if [[ ${REPLY} =~ ^[Yy]$ ]]; then
             exit 1
         fi
 
-        if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
-        ../is/identity-server-deployment.yaml \
-        ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml \
-        ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml; then
-            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
-            exit 1
-        fi
+        case "`uname`" in
+            Darwin*)
+                if ! ${SED} -i.bak -e '/serviceAccount/a \
+                \      imagePullSecrets:' \
+                ../is/identity-server-deployment.yaml \
+                ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml \
+                ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
 
 
-        if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
-        ../is/identity-server-deployment.yaml \
-        ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml \
-        ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml; then
-            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
-            exit 1
-        fi
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \
+                \      - name: wso2creds' \
+                ../is/identity-server-deployment.yaml \
+                ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml \
+                ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+            *)
+                if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' \
+                ../is/identity-server-deployment.yaml \
+                ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml \
+                ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
+
+
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' \
+                ../is/identity-server-deployment.yaml \
+                ../is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml \
+                ../is-analytics-worker/identity-server-analytics-worker-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi
+        esac
     fi
 elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
      HAS_SUBSCRIPTION=1

@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
       - name: wso2is
-        image: wso2/wso2is:5.8.0
+        image: docker.wso2.com/wso2is:5.8.0
         livenessProbe:
           exec:
             command:
@@ -74,6 +74,8 @@ spec:
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/tenants
       serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+      - name: wso2creds
       volumes:
       - name: identity-server-conf
         configMap:
