@@ -32,8 +32,8 @@ given below:
 
 ## Advanced topics
 
-* [Update product configurations](ManageConfigurations.md)
-* [Introduce additional artifacts](ManageArtifacts.md)
+* [Update product configurations](advance/ManageConfigurations.md)
+* [Introduce additional artifacts](advance/ManageArtifacts.md)
 
 ## Changelog
 
