@@ -16,19 +16,19 @@ Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](h
   subscription, you can sign up for a WSO2 Free Trial Subscription from [here](https://wso2.com/free-trial-subscription).
   Otherwise, you can proceed with Docker images which are created using GA releases.<br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10)
-in order to run the steps provided in the following quick start guide.<br><br>
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+  in order to run the steps provided in the following quick start guide.<br><br>
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
 
 * A pre-configured Network File System (NFS) to be used as the persistent volume for artifact sharing and persistence.
-In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
-Add the `wso2carbon` user to the group `wso2`.
+  In the NFS server instance, create a Linux system user account named `wso2carbon` with user id `802` and a system group named `wso2` with group id `802`.
+  Add the `wso2carbon` user to the group `wso2`.
 
-```
-groupadd --system -g 802 wso2
-useradd --system -g 802 -u 802 wso2carbon
-```
+    ```
+    groupadd --system -g 802 wso2
+    useradd --system -g 802 -u 802 wso2carbon
+    ```
 
 ## Quick Start Guide
 
