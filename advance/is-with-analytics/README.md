@@ -85,9 +85,9 @@ kubectl config set-context $(kubectl config current-context) --namespace=wso2
 
 The Kubernetes Deployment definition file(s) that need to be updated are as follows:
 
-* `<KUBERNETES_HOME>/advance/is-with-analytics/is/identity-server-deployment.yaml`
-* `<KUBERNETES_HOME>/advance/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml`
-* `<KUBERNETES_HOME>/advance/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/is/identity-server-deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-deployment.yaml`
 
 ##### 4. Setup product database(s).
 
@@ -97,17 +97,17 @@ on creating the required databases for the deployment.
 Provide appropriate connection URLs, corresponding to the created external databases and the relevant driver class names for the data sources defined in
 the following files:
 
-* `<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/datasources/master-datasources.xml`
-* `<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/datasources/bps-datasources.xml`
-* `<KUBERNETES_HOME>/advance/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard/deployment.yaml`
-* `<KUBERNETES_HOME>/advance/is-with-analytics/confs/is-analytics-worker/conf/worker/deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/datasources/master-datasources.xml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/datasources/bps-datasources.xml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard/deployment.yaml`
+* `<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is-analytics-worker/conf/worker/deployment.yaml`
 
 Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN44x/Configuring+master-datasources.xml) on configuring data sources.
 
 **Note**:
 
 * For **evaluation purposes**, you can use Kubernetes resources provided in the directory<br>
-`<KUBERNETES_HOME>/advance/is-with-analytics/extras/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
+`<KUBERNETES_HOME>/advanced/is-with-analytics/extras/rdbms/mysql` for deploying the product databases, using MySQL in Kubernetes. However, this approach of product database deployment is
 **not recommended** for a production setup.
 
 * For using these Kubernetes resources,
@@ -115,7 +115,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     first create a Kubernetes ConfigMap for passing database script(s) to the deployment.
     
     ```
-    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/extras/confs/mysql/dbscripts/
+    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/extras/confs/mysql/dbscripts/
     ```
     
     Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
@@ -125,20 +125,20 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     Provide read-write-execute permissions to other users for the created folder.
     
     Update the Kubernetes Persistent Volume resource with the corresponding NFS server IP (`NFS_SERVER_IP`) and exported,
-    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advance/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml`.
+    NFS server directory path (`NFS_LOCATION_PATH`) in `<KUBERNETES_HOME>/advanced/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml`.
     
     Deploy the persistent volume resource and volume claim as follows:
     
     ```
-    kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
     
     ```
-    kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/extras/rdbms/mysql/mysql-service.yaml
-    kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/extras/rdbms/mysql/mysql-deployment.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/extras/rdbms/mysql/mysql-service.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/extras/rdbms/mysql/mysql-deployment.yaml
     ```
     
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
@@ -150,7 +150,7 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/advance/is-with-analytics/volumes/persistent-volumes.yaml` file.
+`<KUBERNETES_HOME>/advanced/is-with-analytics/volumes/persistent-volumes.yaml` file.
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -169,34 +169,34 @@ Update each Kubernetes Persistent Volume resource with the corresponding NFS ser
 Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is/identity-server-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/volumes/persistent-volumes.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is/identity-server-volume-claims.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/volumes/persistent-volumes.yaml
 ```
     
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster.
 
 ```
-kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/conf/
-kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/conf/axis2/
-kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/conf/datasources/
-kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/conf/identity/
-kubectl create configmap identity-server-conf-tomcat --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/conf/tomcat/
-kubectl create configmap identity-server-conf-event-publishers --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is/deployment/server/eventpublishers/
+kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/conf/
+kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/conf/axis2/
+kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/conf/datasources/
+kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/conf/identity/
+kubectl create configmap identity-server-conf-tomcat --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/conf/tomcat/
+kubectl create configmap identity-server-conf-event-publishers --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is/deployment/server/eventpublishers/
 
-kubectl create configmap is-analytics-worker-conf --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is-analytics-worker/conf/woker
+kubectl create configmap is-analytics-worker-conf --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is-analytics-worker/conf/woker
 
-kubectl create configmap is-analytics-dashboard-conf --from-file=<KUBERNETES_HOME>/advance/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard
+kubectl create configmap is-analytics-dashboard-conf --from-file=<KUBERNETES_HOME>/advanced/is-with-analytics/confs/is-analytics-dashboard/conf/dashboard
 ```
 
 ##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server and Analytics.
 
 ```
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is/identity-server-service.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is/identity-server-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-service.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-deployment.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-service.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is/identity-server-service.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is/identity-server-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-service.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is-analytics-worker/identity-server-analytics-worker-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-service.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/is-analytics-dashboard/identity-server-analytics-dashboard-deployment.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource.
@@ -209,8 +209,8 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 Finally, deploy the WSO2 Identity Server and Identity Server Analytics Kubernetes Ingress resources as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/ingresses/identity-server-ingress.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is-with-analytics/ingresses/identity-server-dashboard-ingress.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/ingresses/identity-server-ingress.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is-with-analytics/ingresses/identity-server-dashboard-ingress.yaml
 ```
 
 ##### 10. Access Management Consoles.
@@ -247,7 +247,7 @@ Default deployment runs a single replica (or pod) of WSO2 Identity server. To sc
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advance/is-with-analytics/is/identity-server-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/is-with-analytics/is/identity-server-deployment.yaml
 ```
 
 For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.

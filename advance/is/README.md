@@ -114,7 +114,7 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     first create a Kubernetes ConfigMap for passing database script(s) to the deployment.
     
     ```
-    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advance/is/extras/confs/mysql/dbscripts/
+    kubectl create configmap mysql-dbscripts --from-file=<KUBERNETES_HOME>/advanced/is/extras/confs/mysql/dbscripts/
     ```
     
     Here, a Network File System (NFS) is needed to be used for persisting MySQL DB data.
@@ -129,15 +129,15 @@ Please refer WSO2's [official documentation](https://docs.wso2.com/display/ADMIN
     Deploy the persistent volume resource and volume claim as follows:
     
     ```
-    kubectl create -f <KUBERNETES_HOME>/advance/is/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
-    kubectl create -f <KUBERNETES_HOME>/advance/is/extras/rdbms/volumes/persistent-volumes.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is/extras/rdbms/mysql/mysql-persistent-volume-claim.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is/extras/rdbms/volumes/persistent-volumes.yaml
     ```
 
     Then, create a Kubernetes service (accessible only within the Kubernetes cluster) and followed by the MySQL Kubernetes deployment, as follows:
     
     ```
-    kubectl create -f <KUBERNETES_HOME>/advance/is/extras/rdbms/mysql/mysql-service.yaml
-    kubectl create -f <KUBERNETES_HOME>/advance/is/extras/rdbms/mysql/mysql-deployment.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is/extras/rdbms/mysql/mysql-service.yaml
+    kubectl create -f <KUBERNETES_HOME>/advanced/is/extras/rdbms/mysql/mysql-deployment.yaml
     ```
     
 ##### 5. Create a Kubernetes role and a role binding necessary for the Kubernetes API requests made from Kubernetes membership scheme.
@@ -149,7 +149,7 @@ kubectl create -f <KUBERNETES_HOME>/rbac/rbac.yaml
 ##### 6. Setup a Network File System (NFS) to be used for persistent storage.
 
 Create and export unique directories within the NFS server instance for each Kubernetes Persistent Volume resource defined in the
-`<KUBERNETES_HOME>/advance/is/volumes/persistent-volumes.yaml` file.
+`<KUBERNETES_HOME>/advanced/is/volumes/persistent-volumes.yaml` file.
 
 Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
 
@@ -168,24 +168,24 @@ Update each Kubernetes Persistent Volume resource with the corresponding NFS ser
 Then, deploy the persistent volume resource and volume claim as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/advance/is/identity-server-volume-claims.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is/volumes/persistent-volumes.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is/identity-server-volume-claims.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is/volumes/persistent-volumes.yaml
 ```
 
 ##### 7. Create Kubernetes ConfigMaps for passing WSO2 product configurations into the Kubernetes cluster:
 
 ```
-kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/advance/is/confs/
-kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/advance/is/confs/axis2/
-kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/advance/is/confs/datasources/
-kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/advance/is/confs/identity/
+kubectl create configmap identity-server-conf --from-file=<KUBERNETES_HOME>/advanced/is/confs/
+kubectl create configmap identity-server-conf-axis2 --from-file=<KUBERNETES_HOME>/advanced/is/confs/axis2/
+kubectl create configmap identity-server-conf-datasources --from-file=<KUBERNETES_HOME>/advanced/is/confs/datasources/
+kubectl create configmap identity-server-conf-identity --from-file=<KUBERNETES_HOME>/advanced/is/confs/identity/
 ```
 
 ##### 8. Create Kubernetes Services and Deployments for WSO2 Identity Server:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/advance/is/identity-server-service.yaml
-kubectl create -f <KUBERNETES_HOME>/advance/is/identity-server-deployment.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is/identity-server-service.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is/identity-server-deployment.yaml
 ```
 
 ##### 9. Deploy Kubernetes Ingress resource:
@@ -198,7 +198,7 @@ please refer the official documentation, [NGINX Ingress Controller Installation 
 Finally, deploy the WSO2 Identity Server Kubernetes Ingress resources as follows:
 
 ```
-kubectl create -f <KUBERNETES_HOME>/advance/is/ingresses/identity-server-ingress.yaml
+kubectl create -f <KUBERNETES_HOME>/advanced/is/ingresses/identity-server-ingress.yaml
 ```
 
 ##### 10. Access Management Console:
@@ -232,7 +232,7 @@ Default deployment runs a single replica (or pod) of WSO2 Identity server. To sc
 container replicas, upon your requirement, simply run following Kubernetes client command on the terminal.
 
 ```
-kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advance/is/identity-server-deployment.yaml
+kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/is/identity-server-deployment.yaml
 ```
 
 For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
