@@ -42,7 +42,7 @@ given below:
 ## Reporting issues
 
 We encourage you to report any issues and documentation faults regarding Kubernetes and Helm resources
-for WSO2 API Management. Please report your issues [here](https://github.com/wso2/kubernetes-apim/issues).
+for WSO2 IAM. Please report your issues [here](https://github.com/wso2/kubernetes-is/issues).
 
 ## Contact us
 
