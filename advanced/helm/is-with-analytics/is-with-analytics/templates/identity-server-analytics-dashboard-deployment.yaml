@@ -57,3 +57,7 @@ spec:
         configMap:
           name: is-analytics-dashboard-conf
       serviceAccountName: "wso2svc-account"
+      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      imagePullSecrets:
+      - name: wso2creds
+      {{ end }}
