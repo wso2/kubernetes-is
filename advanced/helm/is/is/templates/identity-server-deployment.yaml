@@ -79,6 +79,10 @@ spec:
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/tenants
       serviceAccountName: {{ .Values.svcaccount }}
+      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      imagePullSecrets:
+      - name: wso2creds
+      {{ end }}
       volumes:
       - name: identity-server-conf
         configMap:
