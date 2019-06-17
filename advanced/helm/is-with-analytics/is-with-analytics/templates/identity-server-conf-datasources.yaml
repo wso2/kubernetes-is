@@ -15,11 +15,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: identity-server-conf-identity
+  name: identity-server-conf-datasources
   namespace : {{ .Values.namespace }}
 data:
   {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/is/conf/identity/*" }}
+  {{- range $path, $byte := .Files.Glob "confs/is/conf/datasources/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
