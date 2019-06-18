@@ -35,24 +35,33 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-is.git
 ```
 
-##### 2. Setup a Network File System (NFS) to be used for persistent storage.
+##### 2. Setup persistent storage.
 
-Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
-resources defined in the `<HELM_HOME>/is/values.yaml` file:
-
-* `sharedDeploymentLocationPath`
-* `sharedTenantsLocationPath`
-
-Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
-
+* Using Azurefiles
+  
+  Add the following parameter and value to the values.yaml.
   ```
-  sudo chown -R wso2carbon:wso2 <directory_name>
+  cloudProvider: Azure
   ```
+  
+* Using a Network File System (NFS)
 
-Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
+  Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
+  resources defined in the `<HELM_HOME>/is/values.yaml` file:
 
-  ```
-  chmod -R 700 <directory_name>
+  * `sharedDeploymentLocationPath`
+  * `sharedTenantsLocationPath`
+
+  Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
+
+    ```
+    sudo chown -R wso2carbon:wso2 <directory_name>
+    ```
+
+  Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
+
+    ```
+    chmod -R 700 <directory_name>
   ```
 
 ##### 3. Provide configurations.
@@ -61,7 +70,7 @@ a. The default product configurations are available at `<HELM_HOME>/is/confs` fo
 configurations as necessary.
 
 b. Open the `<HELM_HOME>/is/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`.
+WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `sharedTenantsLocationPath` if an NFS is not used.
 
 | Parameter                       | Description                                                                               |
 |---------------------------------|-------------------------------------------------------------------------------------------|
