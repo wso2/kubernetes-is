@@ -23,10 +23,14 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  storageClassName: azurefile
+  {{- else }}
   storageClassName: ""
   selector:
     matchLabels:
       purpose: is-shared-deployment
+  {{- end }}
 
 ---
 
@@ -41,11 +45,14 @@ spec:
   resources:
     requests:
       storage: 1Gi
+  {{- if (.Values.cloudProvider) and eq .Values.cloudProvider "Azure" }}
+  storageClassName: azurefile
+  {{- else }}
   storageClassName: ""
   selector:
     matchLabels:
       purpose: is-shared-tenants
-
+  {{- end }}
 #uncomment following to create an NFS based storage volume for any additional changes made to server home. This will provide the capability of transferring the additional configuration changes, third-party libraries etc to the container by maintaining the same directory structure of <CARBON_HOME> with in this volume.
 
 # ---
