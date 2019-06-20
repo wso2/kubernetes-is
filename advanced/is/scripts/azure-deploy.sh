@@ -137,9 +137,7 @@ sleep 10s
 # persistent storage
 echoBold 'Creating persistent volumes and volume claims...'
 ${KUBERNETES_CLIENT} create -f ../identity-server-volume-claims-azure.yaml
-# ${KUBERNETES_CLIENT} create -f ../volumes/persistent-volumes.yaml
 ${KUBERNETES_CLIENT} create -f ../extras/rdbms/mysql/mysql-persistent-volume-claim-azure.yaml
-# ${KUBERNETES_CLIENT} create -f ../extras/rdbms/volumes/persistent-volumes.yaml
 sleep 10s
 
 # WSO2 Identity Server
