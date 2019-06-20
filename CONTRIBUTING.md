@@ -1,7 +1,7 @@
 
 # Contributing to kubernetes-is
 
-Kubernetes resources for WSO2 Identity And Access Management are open source, and we encourage contributions  from our community.
+Kubernetes and Helm resources for WSO2 Identity And Access Management are open source, and we encourage contributions  from our community.
 
 ## How you can Contribute
 
@@ -14,7 +14,7 @@ The recommended way to discuss anything related to WSO2 products is via our mail
 
 ### Posting Issues
 
-We encourage you to report any problems in the WSO2 Kubernetes resources or their documentation by creating GitHub issues in the respective repositories. The issues page on GitHub is for tracking bugs and feature requests. When posing a new issue, follow the guidelines below.
+We encourage you to report any problems in the WSO2 Kubernetes and Helm resources or their documentation by creating GitHub issues in the respective repositories. The issues page on GitHub is for tracking bugs and feature requests. When posing a new issue, follow the guidelines below.
 
 * Check whether the issue has already been reported.
 * Create a separate issue for each bug you are reporting or feature you are requesting.
