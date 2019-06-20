@@ -27,11 +27,6 @@ function echoBold () {
 # delete the created Kubernetes Namespace
 ${KUBECTL} delete namespace wso2
 
-# persistent storage
-# echoBold 'Deleting persistent storage...'
-# ${KUBECTL} delete -f ../volumes/persistent-volumes.yaml
-# ${KUBECTL} delete -f ../extras/rdbms/volumes/persistent-volumes.yaml
-
 echoBold 'Deleting Azure storage classes'
 ${KUBECTL} delete -f ../../../azure/rbac.yaml
 ${KUBECTL} delete -f ../../../azure/storage-class.yaml
