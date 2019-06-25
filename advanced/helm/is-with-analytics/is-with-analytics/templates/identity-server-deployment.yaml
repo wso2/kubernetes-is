@@ -15,7 +15,7 @@
 apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
-  name: wso2is-deployment
+  name: wso2is-with-analytics-is-deployment
   namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
@@ -28,10 +28,11 @@ spec:
   template:
     metadata:
       labels:
-        deployment: wso2is
+        deployment: wso2is-with-analytics-is
     spec:
+      hostAliases:
       containers:
-      - name: wso2is
+      - name: wso2is-with-analytics-is
         {{- if or (eq .Values.username "") (eq .Values.password "") }}
         image: wso2/wso2is:5.8.0
         {{- else }}
@@ -72,13 +73,21 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
         - name: identity-server-conf-datasources
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
+        - name: identity-server-conf-tomcat
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
+        - name: identity-server-conf-event-publishers
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
         - name: shared-deployment-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/deployment
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/tenants
-      serviceAccountName: {{ .Values.svcaccount }}
+      serviceAccountName: "wso2svc-account"
+      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      imagePullSecrets:
+      - name: wso2creds
+      {{ end }}
       volumes:
       - name: identity-server-conf
         configMap:
@@ -92,6 +101,12 @@ spec:
       - name: identity-server-conf-identity
         configMap:
           name: identity-server-conf-identity
+      - name: identity-server-conf-tomcat
+        configMap:
+          name: identity-server-conf-tomcat
+      - name: identity-server-conf-event-publishers
+        configMap:
+          name: identity-server-conf-event-publishers
       - name: shared-deployment-persistent-disk
         persistentVolumeClaim:
           claimName: is-shared-deployment-volume-claim

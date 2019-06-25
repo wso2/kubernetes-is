@@ -27,7 +27,7 @@ steps provided in the following quick start guide.<br><br>
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
 Git repository. <br>
->* `HELM_HOME` will refer to `<KUBERNETES_HOME>/helm/is-with-analytics`. <br>
+>* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/helm/is-with-analytics`. <br>
 
 ##### 1. Clone the Kubernetes Resources for WSO2 Identity Server Git repository.
 

@@ -16,6 +16,7 @@ apiVersion: apps/v1beta1
 kind: Deployment
 metadata:
   name: wso2is-deployment
+  namespace : {{ .Values.namespace }}
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -31,7 +32,11 @@ spec:
     spec:
       containers:
       - name: wso2is
+        {{- if or (eq .Values.username "") (eq .Values.password "") }}
         image: wso2/wso2is:5.8.0
+        {{- else }}
+        image: docker.wso2.com/wso2is:5.8.0
+        {{- end }}
         livenessProbe:
           exec:
             command:
@@ -73,7 +78,11 @@ spec:
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/deployment
         - name: shared-tenants-persistent-disk
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/tenants
-      serviceAccountName: "wso2svc-account"
+      serviceAccountName: {{ .Values.svcaccount }}
+      {{ if and (not (eq .Values.username "")) (not (eq .Values.password "")) }}
+      imagePullSecrets:
+      - name: wso2creds
+      {{ end }}
       volumes:
       - name: identity-server-conf
         configMap:
@@ -93,4 +102,3 @@ spec:
       - name: shared-tenants-persistent-disk
         persistentVolumeClaim:
           claimName: is-shared-tenants-volume-claim
-

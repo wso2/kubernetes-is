@@ -29,7 +29,7 @@ function echoBold () {
     ${ECHO} -e $'\e[1m'"${1}"$'\e[0m'
 }
 
-read -p "Do you have a WSO2 Subscription? (Y/N)" -n 1 -r
+read -p "Do you have a WSO2 Subscription? (y/N)" -n 1 -r
 ${ECHO}
 
 if [[ ${REPLY} =~ ^[Yy]$ ]]; then
@@ -47,16 +47,32 @@ if [[ ${REPLY} =~ ^[Yy]$ ]]; then
             exit 1
         fi
 
-        if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' ../identity-server-deployment.yaml; then
-            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
-            exit 1
-        fi
+        case "`uname`" in
+            Darwin*)
+                if ! ${SED} -i.bak -e '/serviceAccount/a \
+                \      imagePullSecrets:' ../identity-server-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
 
 
-        if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' ../identity-server-deployment.yaml; then
-            echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
-            exit 1
-        fi
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \
+                \      - name: wso2creds' ../identity-server-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+            *)
+                if ! ${SED} -i.bak -e '/serviceAccount/a \      imagePullSecrets:' ../identity-server-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create \"imagePullSecrets:\" attribute"
+                    exit 1
+                fi
+
+
+                if ! ${SED} -i.bak -e '/imagePullSecrets/a \      - name: wso2creds' ../identity-server-deployment.yaml; then
+                    echoBold "Could not configure Kubernetes Docker image pull secret: Failed to create secret name"
+                    exit 1
+                fi;;
+        esac
     fi
 elif [[ ${REPLY} =~ ^[Nn]$ || -z "${REPLY}" ]]; then
      HAS_SUBSCRIPTION=1
