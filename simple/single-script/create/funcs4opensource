@@ -180,7 +180,7 @@ function progress_bar(){
 
       if [[ $time_proc -gt 250 ]]
       then
-          echoBold "\nSomething went wrong! Please Follow \"https://docs.google.com/document/d/1BqRmTFu8qJG32g018mgpdgmmLuhJDDK1WgJhnL5hYe8/edit?usp=sharing\" for more information\n"
+          echoBold "\nSomething went wrong! Please Follow \"https://wso2.com/products/install/faq/#Kubernetes\" for more information\n"
           exit 2
       fi
   done
@@ -232,6 +232,8 @@ function deploy(){
     sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
     sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
+
+    rm deployment.yaml.bak
 
     if ! test -f $TG_PROP; then
         echoBold "\nDeploying WSO2 Identity Server...\n"
