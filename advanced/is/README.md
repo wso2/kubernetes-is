@@ -257,3 +257,39 @@ kubectl scale --replicas=<n> -f <KUBERNETES_HOME>/advanced/is/identity-server-de
 ```
 
 For example, If `<n>` is 2, you are here scaling up this deployment from 1 to 2 container replicas.
+
+## Advance Deployment Options
+
+When creating a production grade deployment, following cases should be taken into consideration.
+
+##### 1. Customizing authentication endpoint
+
+For branding purposes, customizing the authentication endpoint webapp is frequently done. The recommended approach to introduce customization for the deployment is by updating the docker image and updating the kubernetes deployment to reflect the changes. It is also recommended to maintain versioning for the docker image version once the changes are introduced to the docker image.
+
+If the authentication endpoint is in a shared volume mount, it is not recommended introduce the customization on the shared volume, as it can lead to a temporary unavailability of the webapp during webapp redeployment.
+
+#### 2. Using secondary user stores
+
+Following will be the recommendations for working with secondary userstores in the kubernetes deployment
+
+* For super tenant
+
+If the configurations are not changed during runtime, include the configurations in to docker image.
+If the configurations are changed during runtime, include the configuration in a shared persistence volume.
+
+* For tenants
+
+Include the configurations in a shared persistence volume. As the `tenants` directory will be in a shared persistence volume and the tenant secondary user stores will be automatically included in a shared persistence volume.
+
+#### 3. Adding certificates to the client truststore
+
+In cases where the Identity Server invokes external endpoints ex: Federated IDPs, the requests will fail if the Identity Server doesn't trust the external endpoint's TLS certificate. Inorder to make Identity Server trust the external endpoint's public certificate should be added to the client-truststore of the product.
+
+Introducing a new client certificate requires to restart the Identity Server. The recommended approach for this requirement is to add the new certificate to the client-truststore, update the docker image and performing a rolling update on the deployment.
+
+#### 4. Cleaning up stale data from DB
+
+In a production deployment, it is necessary to remove stale data from the database. These data includes, expired session data, unused tokens, etc. The recommended way of removing the data is through a scheduled task which runs on the DB. For more information on the cleanup tasks refer the below links
+
+* https://docs.wso2.com/display/IS580/Removing+Unused+Tokens+from+the+Database
+* https://docs.wso2.com/display/IS580/Data+Purging
