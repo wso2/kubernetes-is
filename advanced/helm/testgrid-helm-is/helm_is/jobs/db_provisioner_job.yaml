@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-provisioner
+spec:
+  template:
+    spec:
+      containers:
+      - name: database-provisioner-job-configurator
+        image: 700650335418.dkr.ecr.us-east-1.amazonaws.com/testgrid:latest
+        command: ["/bin/sh"]
+        args: ["-c", "sh /dbprov/run.sh"]
+        volumeMounts:
+        - name: db-provisioner-job-conf
+          mountPath: /dbprov
+      restartPolicy: Never
+      volumes:
+      - name: db-provisioner-job-conf
+        configMap:
+          name: db-provisioner-job-conf
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-provisioner-job-conf
+data:
+  run.sh: |-
+    wget --no-check-certificate --no-proxy 'https://wso2-cloudformation-templates.s3.amazonaws.com/tmp/is_mssql.sql'
+    cd /opt/mssql-tools/bin
+    ./sqlcmd -S wso2is-rdbms-service-mssql-linux -U sa -P wso2carbon! -i /is_mssql.sql

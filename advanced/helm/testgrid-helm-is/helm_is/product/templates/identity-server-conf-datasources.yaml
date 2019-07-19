@@ -1,0 +1,104 @@
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: identity-server-conf-datasources
+  namespace : {{ .Values.namespace }}
+data:
+  {{- if eq .Values.dbType "mysql" }}
+    {{- $reg_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $user_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $identity_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $consent_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $bps_dburl := "jdbc:mysql://wso2-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false" }}
+    {{- $db_driver_class_name := "com.mysql.jdbc.Driver" }}
+    {{- $db_validation_query := "SELECT 1" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "BPSDB_URL" $bps_dburl | replace "IDENTITYDB_URL" $identity_dburl | replace "CONSENTDB_URL" $consent_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if eq .Values.dbType "oracle" }}
+    {{- $reg_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $user_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $identity_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $consent_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $bps_dburl := "jdbc:oracle:thin:@CF_RDS_URL:1521/WSO2ISDB" }}
+    {{- $db_driver_class_name := "oracle.jdbc.OracleDriver" }}
+    {{- $db_validation_query := "SELECT 1 FROM DUAL" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "BPSDB_URL" $bps_dburl | replace "IDENTITYDB_URL" $identity_dburl | replace "CONSENTDB_URL" $consent_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if eq .Values.dbType "mssql" }}
+    {{- $reg_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2IS_REG_DB;SendStringParametersAsUnicode=false" }}
+    {{- $user_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2IS_USER_DB;SendStringParametersAsUnicode=false" }}
+    {{- $identity_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2IS_IDENTITY_DB;SendStringParametersAsUnicode=false" }}
+    {{- $consent_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2IS_CONSENT_DB;SendStringParametersAsUnicode=false" }}
+    {{- $bps_dburl := "jdbc:sqlserver://wso2is-rdbms-service-mssql-linux:1433;databaseName=WSO2IS_BPS_DB;SendStringParametersAsUnicode=false" }}
+    {{- $db_driver_class_name := "com.microsoft.sqlserver.jdbc.SQLServerDriver" }}
+    {{- $db_validation_query := "SELECT 1" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon!" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "BPSDB_URL" $bps_dburl | replace "IDENTITYDB_URL" $identity_dburl | replace "CONSENTDB_URL" $consent_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+  {{- if eq .Values.dbType "postgres" }}
+    {{- $reg_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2is_reg_db" }}
+    {{- $user_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2is_user_db" }}
+    {{- $identity_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2is_identity_db" }}
+    {{- $consent_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2is_consent_db" }}
+    {{- $bps_dburl := "jdbc:postgresql://wso2is-rdbms-service-postgresql:5432/wso2is_bps_db" }}
+    {{- $db_driver_class_name := "org.postgresql.Driver" }}
+    {{- $db_validation_query := "SELECT 1; COMMIT" }}
+    {{- $db_username := "wso2carbon" }}
+    {{- $db_password := "wso2carbon" }}
+    {{- $file := .Files }}
+    {{- range $path, $byte := .Files.Glob "confs/datasources/*" }}
+    {{- $list := $path | splitList "/"}}
+    {{- $length := len $list }}
+    {{- $last := add $length -1 }}
+    {{ index $list $last }}: |-
+      {{- range $line := $file.Lines $path }}
+        {{ $line | replace "DB_USERNAME" $db_username | replace "DB_PASSWORD" $db_password | replace "REGDB_URL" $reg_dburl | replace "USERDB_URL" $user_dburl | replace "BPSDB_URL" $bps_dburl | replace "IDENTITYDB_URL" $identity_dburl | replace "CONSENTDB_URL" $consent_dburl | replace "DRIVER_CLASSNAME" $db_driver_class_name | replace "VALIDATION_QUERY" $db_validation_query }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
