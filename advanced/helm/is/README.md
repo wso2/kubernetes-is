@@ -70,41 +70,53 @@ a. The default product configurations are available at `<HELM_HOME>/is/confs` fo
 configurations as necessary.
 
 b. Open the `<HELM_HOME>/is/values.yaml` and provide the following values. If you do not have active 
-WSO2 subscription do not change the parameters `username`, `password` and `email`. Ignore `serverIP`, `sharedDeploymentLocationPath` and `sharedTenantsLocationPath` if an NFS is not used.
-
-| Parameter                       | Description                                                                               |
-|---------------------------------|-------------------------------------------------------------------------------------------|
-| `username`                      | Your WSO2 username                                                                        |
-| `password`                      | Your WSO2 password                                                                        |
-| `email`                         | Docker email                                                                              |
-| `namespace`                     | Kubernetes Namespace in which the resources are deployed                                  |
-| `svcaccount`                    | Kubernetes Service Account in the `namespace` to which product instance pods are attached |
-| `serverIp`                      | NFS Server IP                                                                             |
-| `sharedDeploymentLocationPath`  | NFS shared deployment directory(`<IS_HOME>/repository/deployment`) location for IS       |
-| `sharedTenantsLocationPath`     | NFS shared tenants directory(`<IS_HOME>/repository/tenants`) location for IS             |
+WSO2 subscription do not change the parameters `wso2.deployment.username`, `wso2.deployment.password`. 
 
 
-##### 4. Deploy product database(s) using MySQL in Kubernetes.
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.mysqlEnabled`                                                         | Enable MySQL chart as a dependency                                                        | true                        |
+| `wso2.deployment.username`                                                  | Your WSO2 username                                                                        | ""                          |
+| `wso2.deployment.password`                                                  | Your WSO2 password                                                                        | ""                          |                                            |
+| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | NFS Server IP                                                                             | **None**                    | 
+| `wso2.deployment.persistentRuntimeArtifacts.sharedDeploymentLocationPath`   | NFS shared deployment directory (`<IS_HOME>/repository/deployment`) location for IS       | **None**                    |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedTenantsLocationPath`      | NFS shared deployment directory (`<IS_HOME>/repository/tenants`) location for IS          | **None**                    |
+| `wso2.deployment.wso2is.imageName`                                          | Image name for IS node                                                                    | wso2is                      |
+| `wso2.deployment.wso2is.imageTag`                                           | Image tag for IS node                                                                     | 5.8.0                       |
+| `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 1                           |
+| `wso2.deployment.wso2is.minReadySeconds`                                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 30                           |
+| `wso2.deployment.wso2is.strategy.rollingUpdate.maxSurge`                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 1                           |
+| `wso2.deployment.wso2is.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 0                           |
+| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 250                           |
+| `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                           |
+| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 250                           |
+| `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                           |
+| `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | true                        |                                                                                         |                             |    
+| `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | 7.2.0                       |  
+| `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | elastic                     |  
+| `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
+| `wso2.centralizedLogging.logstash.indexNodeID.wso2ISNode`                   | Elasticsearch IS Node log index ID(index name: ${NODE_ID}-${NODE_IP})                     | wso2is-node                 |  
+| `kubernetes.namespace`                                                      | Kubernetes Namespace in which the resources are deployed                                  | wso2                        |
+| `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached | wso2svc-account             |
+
+
+##### 4. Add elasticsearch Helm repository to download sub-charts required for Centralized logging.
 
 ```
-helm install --name wso2is-rdbms-service -f <HELM_HOME>/mysql/values.yaml stable/mysql --namespace <NAMESPACE>
+helm repo add elasticsearch https://helm.elastic.co
 ```
-
-`NAMESPACE` should be same as in `step 3.b`.
-
-For a serious deployment (e.g. production grade setup), it is recommended to connect product instances to a user owned and managed RDBMS instance.
 
 ##### 5. Deploy WSO2 Identity server.
 
 ```
-helm install --name <RELEASE_NAME> <HELM_HOME>/is --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is --namespace <NAMESPACE>
 ```
 
 `NAMESPACE` should be same as in `step 3.b`.
 
 ##### 6. Access Management Console.
 
-Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
+Default deployment will expose `wso2is` host (to expose Administrative services and Management Console) and `wso2is-kibana` for Kibana console.
 
 To access the console in the environment,
 
@@ -115,14 +127,16 @@ kubectl get ing
 ```
 
 ```
-NAME                       HOSTS          ADDRESS        PORTS     AGE
-wso2is-ingress             wso2is         <EXTERNAL-IP>  80, 443   3m
+NAME                             HOSTS          ADDRESS        PORTS     AGE
+wso2is-ingress                   wso2is         <EXTERNAL-IP>  80, 443   3m
+<RELEASE_NAME>-wso2is-kibana  wso2is-kibana     <EXTERNAL-IP>   80, 443   7m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
 <EXTERNAL-IP>	wso2is
+<EXTERNAL-IP>	wso2is-kibana
 ```
 
-c. Try navigating to `https://wso2is/carbon` from your favorite browser.
+c. Try navigating to `https://wso2is/carbon` and `https://wso2is-kibana/` from your favorite browser.
