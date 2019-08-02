@@ -13,18 +13,7 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: is-analytics-dashboard-conf
-  namespace : {{ .Release.namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/is-analytics-dashboard/conf/dashboard/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
-  {{- end }}
+appVersion: "5.7"
+description: A Helm chart for WSO2 IS-Analytics Datasources
+name: mysql-is-with-analytics
+version: 1.0.0
