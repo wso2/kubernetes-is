@@ -1,8 +1,76 @@
-username: ""
-password: ""
-email: ""
-namespace: "wso2"
-svcaccount: "wso2svc-account"
-serverIp: ""
-sharedDeploymentLocationPath: ""
-sharedTenantsLocationPath: ""
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+wso2:
+  mysqlEnabled: true
+  subscription:
+    username: ""
+    password: ""
+  deployment:
+    persistentRuntimeArtifacts:
+      nfsServerIP: ""
+      sharedDeploymentLocationPath: ""
+      sharedTenantsLocationPath: ""
+    wso2is:
+      imageName: "wso2is"
+      imageTag: "5.8.0"
+      replicas: 1
+      minReadySeconds: 30
+      strategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+      livenessProbe:
+        initialDelaySeconds: 250
+        periodSeconds: 10
+      readinessProbe:
+        initialDelaySeconds: 250
+        periodSeconds: 10
+    wso2isAnalyticsDashboard:
+      imageName: "wso2is-analytics-dashboard"
+      imageTag: "5.8.0"
+      replicas: 1
+      strategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+    wso2isAnalyticsWorker:
+      imageName: "wso2is-analytics-worker"
+      imageTag: "5.8.0"
+      replicas: 1
+      strategy:
+        rollingUpdate:
+          maxSurge: 1
+          maxUnavailable: 0
+      livenessProbe:
+        initialDelaySeconds: 200
+        periodSeconds: 10
+      readinessProbe:
+        initialDelaySeconds: 200
+        periodSeconds: 10
+  centralizedLogging:
+    enabled: true
+    logstash:
+      imageTag: 7.2.0
+      elasticsearch:
+        username: "elastic"
+        password: "changeme"
+      indexNodeID:
+        wso2ISNode: "wso2is-node"
+
+kubernetes:
+  svcaccount: "wso2svc-account"
+
+# Parameters required to configure Elasticsearch and Kibana sub-charts for centralized logging.
+elasticsearch:
+  clusterName: wso2-elasticsearch
