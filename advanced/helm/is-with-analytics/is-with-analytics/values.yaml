@@ -36,6 +36,10 @@ wso2:
       readinessProbe:
         initialDelaySeconds: 250
         periodSeconds: 10
+      resources:
+        limits:
+          memory: "4Gi"
+          cpu: "4000m"
     wso2isAnalyticsDashboard:
       imageName: "wso2is-analytics-dashboard"
       imageTag: "5.8.0"
@@ -44,6 +48,10 @@ wso2:
         rollingUpdate:
           maxSurge: 1
           maxUnavailable: 0
+      resources:
+        limits:
+          memory: "6Gi"
+          cpu: "4000m"
     wso2isAnalyticsWorker:
       imageName: "wso2is-analytics-worker"
       imageTag: "5.8.0"
@@ -58,6 +66,10 @@ wso2:
       readinessProbe:
         initialDelaySeconds: 200
         periodSeconds: 10
+      resources:
+        limits:
+          memory: "6Gi"
+          cpu: "4000m"
   centralizedLogging:
     enabled: true
     logstash:
