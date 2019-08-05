@@ -110,7 +110,7 @@ spec:
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
-      - name: wso2apim-with-analytics-logstash
+      - name: wso2is-logstash
         image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
         volumeMounts:
           - name: shared-logs
