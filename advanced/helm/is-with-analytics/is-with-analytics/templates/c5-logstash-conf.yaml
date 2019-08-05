@@ -17,7 +17,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
     name: c5-logstash-conf
-    namespace : {{ .Values.kubernetes.namespace }}
+    namespace : {{ .Release.namespace }}
 data:
     {{- (.Files.Glob "confs/logstash/c5/logstash.conf").AsConfig | nindent 2 }}
 {{ end }}
