@@ -78,6 +78,13 @@ spec:
               - nc -z localhost 9443
           initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ default 10 .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: {{ .Values.wso2.deployment.wso2is.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2is.resources.limits.cpu }}
         lifecycle:
           preStop:
             exec:
