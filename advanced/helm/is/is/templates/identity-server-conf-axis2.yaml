@@ -19,12 +19,13 @@ metadata:
   namespace : {{ .Release.namespace }}
 data:
   {{- $file := .Files }}
+  {{- $namespace := .Release.Namespace }}
   {{- range $path, $byte := .Files.Glob "confs/axis2/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "<<KUBERNETES_NAMESPACE>>" $namespace }}
     {{- end }}
   {{- end }}
