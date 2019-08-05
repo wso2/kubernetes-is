@@ -16,7 +16,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: is-shared-deployment-volume-claim
-  namespace : {{ .Values.namespace }}
+  namespace : {{ .Release.namespace }}
 spec:
   accessModes:
     - ReadWriteMany
