@@ -13,18 +13,7 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: identity-server-conf
-  namespace : {{ .Release.namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
-    {{- end }}
-  {{- end }}
+appVersion: "5.7"
+description: A Helm chart for WSO2 IS Datasources
+name: mysql-is
+version: 1.0.0
