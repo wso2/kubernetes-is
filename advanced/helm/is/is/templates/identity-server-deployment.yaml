@@ -16,7 +16,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-deployment
-  namespace : {{ .Release.namespace }}
+  namespace : {{ .Release.Namespace }}
 spec:
   replicas: {{ default 1 .Values.wso2.deployment.wso2is.replicas }}
   minReadySeconds: {{ default 30 .Values.wso2.deployment.wso2is.minReadySeconds }}
