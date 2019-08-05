@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: identity-server-conf-axis2
-  namespace : {{ .Release.namespace }}
+  namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
   {{- $namespace := .Release.Namespace }}

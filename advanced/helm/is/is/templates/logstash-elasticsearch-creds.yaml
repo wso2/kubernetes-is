@@ -16,7 +16,7 @@ apiVersion: v1
 kind: Secret
 metadata:
     name: logstash-elasticsearch-creds
-    namespace : {{ .Release.namespace }}
+    namespace : {{ .Release.Namespace }}
 type: Opaque
 data:
     username: {{ default "elastic" .Values.wso2.centralizedLogging.logstash.elasticsearch.username | b64enc }}
