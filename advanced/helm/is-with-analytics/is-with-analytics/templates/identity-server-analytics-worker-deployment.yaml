@@ -72,10 +72,12 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         resources:
-          limits:
-            memory: "4Gi"
           requests:
             memory: "4Gi"
+            cpu: "2000m"
+          limits:
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.limits.cpu }}
         livenessProbe:
           exec:
             command:
