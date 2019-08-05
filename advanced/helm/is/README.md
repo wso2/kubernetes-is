@@ -35,36 +35,7 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-is.git
 ```
 
-##### 2. Setup persistent storage.
-
-* Using Azurefiles
-  
-  Add the following parameter and value to the values.yaml.
-  ```
-  cloudProvider: Azure
-  ```
-  
-* Using a Network File System (NFS)
-
-  Create and export unique directories within the NFS server instance for each of the following Kubernetes Persistent Volume
-  resources defined in the `<HELM_HOME>/is/values.yaml` file:
-
-  * `sharedDeploymentLocationPath`
-  * `sharedTenantsLocationPath`
-
-  Grant ownership to `wso2carbon` user and `wso2` group, for each of the previously created directories.
-
-    ```
-    sudo chown -R wso2carbon:wso2 <directory_name>
-    ```
-
-  Grant read-write-execute permissions to the `wso2carbon` user, for each of the previously created directories.
-
-    ```
-    chmod -R 700 <directory_name>
-  ```
-
-##### 3. Provide configurations.
+##### 2. Provide configurations.
 
 a. The default product configurations are available at `<HELM_HOME>/is/confs` folder. Change the
 configurations as necessary.
@@ -98,13 +69,13 @@ subscription do not change the parameters `wso2.deployment.username`, `wso2.depl
 | `kubernetes.svcaccount`                                                     | Kubernetes Service Account in the `namespace` to which product instance pods are attached | wso2svc-account             |
 
 
-##### 4. Add elasticsearch Helm repository to download sub-charts required for Centralized logging.
+##### 3. Add elasticsearch Helm repository to download sub-charts required for Centralized logging.
 
 ```
 helm repo add elasticsearch https://helm.elastic.co
 ```
 
-##### 5. Deploy WSO2 Identity server.
+##### 4. Deploy WSO2 Identity server.
 
 ```
 helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is --namespace <NAMESPACE>
@@ -112,7 +83,7 @@ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is --namespace <NAMESPAC
 
 `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
 
-##### 6. Access Management Console.
+##### 5. Access Management Console.
 
 Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
 
