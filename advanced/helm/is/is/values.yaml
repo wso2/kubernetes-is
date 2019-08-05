@@ -36,6 +36,10 @@ wso2:
       readinessProbe:
         initialDelaySeconds: 250
         periodSeconds: 10
+      resources:
+        limits:
+          memory: "4Gi"
+          cpu: "4000m"
   centralizedLogging:
     enabled: true
     logstash:
