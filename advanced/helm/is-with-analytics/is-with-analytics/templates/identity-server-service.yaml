@@ -16,7 +16,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: wso2is-with-analytics-is-service
-  namespace : {{ .Release.namespace }}
+  namespace : {{ .Release.Namespace }}
 spec:
   selector:
     deployment: wso2is
