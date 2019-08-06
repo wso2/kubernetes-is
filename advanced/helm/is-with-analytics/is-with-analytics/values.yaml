@@ -67,7 +67,7 @@ wso2:
           memory: "6Gi"
           cpu: "4000m"
   centralizedLogging:
-    enabled: true
+    enabled: false
     logstash:
       imageTag: 7.2.0
       elasticsearch:
@@ -82,3 +82,4 @@ kubernetes:
 # Parameters required to configure Elasticsearch and Kibana sub-charts for centralized logging.
 elasticsearch:
   clusterName: wso2-elasticsearch
+  host: wso2-elasticsearch-master
