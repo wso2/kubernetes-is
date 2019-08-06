@@ -67,7 +67,7 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false</url>
+          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false</url>
           <username>wso2carbon</username>
           <password>wso2carbon</password>
           <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -89,7 +89,7 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
+          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
           <username>wso2carbon</username>
           <password>wso2carbon</password>
           <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -111,7 +111,7 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
+          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
           <username>wso2carbon</username>
           <password>wso2carbon</password>
           <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -133,7 +133,7 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
+          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
           <username>wso2carbon</username>
           <password>wso2carbon</password>
           <driverClassName>com.mysql.jdbc.Driver</driverClassName>
