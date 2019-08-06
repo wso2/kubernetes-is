@@ -50,7 +50,7 @@ spec:
             mountPath: /usr/share/logstash/plugins/
       - name: init-elasticsearch
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z wso2-elasticsearch-master 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
       {{ end }}
       containers:
       - name: wso2is-with-analytics-is-analytics-worker
