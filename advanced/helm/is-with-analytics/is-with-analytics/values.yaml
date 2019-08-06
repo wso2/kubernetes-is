@@ -71,6 +71,7 @@ wso2:
     logstash:
       imageTag: 7.2.0
       elasticsearch:
+        host: "wso2-elasticsearch-master"
         username: "elastic"
         password: "changeme"
       indexNodeID:
@@ -78,8 +79,3 @@ wso2:
 
 kubernetes:
   svcaccount: "wso2svc-account"
-
-# Parameters required to configure Elasticsearch and Kibana sub-charts for centralized logging.
-elasticsearch:
-  clusterName: wso2-elasticsearch
-  host: wso2-elasticsearch-master
