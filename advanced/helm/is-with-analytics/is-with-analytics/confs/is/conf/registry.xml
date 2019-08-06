@@ -128,7 +128,7 @@
     <readOnly>false</readOnly>
     <registryRoot>/</registryRoot>
     <enableCache>true</enableCache>
-    <cacheId>jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB</cacheId>
+    <cacheId>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB</cacheId>
   </remoteInstance>
   <mount path="/_system/config" overwrite="true">
     <instanceId>sharedregistry</instanceId>
