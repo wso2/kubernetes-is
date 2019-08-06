@@ -12,20 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-with-analytics-is-analytics-dashboard-deployment
-  namespace : {{ .Values.namespace }}
-  labels:
-    deployment: wso2is-with-analytics-is-analytics-dashboard
+  namespace : {{ .Release.Namespace }}
 spec:
-  replicas: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
+  replicas: {{ default 2 .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
   strategy:
     rollingUpdate:
       maxSurge: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxSurge }}
       maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2is-with-analytics-is-analytics-dashboard
   template:
     metadata:
       labels:

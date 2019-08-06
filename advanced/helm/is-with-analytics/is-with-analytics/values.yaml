@@ -51,7 +51,7 @@ wso2:
     wso2isAnalyticsWorker:
       imageName: "wso2is-analytics-worker"
       imageTag: "5.8.0"
-      replicas: 1
+      replicas: 2
       strategy:
         rollingUpdate:
           maxSurge: 1
