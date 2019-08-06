@@ -17,10 +17,6 @@ wso2:
     username: ""
     password: ""
   deployment:
-    persistentRuntimeArtifacts:
-      nfsServerIP: ""
-      sharedDeploymentLocationPath: ""
-      sharedTenantsLocationPath: ""
     wso2is:
       imageName: "wso2is"
       imageTag: "5.8.0"
