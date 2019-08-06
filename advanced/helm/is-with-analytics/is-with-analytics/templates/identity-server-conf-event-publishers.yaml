@@ -16,7 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: identity-server-conf-event-publishers
-  namespace : {{ .Release.namespace }}
+  namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/is/deployment/server/eventpublishers/*" }}
