@@ -214,7 +214,10 @@
     </AuthorizationManager>
     <UserStoreManager class="org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager">
       <Property name="TenantManager">org.wso2.carbon.user.core.tenant.JDBCTenantManager</Property>
-      <Property name="dataSource">jdbc/WSO2UserDS</Property>
+      <Property name="url">jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</Property>
+      <Property name="username">wso2carbonS</Property>
+      <Property name="password">wso2carbon</Property>
+      <Property name="driverClassName">com.mysql.jdbc.Driver</Property>
       <Property name="ReadOnly">false</Property>
       <Property name="ReadGroups">true</Property>
       <Property name="WriteGroups">true</Property>
