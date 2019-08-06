@@ -50,7 +50,7 @@ spec:
             mountPath: /usr/share/logstash/plugins/
       - name: init-elasticsearch
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
       {{ end }}
       containers:
       - name: wso2is-with-analytics-is-analytics-worker
@@ -165,6 +165,8 @@ spec:
               secretKeyRef:
                 name: logstash-elasticsearch-creds
                 key: password
+          - name: ELASTICSEARCH_HOST
+            value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{ if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
