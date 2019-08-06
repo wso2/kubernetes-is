@@ -16,7 +16,7 @@ mysql:
   mysqlRootPassword: root
   mysqlUser: wso2carbon
   mysqlPassword: wso2carbon
-  fullnameOverride: "wso2is-with-analytics-rdbms-service-mysql"
+  fullnameOverride: "wso2is-rdbms-service-mysql"
   configurationFiles:
     mysql.cnf: |-
       [mysqld]

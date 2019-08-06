@@ -320,7 +320,7 @@ wso2.datasources:
     definition:
       type: RDBMS
       configuration:
-        jdbcUrl: jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/IS_ANALYTICS_DB?useSSL=false
+        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/IS_ANALYTICS_DB?useSSL=false
         username: wso2carbon
         password: wso2carbon
         driverClassName: com.mysql.jdbc.Driver
@@ -353,7 +353,7 @@ wso2.datasources:
         isAutoCommit: false
         maxPoolSize: 50
         password: wso2carbon
-        jdbcUrl: jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2_CLUSTER_DB?useSSL=false
+        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2_CLUSTER_DB?useSSL=false
       type: RDBMS
     name: WSO2_CLUSTER_DB
     jndiConfig:
@@ -369,7 +369,7 @@ wso2.datasources:
         isAutoCommit: false
         maxPoolSize: 50
         password: wso2carbon
-        jdbcUrl: jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/WSO2_PERSISTENCE_DB?useSSL=false
+        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2_PERSISTENCE_DB?useSSL=false
       type: RDBMS
     name: WSO2_PERSISTENCE_DB
     jndiConfig:
