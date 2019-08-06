@@ -2,4 +2,4 @@ Thank you for installing WSO2 Identity Server with Analytics.
 
 Your release is named {{ .Release.Name }}.
 
-Please refer the official documentation at https://docs.wso2.com/display/IS570/WSO2+Identity+Server+Documentation
+Please refer the official documentation at https://docs.wso2.com/display/IS580/WSO2+Identity+Server+Documentation
