@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 dependencies:
-  - name: mysql-is-with-analytics
+  - name: mysql-is
     version: "1.0.0"
     repository: "https://kubernetes-charts.storage.googleapis.com"
     condition: wso2.mysqlEnabled

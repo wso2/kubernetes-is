@@ -289,7 +289,7 @@ wso2.datasources:
     definition:
       type: RDBMS
       configuration:
-        jdbcUrl: jdbc:mysql://wso2is-with-analytics-rdbms-service-mysql:3306/IS_ANALYTICS_DB?useSSL=false
+        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/IS_ANALYTICS_DB?useSSL=false
         username: wso2carbon
         password: wso2carbon
         driverClassName: com.mysql.jdbc.Driver
