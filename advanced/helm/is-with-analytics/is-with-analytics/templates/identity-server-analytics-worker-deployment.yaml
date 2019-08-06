@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: apps/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-with-analytics-is-analytics-worker-deployment
-  namespace : {{ .Release.namespace }}
+  namespace : {{ .Release.Namespace }}
 spec:
   replicas: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker.replicas }}
   strategy:
