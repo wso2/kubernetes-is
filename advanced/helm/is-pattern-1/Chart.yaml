@@ -13,7 +13,7 @@
 # limitations under the License.
 
 apiVersion: v1
-appVersion: "5.8.0-1"
-description: A Helm chart for the deployment of WSO2 IS Deployment
-name: is
-version: 5.8.0-1
+appVersion: "5.8.0"
+description: A Helm chart for the deployment of WSO2 IS Pattern 1 Deployment
+name: is-pattern-1
+version: 5.8.1
