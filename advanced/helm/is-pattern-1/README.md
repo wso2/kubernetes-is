@@ -27,7 +27,7 @@ steps provided in the following quick start guide.<br><br>
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
 Git repository. <br>
->* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/helm/is`. <br>
+>* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/helm`. <br>
 
 ##### 1. Clone the Kubernetes Resources for WSO2 Identity Server Git repository.
 
@@ -37,10 +37,10 @@ git clone https://github.com/wso2/kubernetes-is.git
 
 ##### 2. Provide configurations.
 
-a. The default product configurations are available at `<HELM_HOME>/is/confs` folder. Change the
+a. The default product configurations are available at `<HELM_HOME>/is-pattern-1/confs` folder. Change the
 configurations as necessary.
 
-b. Open the `<HELM_HOME>/is/values.yaml` and provide the following values. If you do not have an active WSO2 
+b. Open the `<HELM_HOME>/is-pattern-1/values.yaml` and provide the following values. If you do not have an active WSO2 
 subscription do not change the parameters `wso2.deployment.username`, `wso2.deployment.password`. 
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
@@ -78,7 +78,7 @@ helm repo add elasticsearch https://helm.elastic.co
 ##### 4. Deploy WSO2 Identity server.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
 ```
 
 `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
