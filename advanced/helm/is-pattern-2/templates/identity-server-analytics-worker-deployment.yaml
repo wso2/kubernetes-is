@@ -54,8 +54,10 @@ spec:
       {{ end }}
       containers:
       - name: wso2is-with-analytics-is-analytics-worker
-        {{- if .Values.wso2.dockerRegistry }}
-        image: {{ .Values.wso2.dockerRegistry }}/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker.imageTag }}
+        {{- if .Values.wso2.deployment.wso2isAnalyticsWorker.dockerRegistry }}
+        image: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.dockerRegistry }}/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker.imageName }}
+        {{- $tag := .Values.wso2.deployment.wso2isAnalyticsWorker.imageTag }}
+        {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
         {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
         image: wso2/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker.imageTag }}
         {{- else }}
