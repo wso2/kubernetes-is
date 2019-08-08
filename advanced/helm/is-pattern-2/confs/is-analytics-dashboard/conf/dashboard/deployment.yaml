@@ -289,13 +289,13 @@ wso2.datasources:
     definition:
       type: RDBMS
       configuration:
-        jdbcUrl: <<ANALYTICS_DB_URL>>
-        username: <<DB_USERNAME>>
-        password: <<DB_PASSWORD>>
-        driverClassName: <<DRIVER_CLASSNAME>>
+        jdbcUrl: {{ ANALYTICS_DB_URL }}
+        username: {{ DB_USERNAME }}
+        password: {{ DB_PASSWORD }}
+        driverClassName: {{ DRIVER_CLASSNAME }}
         maxPoolSize: 50
         idleTimeout: 60000
-        connectionTestQuery: <<VALIDATION_QUERY>>
+        connectionTestQuery: {{ VALIDATION_QUERY }}
         validationTimeout: 30000
         isAutoCommit: false
 #  - name: SAMPLE_DB
