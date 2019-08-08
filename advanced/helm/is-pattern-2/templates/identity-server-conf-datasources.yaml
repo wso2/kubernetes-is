@@ -18,13 +18,20 @@ metadata:
   name: identity-server-conf-datasources
   namespace : {{ .Release.Namespace }}
 data:
+  {{- $identity_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false" }}
+  {{- $user_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false" }}
+  {{- $bps_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false" }}
+  {{- $db_driver_class_name := "com.mysql.jdbc.Driver" }}
+  {{- $db_validation_query := "SELECT 1" }}
+  {{- $db_username := "wso2carbon" }}
+  {{- $db_password := "wso2carbon" }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/is/conf/datasources/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "<<DB_USERNAME>>" $db_username | replace "<<DB_PASSWORD>>" $db_password | replace "<<USERDB_URL>>" $user_dburl | replace "<<IDENTITY_DB_URL>>" $identity_dburl | replace "<<BPS_DB_URL>>" $bps_dburl | replace "<<DRIVER_CLASSNAME>>" $db_driver_class_name | replace "<<VALIDATION_QUERY>>" $db_validation_query }}
     {{- end }}
   {{- end }}

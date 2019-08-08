@@ -320,12 +320,13 @@ wso2.datasources:
     definition:
       type: RDBMS
       configuration:
-        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/IS_ANALYTICS_DB?useSSL=false
-        username: wso2carbon
-        password: wso2carbon
-        driverClassName: com.mysql.jdbc.Driver
+        jdbcUrl: <<ANALYTICS_DB_URL>>
+        username: <<DB_USERNAME>>
+        password: <<DB_PASSWORD>>
+        driverClassName: <<DRIVER_CLASSNAME>>
         maxPoolSize: 50
         idleTimeout: 60000
+        connectionTestQuery: <<VALIDATION_QUERY>>
         validationTimeout: 30000
         isAutoCommit: false
   - name: GEO_LOCATION_DATA
@@ -345,15 +346,15 @@ wso2.datasources:
         isAutoCommit: false
   - definition:
       configuration:
-        username: wso2carbon
-        driverClassName: com.mysql.jdbc.Driver
+        username: <<DB_USERNAME>>
+        driverClassName: <<DRIVER_CLASSNAME>>
         validationTimeout: 30000
-        connectionTestQuery: SELECT 1
+        connectionTestQuery: <<VALIDATION_QUERY>>
         idleTimeout: 60000
         isAutoCommit: false
         maxPoolSize: 50
-        password: wso2carbon
-        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2_CLUSTER_DB?useSSL=false
+        password: <<DB_PASSWORD>>
+        jdbcUrl: <<CLUSTER_DB_URL>>
       type: RDBMS
     name: WSO2_CLUSTER_DB
     jndiConfig:
@@ -361,15 +362,15 @@ wso2.datasources:
     description: The MySQL datasource used for Cluster Coordination
   - definition:
       configuration:
-        username: wso2carbon
-        driverClassName: com.mysql.jdbc.Driver
+        username: <<DB_USERNAME>>
+        driverClassName: <<DRIVER_CLASSNAME>>
         validationTimeout: 30000
-        connectionTestQuery: SELECT 1
+        connectionTestQuery: <<VALIDATION_QUERY>>
         idleTimeout: 60000
         isAutoCommit: false
         maxPoolSize: 50
-        password: wso2carbon
-        jdbcUrl: jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2_PERSISTENCE_DB?useSSL=false
+        password: <<DB_PASSWORD>>
+        jdbcUrl: <<PERSISTENCE_DB_URL>>
       type: RDBMS
     name: WSO2_PERSISTENCE_DB
     jndiConfig:
