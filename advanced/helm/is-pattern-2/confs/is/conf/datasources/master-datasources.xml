@@ -67,15 +67,15 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
-          <username>wso2carbon</username>
-          <password>wso2carbon</password>
-          <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+          <url><<IDENTITY_DB_URL>></url>
+          <username><<DB_USERNAME>></username>
+          <password><<DB_PASSWORD>></password>
+          <driverClassName><<DRIVER_CLASSNAME>></driverClassName>
           <maxActive>80</maxActive>
           <maxWait>60000</maxWait>
           <minIdle>5</minIdle>
           <testOnBorrow>true</testOnBorrow>
-          <validationQuery>SELECT 1</validationQuery>
+          <validationQuery><<VALIDATION_QUERY>></validationQuery>
           <validationInterval>30000</validationInterval>
           <defaultAutoCommit>false</defaultAutoCommit>
         </configuration>
@@ -89,15 +89,15 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
-          <username>wso2carbon</username>
-          <password>wso2carbon</password>
-          <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+          <url><<USERDB_URL>></url>
+          <username><<DB_USERNAME>></username>
+          <password><<DB_PASSWORD>></password>
+          <driverClassName><<DRIVER_CLASSNAME>></driverClassName>
           <maxActive>80</maxActive>
           <maxWait>60000</maxWait>
           <minIdle>5</minIdle>
           <testOnBorrow>true</testOnBorrow>
-          <validationQuery>SELECT 1</validationQuery>
+          <validationQuery><<VALIDATION_QUERY>></validationQuery>
           <validationInterval>30000</validationInterval>
           <defaultAutoCommit>false</defaultAutoCommit>
         </configuration>

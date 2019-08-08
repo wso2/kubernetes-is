@@ -18,13 +18,18 @@ metadata:
   name: is-analytics-dashboard-conf
   namespace : {{ .Release.Namespace }}
 data:
+  {{- $analytics_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/IS_ANALYTICS_DB?useSSL=false" }}
+  {{- $db_driver_class_name := "com.mysql.jdbc.Driver" }}
+  {{- $db_validation_query := "SELECT 1" }}
+  {{- $db_username := "wso2carbon" }}
+  {{- $db_password := "wso2carbon" }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/is-analytics-dashboard/conf/dashboard/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+      {{ $line | replace "<<DB_USERNAME>>" $db_username | replace "<<DB_PASSWORD>>" $db_password | replace "<<ANALYTICS_DB_URL>>" $analytics_dburl | replace "<<DRIVER_CLASSNAME>>" $db_driver_class_name | replace "<<VALIDATION_QUERY>>" $db_validation_query }}
     {{- end }}
   {{- end }}

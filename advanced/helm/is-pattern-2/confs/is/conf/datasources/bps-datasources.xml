@@ -36,15 +36,15 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false</url>
-          <username>wso2carbon</username>
-          <password>wso2carbon</password>
-          <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+          <url><<BPS_DB_URL>></url>
+          <username><<DB_USERNAME>></username>
+          <password><<DB_PASSWORD>></password>
+          <driverClassName><<DRIVER_CLASSNAME>></driverClassName>
           <maxActive>100</maxActive>
           <maxWait>10000</maxWait>
           <maxIdle>20</maxIdle>
           <testOnBorrow>true</testOnBorrow>
-          <validationQuery>SELECT 1</validationQuery>
+          <validationQuery><<VALIDATION_QUERY>></validationQuery>
           <validationInterval>30000</validationInterval>
           <useDataSourceFactory>false</useDataSourceFactory>
           <defaultAutoCommit>false</defaultAutoCommit>
