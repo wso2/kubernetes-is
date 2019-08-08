@@ -16,4 +16,4 @@ apiVersion: v1
 appVersion: "5.7"
 description: A Helm chart for WSO2 IS Datasources
 name: mysql-is
-version: 1.0.0
+version: 5.8.1
