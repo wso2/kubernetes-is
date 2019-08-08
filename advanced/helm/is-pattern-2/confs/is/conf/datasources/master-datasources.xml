@@ -60,28 +60,6 @@
             </definition>
         </datasource-->
     <datasource>
-      <name>WSO2_REG_DS</name>
-      <description>The datasource used for registry</description>
-      <jndiConfig>
-        <name>jdbc/WSO2RegDS</name>
-      </jndiConfig>
-      <definition type="RDBMS">
-        <configuration>
-          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false</url>
-          <username>wso2carbon</username>
-          <password>wso2carbon</password>
-          <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-          <maxActive>80</maxActive>
-          <maxWait>60000</maxWait>
-          <minIdle>5</minIdle>
-          <testOnBorrow>true</testOnBorrow>
-          <validationQuery>SELECT 1</validationQuery>
-          <validationInterval>30000</validationInterval>
-          <defaultAutoCommit>false</defaultAutoCommit>
-        </configuration>
-      </definition>
-    </datasource>
-    <datasource>
       <name>WSO2_IDENTITY_DS</name>
       <description>The datasource used for identity management</description>
       <jndiConfig>
@@ -104,14 +82,14 @@
       </definition>
     </datasource>
     <datasource>
-      <name>WSO2_CONSENT_DS</name>
-      <description>The datasource used for consent management</description>
+      <name>WSO2_USER_DS</name>
+      <description>The datasource used for user management</description>
       <jndiConfig>
-        <name>jdbc/WSO2ConsentDS</name>
+        <name>jdbc/WSO2UserDS</name>
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
+          <url>jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
           <username>wso2carbon</username>
           <password>wso2carbon</password>
           <driverClassName>com.mysql.jdbc.Driver</driverClassName>

@@ -120,7 +120,7 @@
     <versioningRatings>true</versioningRatings>
   </staticConfiguration>
   <dbConfig name="sharedregistry">
-    <dataSource>jdbc/WSO2RegDS</dataSource>
+    <dataSource>jdbc/WSO2UserDS</dataSource>
   </dbConfig>
   <remoteInstance url="https://localhost:9443/registry">
     <id>sharedregistry</id>
