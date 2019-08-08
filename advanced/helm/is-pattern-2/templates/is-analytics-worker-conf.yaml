@@ -32,6 +32,6 @@ data:
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
     {{- range $line := $file.Lines $path }}
-      {{ $line | replace "<<DB_USERNAME>>" $db_username | replace "<<DB_PASSWORD>>" $db_password | replace "<<ANALYTICS_DB_URL>>" $analytics_dburl  | replace "<<CLUSTER_DB_URL>>" $cluster_dburl | replace "<<PERSISTENCE_DB_URL>>" $persistence_dburl | replace "<<DRIVER_CLASSNAME>>" $db_driver_class_name | replace "<<VALIDATION_QUERY>>" $db_validation_query }}
+      {{ $line | replace "{{ DB_USERNAME }}" $db_username | replace "{{ DB_PASSWORD }}" $db_password | replace "{{ ANALYTICS_DB_URL }}" $analytics_dburl  | replace "{{ CLUSTER_DB_URL }}" $cluster_dburl | replace "{{ PERSISTENCE_DB_URL }}" $persistence_dburl | replace "{{ DRIVER_CLASSNAME }}" $db_driver_class_name | replace "{{ VALIDATION_QUERY }}" $db_validation_query }}
     {{- end }}
   {{- end }}

@@ -67,15 +67,15 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url><<IDENTITY_DB_URL>></url>
-          <username><<DB_USERNAME>></username>
-          <password><<DB_PASSWORD>></password>
-          <driverClassName><<DRIVER_CLASSNAME>></driverClassName>
+          <url>{{ IDENTITY_DB_URL }}</url>
+          <username>{{ DB_USERNAME }}</username>
+          <password>{{ DB_PASSWORD }}</password>
+          <driverClassName>{{ DRIVER_CLASSNAME }}</driverClassName>
           <maxActive>80</maxActive>
           <maxWait>60000</maxWait>
           <minIdle>5</minIdle>
           <testOnBorrow>true</testOnBorrow>
-          <validationQuery><<VALIDATION_QUERY>></validationQuery>
+          <validationQuery>{{ VALIDATION_QUERY }}</validationQuery>
           <validationInterval>30000</validationInterval>
           <defaultAutoCommit>false</defaultAutoCommit>
         </configuration>
@@ -89,15 +89,15 @@
       </jndiConfig>
       <definition type="RDBMS">
         <configuration>
-          <url><<USERDB_URL>></url>
-          <username><<DB_USERNAME>></username>
-          <password><<DB_PASSWORD>></password>
-          <driverClassName><<DRIVER_CLASSNAME>></driverClassName>
+          <url>{{ USERDB_URL }}</url>
+          <username>{{ DB_USERNAME }}</username>
+          <password>{{ DB_PASSWORD }}</password>
+          <driverClassName>{{ DRIVER_CLASSNAME }}</driverClassName>
           <maxActive>80</maxActive>
           <maxWait>60000</maxWait>
           <minIdle>5</minIdle>
           <testOnBorrow>true</testOnBorrow>
-          <validationQuery><<VALIDATION_QUERY>></validationQuery>
+          <validationQuery>{{ VALIDATION_QUERY }}</validationQuery>
           <validationInterval>30000</validationInterval>
           <defaultAutoCommit>false</defaultAutoCommit>
         </configuration>

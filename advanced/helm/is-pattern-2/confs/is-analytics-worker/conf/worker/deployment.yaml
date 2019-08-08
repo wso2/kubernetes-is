@@ -320,13 +320,13 @@ wso2.datasources:
     definition:
       type: RDBMS
       configuration:
-        jdbcUrl: <<ANALYTICS_DB_URL>>
-        username: <<DB_USERNAME>>
-        password: <<DB_PASSWORD>>
-        driverClassName: <<DRIVER_CLASSNAME>>
+        jdbcUrl: {{ ANALYTICS_DB_URL }}
+        username: {{ DB_USERNAME }}
+        password: {{ DB_PASSWORD }}
+        driverClassName: {{ DRIVER_CLASSNAME }}
         maxPoolSize: 50
         idleTimeout: 60000
-        connectionTestQuery: <<VALIDATION_QUERY>>
+        connectionTestQuery: {{ VALIDATION_QUERY }}
         validationTimeout: 30000
         isAutoCommit: false
   - name: GEO_LOCATION_DATA
@@ -346,15 +346,15 @@ wso2.datasources:
         isAutoCommit: false
   - definition:
       configuration:
-        username: <<DB_USERNAME>>
-        driverClassName: <<DRIVER_CLASSNAME>>
+        username: {{ DB_USERNAME }}
+        driverClassName: {{ DRIVER_CLASSNAME }}
         validationTimeout: 30000
-        connectionTestQuery: <<VALIDATION_QUERY>>
+        connectionTestQuery: {{ VALIDATION_QUERY }}
         idleTimeout: 60000
         isAutoCommit: false
         maxPoolSize: 50
-        password: <<DB_PASSWORD>>
-        jdbcUrl: <<CLUSTER_DB_URL>>
+        password: {{ DB_PASSWORD }}
+        jdbcUrl: {{ CLUSTER_DB_URL }}
       type: RDBMS
     name: WSO2_CLUSTER_DB
     jndiConfig:
@@ -362,15 +362,15 @@ wso2.datasources:
     description: The MySQL datasource used for Cluster Coordination
   - definition:
       configuration:
-        username: <<DB_USERNAME>>
-        driverClassName: <<DRIVER_CLASSNAME>>
+        username: {{ DB_USERNAME }}
+        driverClassName: {{ DRIVER_CLASSNAME }}
         validationTimeout: 30000
-        connectionTestQuery: <<VALIDATION_QUERY>>
+        connectionTestQuery: {{ VALIDATION_QUERY }}
         idleTimeout: 60000
         isAutoCommit: false
         maxPoolSize: 50
-        password: <<DB_PASSWORD>>
-        jdbcUrl: <<PERSISTENCE_DB_URL>>
+        password: {{ DB_PASSWORD }}
+        jdbcUrl: {{ PERSISTENCE_DB_URL }}
       type: RDBMS
     name: WSO2_PERSISTENCE_DB
     jndiConfig:
