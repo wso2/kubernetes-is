@@ -1,5 +1,7 @@
 # Kubernetes Resources for deployment of WSO2 Identity Server
 
+**Note**: We consider Helm to be the primary source of installation of WSO2 product deployment patterns in Kubernetes environments. Hence, pure Kubernetes resources for product deployment patterns will be deprecated from 5.8.0.3 onwards. Please adjust your usage accordingly.
+
 Core Kubernetes resources for a [clustered deployment of WSO2 Identity Server](https://docs.wso2.com/display/IS580/Setting+Up+Deployment+Pattern+1).
 
 ![A clustered deployment WSO2 Identity Server](is.png)
