@@ -108,10 +108,22 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: identity-server-conf-tomcat
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
+        - name: identity-server-conf-tomcat-carbon-web
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat/carbon/WEB-INF
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
         - name: identity-server-conf-event-publishers
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/eventpublishers
+        - name: identity-server-shindig-properties
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/webapps/shindig/WEB-INF/classes
+        - name: identity-server-dashboard
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/dashboard/conf
+        - name: identity-server-portal
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/portal/conf
+      {{ if not .Values.wso2.deployment.wso2is.hostnameVerificationEnabled }}
+        - name: identity-server-bin
+          mountPath: /home/wso2carbon/wso2-config-volume/bin
+      {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
@@ -169,9 +181,26 @@ spec:
       - name: identity-server-conf-tomcat
         configMap:
           name: identity-server-conf-tomcat
+      - name: identity-server-conf-tomcat-carbon-web
+        configMap:
+          name: identity-server-conf-tomcat-carbon-web
       - name: identity-server-conf-event-publishers
         configMap:
           name: identity-server-conf-event-publishers
+      - name: identity-server-shindig-properties
+        configMap:
+          name: identity-server-shindig-properties
+      - name: identity-server-dashboard
+        configMap:
+          name: identity-server-dashboard
+      - name: identity-server-portal
+        configMap:
+          name: identity-server-portal
+      {{ if not .Values.wso2.deployment.wso2is.hostnameVerificationEnabled }}
+      - name: identity-server-bin
+        configMap:
+          name: identity-server-bin
+      {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
