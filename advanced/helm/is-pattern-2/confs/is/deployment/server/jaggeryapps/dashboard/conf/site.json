@@ -1,0 +1,11 @@
+{
+  "service": {
+    "serviceOrigin" : "https://localhost:9443"
+  },
+  "proxy" : {
+    "proxyHost" : "wso2is",
+    "proxyHTTPSPort" : "443",
+    "proxyContextPath" : "",
+    "servicePath" : "/services"
+  }
+}
