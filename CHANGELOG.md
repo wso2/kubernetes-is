@@ -19,3 +19,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Integrate support in Helm resources for users with and without WSO2 subscriptions
 
 [v5.8.0.2]: https://github.com/wso2/kubernetes-is/compare/v5.8.0.1...v5.8.0.2
+
+## [V5.8.0.3] - 2019-08-15
+
+### Added
+- Added MySQL Helm chart as dependencies for deployment patterns
+- Added InitContainer support in Helm resources
+- Added security hardening
+- Introduced Logstash for log aggregation and analysis
+
+### Changed
+- Promoted Helm resources as the single source of Kubernetes resource installation
+- Parameterized datasource and clustering configurations
+- Parameterized Kubernetes deployment definitions
+- Set resource requests and limits for Kubernetes deployments
+
+### Removed
+- Removed sharing of persistent volumes in deployment patterns
+
+[v5.8.0.3]: https://github.com/wso2/kubernetes-is/compare/v5.8.0.2...v5.8.0.3
+
+For detailed information on the tasks carried out during this release, please see the GitHub milestone [5.8.0.3](https://github.com/wso2/kubernetes-is/milestone/3).
