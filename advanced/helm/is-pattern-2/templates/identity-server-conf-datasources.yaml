@@ -18,13 +18,13 @@ metadata:
   name: identity-server-conf-datasources
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $identity_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false" }}
-  {{- $user_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false" }}
-  {{- $bps_dburl := "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false" }}
-  {{- $db_driver_class_name := "com.mysql.jdbc.Driver" }}
-  {{- $db_validation_query := "SELECT 1" }}
-  {{- $db_username := "wso2carbon" }}
-  {{- $db_password := "wso2carbon" }}
+  {{- $identity_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false" }}
+  {{- $user_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false" }}
+  {{- $bps_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false" }}
+  {{- $db_driver_class_name := .Values.wso2.mysql.driverClass }}
+  {{- $db_validation_query := .Values.wso2.mysql.validationQuery }}
+  {{- $db_username := .Values.wso2.mysql.username }}
+  {{- $db_password := .Values.wso2.mysql.password }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/is/conf/datasources/*" }}
   {{- $list := $path | splitList "/"}}

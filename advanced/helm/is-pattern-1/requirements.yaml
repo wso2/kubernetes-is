@@ -15,4 +15,4 @@ dependencies:
   - name: mysql-is
     version: "5.8.0-1"
     repository: "https://helm.wso2.com"
-    condition: wso2.mysqlEnabled
+    condition: wso2.mysql.enabled
