@@ -108,6 +108,10 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
         - name: identity-server-conf-identity
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
+        - name: identity-server-conf-tomcat
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
+        - name: identity-server-conf-tomcat-carbon-web
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat/carbon/WEB-INF
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
@@ -162,6 +166,12 @@ spec:
       - name: identity-server-conf-identity
         configMap:
           name: identity-server-conf-identity
+      - name: identity-server-conf-tomcat
+        configMap:
+          name: identity-server-conf-tomcat
+      - name: identity-server-conf-tomcat-carbon-web
+        configMap:
+          name: identity-server-conf-tomcat-carbon-web
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
