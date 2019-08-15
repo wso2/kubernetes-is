@@ -80,10 +80,11 @@ spec:
               - nc -z localhost 9443
           initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ default 10 .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
+        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2is.imagePullPolicy }}
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "2000m"
+            memory: {{ .Values.wso2.deployment.wso2is.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2is.resources.requests.cpu }}
           limits:
             memory: {{ .Values.wso2.deployment.wso2is.resources.limits.memory }}
             cpu: {{ .Values.wso2.deployment.wso2is.resources.limits.cpu }}
@@ -91,7 +92,6 @@ spec:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
-        imagePullPolicy: Always
         securityContext:
           runAsUser: 802
         ports:

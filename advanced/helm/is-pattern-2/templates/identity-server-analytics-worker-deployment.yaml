@@ -75,8 +75,8 @@ spec:
               fieldPath: status.podIP
         resources:
           requests:
-            memory: "4Gi"
-            cpu: "2000m"
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.requests.cpu }}
           limits:
             memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.limits.memory }}
             cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.limits.cpu }}
@@ -100,7 +100,7 @@ spec:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
-        imagePullPolicy: Always
+        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsWorker.imagePullPolicy }}
         securityContext:
           runAsUser: 802
         ports:

@@ -75,7 +75,8 @@
                compressableMimeType="text/html,text/javascript,application/x-javascript,application/javascript,application/xml,text/css,application/xslt+xml,text/xsl,image/gif,image/jpg,image/jpeg"
                keystoreFile="${carbon.home}/repository/resources/security/wso2carbon.jks"
                keystorePass="wso2carbon"
-               URIEncoding="UTF-8"/>
+               URIEncoding="UTF-8"
+               proxyPort="443"/>
 
 
     <Engine name="Catalina" defaultHost="localhost">
