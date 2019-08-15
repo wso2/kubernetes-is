@@ -33,9 +33,15 @@ wso2:
         initialDelaySeconds: 250
         periodSeconds: 10
       resources:
+        # These are the minimum resource recommendations for running WSO2 Enterprise Integrator server profiles
+        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        requests:
+          memory: "2Gi"
+          cpu: "2000m"
         limits:
           memory: "4Gi"
           cpu: "4000m"
+      imagePullPolicy: Always
   centralizedLogging:
     enabled: false
     logstash:

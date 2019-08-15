@@ -63,7 +63,7 @@ spec:
         {{- else }}
         image: docker.wso2.com/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
         {{- end }}
-        imagePullPolicy: Always
+        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullPolicy }}
         ports:
         -
           containerPort: 9643
@@ -76,8 +76,8 @@ spec:
             - nc -z localhost 9643
         resources:
           requests:
-            memory: "4Gi"
-            cpu: "2000m"
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.requests.cpu }}
           limits:
             memory: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.limits.memory }}
             cpu: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.limits.cpu }}
