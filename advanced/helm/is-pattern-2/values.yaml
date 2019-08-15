@@ -18,6 +18,7 @@ wso2:
     password: ""
   deployment:
     wso2is:
+      hostnameVerificationEnabled: false
       imageName: "wso2is"
       imageTag: "5.8.0"
       replicas: 1
@@ -33,9 +34,15 @@ wso2:
         initialDelaySeconds: 250
         periodSeconds: 10
       resources:
+        # These are the minimum resource recommendations for running WSO2 Enterprise Integrator server profiles
+        # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+        requests:
+          memory: "2Gi"
+          cpu: "2000m"
         limits:
           memory: "4Gi"
           cpu: "4000m"
+      imagePullPolicy: Always
     wso2isAnalyticsDashboard:
       imageName: "wso2is-analytics-dashboard"
       imageTag: "5.8.0"
@@ -45,9 +52,18 @@ wso2:
           maxSurge: 1
           maxUnavailable: 0
       resources:
+        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+        requests:
+          memory: "4Gi"
+          cpu: "2000m"
+        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+        # where necessary.
         limits:
-          memory: "6Gi"
-          cpu: "4000m"
+          memory: "4Gi"
+          cpu: "2000m"
+      imagePullPolicy: Always
     wso2isAnalyticsWorker:
       imageName: "wso2is-analytics-worker"
       imageTag: "5.8.0"
@@ -63,9 +79,18 @@ wso2:
         initialDelaySeconds: 200
         periodSeconds: 10
       resources:
+        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
+        requests:
+          memory: "4Gi"
+          cpu: "2000m"
+        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
+        # where necessary.
         limits:
-          memory: "6Gi"
-          cpu: "4000m"
+          memory: "4Gi"
+          cpu: "2000m"
+      imagePullPolicy: Always
   centralizedLogging:
     enabled: false
     logstash:

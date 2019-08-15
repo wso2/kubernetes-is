@@ -80,10 +80,11 @@ spec:
               - nc -z localhost 9443
           initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ default 10 .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
+        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2is.imagePullPolicy }}
         resources:
           requests:
-            memory: "2Gi"
-            cpu: "2000m"
+            memory: {{ .Values.wso2.deployment.wso2is.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2is.resources.requests.cpu }}
           limits:
             memory: {{ .Values.wso2.deployment.wso2is.resources.limits.memory }}
             cpu: {{ .Values.wso2.deployment.wso2is.resources.limits.cpu }}
@@ -91,7 +92,6 @@ spec:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
-        imagePullPolicy: Always
         securityContext:
           runAsUser: 802
         ports:
@@ -112,6 +112,12 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
         - name: identity-server-conf-tomcat-carbon-web
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat/carbon/WEB-INF
+        - name: identity-server-shindig-properties
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/webapps/shindig/WEB-INF/classes
+        - name: identity-server-dashboard
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/dashboard/conf
+        - name: identity-server-portal
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/portal/conf
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
@@ -172,6 +178,15 @@ spec:
       - name: identity-server-conf-tomcat-carbon-web
         configMap:
           name: identity-server-conf-tomcat-carbon-web
+      - name: identity-server-shindig-properties
+        configMap:
+          name: identity-server-shindig-properties
+      - name: identity-server-dashboard
+        configMap:
+          name: identity-server-dashboard
+      - name: identity-server-portal
+        configMap:
+          name: identity-server-portal
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
