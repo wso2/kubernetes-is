@@ -120,6 +120,9 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/dashboard/conf
         - name: identity-server-portal
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/portal/conf
+        - name: identity-server-conf-entrypoint
+          mountPath: /home/wso2carbon/entrypoint.sh
+          subPath: docker-entrypoint.sh
       {{ if not .Values.wso2.deployment.wso2is.hostnameVerificationEnabled }}
         - name: identity-server-bin
           mountPath: /home/wso2carbon/wso2-config-volume/bin
@@ -196,6 +199,10 @@ spec:
       - name: identity-server-portal
         configMap:
           name: identity-server-portal
+      - name: identity-server-conf-entrypoint
+        configMap:
+          name: identity-server-conf-entrypoint
+          defaultMode: 0407
       {{ if not .Values.wso2.deployment.wso2is.hostnameVerificationEnabled }}
       - name: identity-server-bin
         configMap:
