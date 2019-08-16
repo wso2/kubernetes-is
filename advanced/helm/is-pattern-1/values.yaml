@@ -48,6 +48,10 @@ wso2:
           memory: "4Gi"
           cpu: "4000m"
       imagePullPolicy: Always
+
+  # Configurations for the logstash container image and elasticsearch authorization credentials
+  # Centralized logging is disabled by default. If it is required to enable centralized logging, please follow the instructions
+  # provided in the documentation (https://github.com/wso2/kubernetes-is/tree/master/advanced/helm/is-pattern-1#prerequisites)
   centralizedLogging:
     enabled: false
     logstash:
