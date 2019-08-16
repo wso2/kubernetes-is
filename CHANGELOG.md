@@ -20,7 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
 [v5.8.0.2]: https://github.com/wso2/kubernetes-is/compare/v5.8.0.1...v5.8.0.2
 
-## [V5.8.0.3] - 2019-08-15
+## [V5.8.0.3] - Unreleased
 
 ### Added
 - Added MySQL Helm chart as dependencies for deployment patterns
