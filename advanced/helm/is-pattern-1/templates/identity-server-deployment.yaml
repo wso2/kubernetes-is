@@ -118,6 +118,9 @@ spec:
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/dashboard/conf
         - name: identity-server-portal
           mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/portal/conf
+        - name: identity-server-conf-entrypoint
+          mountPath: /home/wso2carbon/entrypoint.sh
+          subPath: docker-entrypoint.sh
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
@@ -187,6 +190,10 @@ spec:
       - name: identity-server-portal
         configMap:
           name: identity-server-portal
+      - name: identity-server-conf-entrypoint
+        configMap:
+          name: identity-server-conf-entrypoint
+          defaultMode: 0407
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
