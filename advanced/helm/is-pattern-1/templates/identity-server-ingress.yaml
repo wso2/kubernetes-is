@@ -26,9 +26,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - wso2is
+    - {{ .Release.Name }}-wso2is
   rules:
-  - host: wso2is
+  - host: {{ .Release.Name }}-wso2is
     http:
       paths:
       - path: /
