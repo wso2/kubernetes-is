@@ -17,11 +17,8 @@ steps provided in the following quick start guide.<br><br>
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
 
-* Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/). This can
- be easily done via 
-  ```
-  helm install stable/nginx-ingress --name nginx-wso2is-analytics --set rbac.create=true
-  ```
+* Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).Please note that Helm resources for WSO2 product
+deployment patterns are compatible with NGINX Ingress Controller Git release [`nginx-0.22.0`](https://github.com/kubernetes/ingress-nginx/releases/tag/nginx-0.22.0).
   
 ## Quick Start Guide
 >In the context of this document, <br>
