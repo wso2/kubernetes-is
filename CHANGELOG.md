@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - Parameterized datasource and clustering configurations
 - Parameterized Kubernetes deployment definitions
 - Set resource requests and limits for Kubernetes deployments
+- Provide unique host names when multiple setups are deployed
 
 ### Removed
 - Removed sharing of persistent volumes in deployment patterns

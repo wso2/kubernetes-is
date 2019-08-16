@@ -101,7 +101,7 @@ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace
 
 ##### 4. Access Management Console.
 
-Default deployment will expose `wso2is` host (to expose Administrative services and Management Console).
+Default deployment will expose `<RELEASE_NAME>-wso2is` host (to expose Administrative services and Management Console).
 
 To access the console in the environment,
 
@@ -112,14 +112,14 @@ kubectl get ing -n <NAMESPACE>
 ```
 
 ```
-NAME                       HOSTS          ADDRESS        PORTS     AGE
-wso2is-ingress             wso2is         <EXTERNAL-IP>  80, 443   3m
+NAME                       HOSTS                         ADDRESS        PORTS     AGE
+wso2is-ingress             <RELEASE_NAME>-wso2is         <EXTERNAL-IP>  80, 443   3m
 ```
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	wso2is
+<EXTERNAL-IP>	<RELEASE_NAME>-wso2is
 ```
 
-c. Try navigating to `https://wso2is/carbon` from your favorite browser.
+c. Try navigating to `https://<RELEASE_NAME>-wso2is/carbon` from your favorite browser.
