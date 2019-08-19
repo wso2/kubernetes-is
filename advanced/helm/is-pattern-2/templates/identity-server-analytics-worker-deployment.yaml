@@ -173,7 +173,10 @@ spec:
             value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
-      {{ if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      {{- if .Values.wso2.deployment.wso2isAnalyticsWorker.imagePullSecrets }}
+      imagePullSecrets:
+      - name: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
       - name: wso2creds
       {{ end }}
