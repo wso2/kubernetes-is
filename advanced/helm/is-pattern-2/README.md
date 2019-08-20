@@ -146,7 +146,7 @@ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-2 --namespace
 
 ##### 4. Access Management Console.
 
-Default deployment will expose `<RELEASE_NAME>-wso2is` and `<RELEASE_NAME>-analytics-dashboard` hosts (to expose Administrative services and Management Console).
+Default deployment will expose `<RELEASE_NAME>` and `<RELEASE_NAME>-analytics-dashboard` hosts (to expose Administrative services and Management Console).
 
 To access the console in the environment,
 
@@ -159,15 +159,15 @@ kubectl get ing -n <NAMESPACE>
 ```
 NAME                                         HOSTS                                ADDRESS        PORTS     AGE
 wso2is-with-analytics-is-dashboard-ingress   <RELEASE_NAME>-analytics-dashboard   <EXTERNAL-IP>   80, 443   3m
-wso2is-with-analytics-is-ingress             <RELEASE_NAME>-wso2is                <EXTERNAL-IP>   80, 443   3m
+wso2is-with-analytics-is-ingress             <RELEASE_NAME>                       <EXTERNAL-IP>   80, 443   3m
 ``` 
 
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
 <EXTERNAL-IP>	<RELEASE_NAME>-analytics-dashboard
-<EXTERNAL-IP>	<RELEASE_NAME>-wso2is
+<EXTERNAL-IP>	<RELEASE_NAME>
 ```
 
-c. Try navigating to `https://<RELEASE_NAME>-wso2is/carbon` and `https://<RELEASE_NAME>-analytics-dashboard/portal` from your favorite browser.
+c. Try navigating to `https://<RELEASE_NAME>/carbon` and `https://<RELEASE_NAME>-analytics-dashboard/portal` from your favorite browser.
 
