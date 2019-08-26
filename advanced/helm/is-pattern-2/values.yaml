@@ -12,6 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 wso2:
+  # MySQL datasource configurations
+  #   enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+  #   host:             Hostname of the MySQL database
+  #   username:         MySQL database username
+  #   password:         MySQL database password
+  #   driverClass:      JDBC Driver class name
+  #   validationQuery:  SQL validation query
   mysql:
     enabled: true
     host: wso2is-rdbms-service-mysql
@@ -19,84 +26,130 @@ wso2:
     password: wso2carbon
     driverClass: com.mysql.jdbc.Driver
     validationQuery: "SELECT 1"
+  # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
+  # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
     username: ""
     password: ""
   deployment:
     wso2is:
-      hostnameVerificationEnabled: false
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+#      dockerRegistry: ""
       imageName: "wso2is"
       imageTag: "5.8.0"
+      # Number of deployment replicas
       replicas: 1
+      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
       minReadySeconds: 30
       strategy:
         rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
           maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
           maxUnavailable: 0
+      # Indicates whether the container is running.
       livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
         initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
         periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
       readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
         initialDelaySeconds: 250
+        # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
-        # These are the minimum resource recommendations for running WSO2 Identity server profiles
+        # These are the minimum resource recommendations for running WSO2 Identity and Access Management product profiles
         # as per official documentation (https://docs.wso2.com/display/IS580/Installation+Prerequisites).
         requests:
+          # The minimum amount of memory that should be allocated for a Pod
           memory: "2Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
           cpu: "2000m"
         limits:
+          # The maximum amount of memory that should be allocated for a Pod
           memory: "4Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
           cpu: "4000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
+      # Indicates whether hostname verification should be enabled in the Identity Server pod (https://docs.wso2.com/display/ADMIN44x/Enabling+HostName+Verification)
+      hostnameVerificationEnabled: false
     wso2isAnalyticsDashboard:
+      # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
+#      dockerRegistry: ""
       imageName: "wso2is-analytics-dashboard"
       imageTag: "5.8.0"
+      # Number of deployment replicas
       replicas: 1
       strategy:
         rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
           maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
           maxUnavailable: 0
       resources:
-        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+        # These are the minimum resource recommendations for running WSO2 Stream Processing based server profiles
         # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
         requests:
+          # The minimum amount of memory that should be allocated for a Pod
           memory: "4Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
           cpu: "2000m"
-        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+        # Please see the official documentation on WSO2 Stream Processing based Performance Analysis and Resource recommendations
         # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
         # where necessary.
         limits:
+          # The maximum amount of memory that should be allocated for a Pod
           memory: "4Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
           cpu: "2000m"
+      # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
     wso2isAnalyticsWorker:
       imageName: "wso2is-analytics-worker"
       imageTag: "5.8.0"
+      # Number of deployment replicas
       replicas: 2
       strategy:
         rollingUpdate:
+          # The maximum number of pods that can be scheduled above the desired number of pods.
           maxSurge: 1
+          # The maximum number of pods that can be unavailable during the update.
           maxUnavailable: 0
+      # Indicates whether the container is running.
       livenessProbe:
+        # Number of seconds after the container has started before liveness probes are initiated.
         initialDelaySeconds: 200
+        # How often (in seconds) to perform the probe.
         periodSeconds: 10
+      # Indicates whether the container is ready to service requests.
       readinessProbe:
+        # Number of seconds after the container has started before readiness probes are initiated.
         initialDelaySeconds: 200
+        # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
-        # These are the minimum resource recommendations for running WSO2 Stream Processor based server profiles
+        # These are the minimum resource recommendations for running WSO2 Stream Processing based server profiles
         # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
         requests:
+          # The minimum amount of memory that should be allocated for a Pod
           memory: "4Gi"
+          # The minimum amount of CPU that should be allocated for a Pod
           cpu: "2000m"
-        # Please see the official documentation on WSO2 Stream Processor based Performance Analysis and Resource recommendations
+        # Please see the official documentation on WSO2 Stream Processing based Performance Analysis and Resource recommendations
         # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
         # where necessary.
         limits:
+          # The maximum amount of memory that should be allocated for a Pod
           memory: "4Gi"
+          # The maximum amount of CPU that should be allocated for a Pod
           cpu: "2000m"
       imagePullPolicy: Always
+  # Configurations for the logstash container image and elasticsearch authorization credentials
+  # Centralized logging is disabled by default. If it is required to enable centralized logging, please follow the instructions
+  # provided in the documentation (https://github.com/wso2/kubernetes-is/tree/master/advanced/helm/is-pattern-2#enabling-centralized-logging)
   centralizedLogging:
     enabled: false
     logstash:
@@ -109,4 +162,5 @@ wso2:
         wso2ISNode: "wso2is-node"
 
 kubernetes:
+  # Name of Kubernetes service account
   svcaccount: "wso2svc-account"
