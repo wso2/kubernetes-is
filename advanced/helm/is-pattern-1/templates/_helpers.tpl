@@ -1,5 +1,5 @@
 {{/*
-Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -45,5 +45,5 @@ Create chart name and version as used by the chart label.
 {{- end -}}
 
 {{- define "fullname" -}}
-{{- "wso2is-pattern-2" }}
+{{- "wso2is-pattern-1" }}
 {{- end -}}

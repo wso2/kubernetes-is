@@ -604,8 +604,8 @@
       <applicationDomain name="wso2.as.domain" description="AS group" agent="org.wso2.carbon.core.clustering.hazelcast.HazelcastGroupManagementAgent" subDomain="worker" port="2222"/>
     </groupManagement>
     <parameter name="membershipSchemeClassName">org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme</parameter>
-    <parameter name="KUBERNETES_NAMESPACE"><<KUBERNETES_NAMESPACE>></parameter>
-    <parameter name="KUBERNETES_SERVICES">wso2is-service</parameter>
+    <parameter name="KUBERNETES_NAMESPACE">{{ KUBERNETES_NAMESPACE }}</parameter>
+    <parameter name="KUBERNETES_SERVICES">{{ KUBERNETES_SERVICE }}</parameter>
     <parameter name="KUBERNETES_MASTER_SKIP_SSL_VERIFICATION">true</parameter>
     <parameter name="USE_DNS">false</parameter>
   </clustering>

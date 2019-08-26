@@ -33,5 +33,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: wso2is-service
+          serviceName: {{ template "fullname" . }}-service
           servicePort: 9443
