@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2is-with-analytics-is-analytics-dashboard-deployment
+  name: {{ template "fullname" . }}-analytics-dashboard-deployment
   namespace : {{ .Release.Namespace }}
 spec:
   replicas: {{ default 2 .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
@@ -26,11 +26,11 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2is-with-analytics-is-analytics-dashboard
+      deployment: {{ template "fullname" . }}-analytics-dashboard
   template:
     metadata:
       labels:
-        deployment: wso2is-with-analytics-is-analytics-dashboard
+        deployment: {{ template "fullname" . }}-analytics-dashboard
     spec:
       initContainers:
       {{ if .Values.wso2.mysql.enabled }}
@@ -55,7 +55,7 @@ spec:
         command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
       {{ end }}
       containers:
-      - name: wso2is-with-analytics-is-analytics-dashboard
+      - name: {{ template "fullname" . }}-analytics-dashboard
         {{- if .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}
         image: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}
         {{- $tag := .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
@@ -89,7 +89,7 @@ spec:
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-analytics-5.8.0/wso2/dashboard/logs
-      - name: wso2is-with-analytics-is-analytics-dashboard-logstash
+      - name: {{ template "fullname" . }}-analytics-dashboard-logstash
         image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
         volumeMounts:
           - name: shared-logs

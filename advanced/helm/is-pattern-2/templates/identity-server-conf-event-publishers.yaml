@@ -19,12 +19,14 @@ metadata:
   namespace : {{ .Release.Namespace }}
 data:
   {{- $file := .Files }}
+  {{- $fullname := include "fullname" . }}
+  {{- $analyticsWorkerService := printf "%s%s" $fullname "-analytics-worker-service" }}
   {{- range $path, $byte := .Files.Glob "confs/is/deployment/server/eventpublishers/*" }}
   {{- $list := $path | splitList "/"}}
   {{- $length := len $list }}
   {{- $last := add $length -1 }}
   {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-    {{ . }}
+    {{- range $line := $file.Lines $path }}
+          {{ $line | replace "{{ ANALYTICS_WORKER_SERVICE }}" $analyticsWorkerService }}
     {{- end }}
   {{- end }}
