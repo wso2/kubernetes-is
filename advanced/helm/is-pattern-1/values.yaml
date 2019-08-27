@@ -86,8 +86,6 @@ wso2:
         host: wso2-elasticsearch-master
         username: "elastic"
         password: "changeme"
-      indexNodeID:
-        wso2ISNode: "wso2is-node"
 
 kubernetes:
   # Name of Kubernetes service account
