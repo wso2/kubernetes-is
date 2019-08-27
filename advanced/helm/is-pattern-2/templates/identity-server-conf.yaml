@@ -18,7 +18,7 @@ metadata:
   name: identity-server-conf
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $hostname := printf "%s%s" .Release.Name "-wso2is" }}
+  {{- $hostname := .Release.Name }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/is/conf/*" }}
   {{- $list := $path | splitList "/"}}
