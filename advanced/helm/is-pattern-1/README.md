@@ -112,7 +112,7 @@ kubectl get ing -n <NAMESPACE>
 ```
 
 ```
-NAME                       HOSTS                         ADDRESS        PORTS     AGE
+NAME                       HOSTS                  ADDRESS        PORTS     AGE
 wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
 ```
 
