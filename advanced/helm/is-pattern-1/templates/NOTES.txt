@@ -1,5 +1,19 @@
 Thank you for installing WSO2 Identity Server.
 
-Your release is named {{ .Release.Name }}.
+Please follow these steps to access the Management Console in the environment.
 
-Please refer the official documentation at https://docs.wso2.com/display/IS580/WSO2+Identity+Server+Documentation
+1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
+
+  kubectl get ing -n {{ .Release.Namespace }}
+
+    NAME                       HOSTS                  ADDRESS        PORTS     AGE
+    wso2is-ingress             {{ .Release.Name }}    <EXTERNAL-IP>  80, 443   3m
+
+2. Add the above host as an entry in /etc/hosts file as follows:
+
+    <EXTERNAL-IP>   {{ .Release.Name }}
+
+3. Navigate to https://{{ .Release.Name }}/carbon in your browser of choice.
+
+
+Please refer the official documentation at https://docs.wso2.com/display/IS580/WSO2+Identity+Server+Documentation for additional information on WSO2 Identity Server.
