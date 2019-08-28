@@ -28,10 +28,14 @@ spec:
   selector:
     matchLabels:
       deployment: wso2is
+      app: wso2is
+      monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
   template:
     metadata:
       labels:
         deployment: wso2is
+        app: wso2is
+        monitoring: jmx
     spec:
       initContainers:
       {{ if .Values.wso2.mysql.enabled }}
@@ -54,6 +58,19 @@ spec:
       - name: init-elasticsearch
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+      {{ end }}
+      {{ if .Values.wso2.monitoring.enabled }}
+      - name: init-jmx-exporter
+        image: busybox:1.31
+        command:
+          - /bin/sh
+          - "-c"
+          - |
+            set -e
+            wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -P /jmx-jar/
+        volumeMounts:
+          - name: shared-prometheus-jmx-jar
+            mountPath: /jmx-jar
       {{ end }}
       containers:
       - name: wso2is
@@ -83,6 +100,7 @@ spec:
           initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ default 10 .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
         imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2is.imagePullPolicy }}
+        command: ["/home/wso2carbon/entrypoint.sh"]
         resources:
           requests:
             memory: {{ .Values.wso2.deployment.wso2is.resources.requests.memory }}
@@ -101,6 +119,11 @@ spec:
           protocol: TCP
         - containerPort: 9443
           protocol: TCP
+        {{ if .Values.wso2.monitoring.enabled }}
+        - containerPort: 2222
+          protocol: TCP
+          name: metrics
+        {{ end }}
         volumeMounts:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
@@ -123,6 +146,15 @@ spec:
         - name: identity-server-conf-entrypoint
           mountPath: /home/wso2carbon/entrypoint.sh
           subPath: docker-entrypoint.sh
+        {{ if .Values.wso2.monitoring.enabled }}
+        - name: shared-prometheus-jmx-jar
+          mountPath: /home/wso2carbon/prometheus
+        - name: identity-server-prometheus-exporter-conf
+          mountPath: /home/wso2carbon/prometheus/config.yaml
+          subPath: config.yaml
+        - name: identity-server-bin
+          mountPath: /home/wso2carbon/wso2-config-volume/bin
+        {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
@@ -213,4 +245,14 @@ spec:
       - name: logstash-elasticsearch-creds
         secret:
           secretName: logstash-elasticsearch-creds
+      {{ end }}
+      {{ if .Values.wso2.monitoring.enabled }}
+      - name: shared-prometheus-jmx-jar
+        emptyDir: {}
+      - name: identity-server-prometheus-exporter-conf
+        configMap:
+          name: identity-server-prometheus-exporter-conf
+      - name: identity-server-bin
+        configMap:
+          name: identity-server-bin
       {{ end }}
