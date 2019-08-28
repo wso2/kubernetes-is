@@ -17,9 +17,14 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-service
   namespace : {{ .Release.Namespace }}
+  labels:
+    deployment: wso2is
+    app: wso2is
+    monitoring: jmx
 spec:
   selector:
     deployment: wso2is
+    app: wso2is
   ports:
   - name: servlet-http
     port: 9763
@@ -29,3 +34,9 @@ spec:
     port: 9443
     targetPort: 9443
     protocol: TCP
+  {{ if .Values.wso2.monitoring.enabled }}
+  - name: metrics
+    port: 2222
+    targetPort: 2222
+    protocol: TCP
+  {{ end }}

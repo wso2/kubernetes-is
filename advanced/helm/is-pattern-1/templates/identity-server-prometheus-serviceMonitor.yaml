@@ -1,0 +1,22 @@
+{{ if .Values.wso2.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+    name: identity-server-prometheus-monitoring
+    labels:
+        {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+spec:
+    jobLabel: monitoring
+    selector:
+        matchLabels:
+            app: wso2is
+    Namespace Selector:
+        Match Names:
+            - {{ .Release.Namespace }}
+    endpoints:
+        - port: metrics
+          interval: 1s
+          Path:  /metrics
+{{ end }}

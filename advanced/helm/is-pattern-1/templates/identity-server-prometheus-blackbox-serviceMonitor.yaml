@@ -1,0 +1,37 @@
+{{ if .Values.wso2.monitoring.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+ name: identity-server-prometheus-blackbox-monitoring
+ labels:
+    {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}
+    {{ $key }}: {{ $value | quote }}
+    {{- end }}
+spec:
+    namespaceSelector:
+        matchNames:
+            - {{ .Release.Namespace }}
+    selector:
+        matchLabels:
+            app.kubernetes.io/name: prometheus-blackbox-exporter
+    endpoints:
+    - interval: 30s
+      metricRelabelings:
+          - sourceLabels:
+                - __address__
+            targetLabel: __param_target
+          - sourceLabels:
+                - __param_target
+            targetLabel: instance
+          - replacement: https://{{ template "fullname" . }}-service:9443/carbon/admin/login.jsp
+            targetLabel: target
+      params:
+          module:
+              - http_2xx
+          target:
+              - https://{{ template "fullname" . }}-service:9443/carbon/admin/login.jsp
+      path: /probe
+      port: http
+      scheme: http
+      scrapeTimeout: 30s
+{{ end }}

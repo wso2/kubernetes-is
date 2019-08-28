@@ -69,6 +69,14 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 | `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
 | `wso2.centralizedLogging.logstash.indexNodeID.wso2ISNode`                   | Elasticsearch IS Node log index ID(index name: ${NODE_ID}-${NODE_IP})                     | wso2                        |
 
+###### Monitoring Configurations
+
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.monitoring.enabled`                                                   | Enable Prometheus monitoring                                                              | false                       |                                                                                         |                             |    
+| `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | "release: monitoring"       |  
+
+
 ###### Identity Server Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
