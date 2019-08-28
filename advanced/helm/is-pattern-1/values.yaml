@@ -86,12 +86,20 @@ wso2:
         host: wso2-elasticsearch-master
         username: "elastic"
         password: "changeme"
-      readinessProbe:
-        initialDelaySeconds: 20
-        periodSeconds: 30
-      livenessProbe:
-        initialDelaySeconds: 20
-        periodSeconds: 30
+      indexNodeID:
+        wso2ISNode: "wso2is-node"
+  # Configurations for Prometheus monitoring
+  monitoring:
+    # Enable Prometheus monitoring. This will start Prometheus exporter on port 2222 and deploy Service monitors
+    # for JVM, JMX and Blackbox exporter for Login calls
+    enabled: true
+    prometheus:
+      serviceMonitor:
+          # Prometheus Operator labels to identify Service monitors
+          labels:
+            release: monitoring
+      # Job name of the JMX events
+      jmxJobName: "jmx"
 
 kubernetes:
   # Name of Kubernetes service account
