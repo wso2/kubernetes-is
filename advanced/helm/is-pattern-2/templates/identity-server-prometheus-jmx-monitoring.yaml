@@ -12,17 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 {{ if .Values.wso2.monitoring.enabled }}
-apiVersion: v1
-kind: ConfigMap
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
 metadata:
-    name: identity-server-prometheus-exporter-conf
-    namespace : {{ .Release.Namespace }}
-data:
-    config.yaml: |
-        startDelaySeconds: 0
-        jmxurl: service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi
-        ssl: false
-        rules:
-            - pattern: ".*"
-
+    name: identity-server-prometheus-jmx-monitoring
+    namespace: {{ .Release.Namespace }}
+    labels:
+        {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}
+        {{ $key }}: {{ $value | quote }}
+        {{- end }}
+spec:
+    jobLabel: monitoring
+    selector:
+        matchLabels:
+            app: is-pattern-2
+    Namespace Selector:
+        Match Names:
+            - {{ .Release.Namespace }}
+    endpoints:
+        - port: metrics
+          interval: 1s
+          Path:  /metrics
 {{ end }}

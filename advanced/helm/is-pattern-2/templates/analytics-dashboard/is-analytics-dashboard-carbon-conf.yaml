@@ -11,33 +11,19 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 apiVersion: v1
-kind: Service
+kind: ConfigMap
 metadata:
-  name: {{ template "fullname" . }}-analytics-worker-service
+  name: is-analytics-dashboard-carbon-conf
   namespace : {{ .Release.Namespace }}
-spec:
-  selector:
-    deployment: {{ template "fullname" . }}-analytics-worker
-  ports:
-  - name: servlet-https
-    port: 9091
-    targetPort: 9091
-    protocol: TCP
-  - name: siddhi-1
-    port: 7070
-    targetPort: 8082
-    protocol: TCP
-  - name: siddhi-2
-    port: 7443
-    targetPort: 11501
-    protocol: TCP
-  - name: data-reciver-1
-    port: 7612
-    targetPort: 7612
-    protocol: TCP
-  - name: data-receiver-2
-    port: 7712
-    targetPort: 7712
-    protocol: TCP
+data:
+  {{- $file := .Files }}
+  {{- range $path, $byte := .Files.Glob "confs/is-analytics-dashboard/wso2/dashboard/bin/*" }}
+  {{- $list := $path | splitList "/"}}
+  {{- $length := len $list }}
+  {{- $last := add $length -1 }}
+  {{ index $list $last }}: |-
+    {{- range $file.Lines $path }}
+    {{ . }}
+    {{- end }}
+  {{- end }}
