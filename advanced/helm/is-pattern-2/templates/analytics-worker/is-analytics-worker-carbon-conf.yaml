@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,18 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-{{ if .Values.wso2.monitoring.enabled }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: identity-server-prometheus-exporter-conf
-    namespace : {{ .Release.Namespace }}
+  name: is-analytics-worker-carbon-conf
+  namespace : {{ .Release.Namespace }}
 data:
-    config.yaml: |
-        startDelaySeconds: 0
-        jmxurl: service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi
-        ssl: false
-        rules:
-            - pattern: ".*"
+  {{- $file := .Files }}
+  {{- range $path, $byte := .Files.Glob "confs/is-analytics-worker/wso2/worker/bin/*" }}
+  {{- $list := $path | splitList "/"}}
+  {{- $length := len $list }}
+  {{- $last := add $length -1 }}
+  {{ index $list $last }}: |-
+    {{- range $file.Lines $path }}
+      {{ . }}
+    {{- end }}
+  {{- end }}
 
-{{ end }}

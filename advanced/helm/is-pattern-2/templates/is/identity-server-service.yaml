@@ -17,6 +17,9 @@ kind: Service
 metadata:
   name: {{ template "fullname" . }}-service
   namespace : {{ .Release.Namespace }}
+  labels:
+    app: is-pattern-2
+    monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
 spec:
   selector:
     deployment: wso2is
@@ -29,3 +32,9 @@ spec:
     port: 9443
     targetPort: 9443
     protocol: TCP
+  {{ if .Values.wso2.monitoring.enabled }}
+  - name: metrics
+    port: 2222
+    targetPort: 2222
+    protocol: TCP
+  {{ end }}

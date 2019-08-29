@@ -24,5 +24,4 @@ data:
         ssl: false
         rules:
             - pattern: ".*"
-
 {{ end }}
