@@ -15,26 +15,27 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-analytics-dashboard-deployment
+  name: {{ template "fullname" . }}-analytics-worker-2-deployment
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas: {{ default 2 .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
+  replicas: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker2.replicas }}
   strategy:
     rollingUpdate:
-      maxSurge: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxSurge }}
-      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable }}
+      maxSurge: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker2.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2isAnalyticsWorker2.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: {{ template "fullname" . }}-analytics-dashboard
+      deployment: {{ template "fullname" . }}-analytics-worker
       app: is-pattern-2
       monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
   template:
     metadata:
       labels:
-        deployment: {{ template "fullname" . }}-analytics-dashboard
+        deployment: {{ template "fullname" . }}-analytics-worker
         app: is-pattern-2
         monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
+        node: node-2
     spec:
       initContainers:
       {{ if .Values.wso2.mysql.enabled }}
@@ -72,55 +73,105 @@ spec:
             mountPath: /jmx-jar
       {{ end }}
       containers:
-      - name: {{ template "fullname" . }}-analytics-dashboard
-        {{- if .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}
-        image: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}
-        {{- $tag := .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
+      - name: {{ template "fullname" . }}-analytics-worker
+        {{- if .Values.wso2.deployment.wso2isAnalyticsWorker2.dockerRegistry }}
+        image: {{ .Values.wso2.deployment.wso2isAnalyticsWorker2.dockerRegistry }}/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker2.imageName }}
+        {{- $tag := .Values.wso2.deployment.wso2isAnalyticsWorker2.imageTag }}
         {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
         {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-        image: wso2/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
+        image: wso2/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker2.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker2.imageTag }}
         {{- else }}
-        image: docker.wso2.com/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
+        image: docker.wso2.com/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker2.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker2.imageTag }}
         {{- end }}
-        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullPolicy }}
-        ports:
+        env:
         -
-          containerPort: 9643
-          protocol: "TCP"
-        {{ if .Values.wso2.monitoring.enabled }}
-        - containerPort: 2222
-          protocol: TCP
-          name: metrics
-        {{ end }}
+          name: NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: NODE_ID
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        resources:
+          requests:
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker2.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker2.resources.requests.cpu }}
+          limits:
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker2.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker2.resources.limits.cpu }}
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
-            - nc -z localhost 9643
-        resources:
-          requests:
-            memory: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.requests.memory }}
-            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.requests.cpu }}
-          limits:
-            memory: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.limits.memory }}
-            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.resources.limits.cpu }}
+            - nc -z localhost 9091
+          initialDelaySeconds: {{ default 200 .Values.wso2.deployment.wso2isAnalyticsWorker2.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2isAnalyticsWorker2.livenessProbe.periodSeconds }}
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - nc -z localhost 9091
+          initialDelaySeconds: {{ default 200 .Values.wso2.deployment.wso2isAnalyticsWorker2.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2isAnalyticsWorker2.readinessProbe.periodSeconds }}
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
+        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsWorker2.imagePullPolicy }}
+        securityContext:
+          runAsUser: 802
+        ports:
+          -
+            containerPort: 9090
+            protocol: TCP
+          -
+            containerPort: 9091
+            protocol: TCP
+          -
+            containerPort: 9543
+            protocol: TCP
+          -
+            containerPort: 9711
+            protocol: TCP
+          -
+            containerPort: 9611
+            protocol: TCP
+          -
+            containerPort: 7712
+            protocol: TCP
+          -
+            containerPort: 7612
+            protocol: TCP
+          -
+            containerPort: 7070
+            protocol: TCP
+          -
+            containerPort: 7443
+            protocol: TCP
+          {{ if .Values.wso2.monitoring.enabled }}
+          - containerPort: 2222
+            protocol: TCP
+            name: metrics
+          {{ end }}
         volumeMounts:
-        - name: is-analytics-dashboard-conf
-          mountPath: "/home/wso2carbon/wso2-config-volume/conf/dashboard"
+        - name: is-analytics-worker-conf
+          mountPath: /home/wso2carbon/wso2-config-volume/conf/worker
         {{ if .Values.wso2.monitoring.enabled }}
         - name: shared-prometheus-jmx-jar
           mountPath: /home/wso2carbon/prometheus
         - name: identity-server-prometheus-exporter-conf
           mountPath: /home/wso2carbon/prometheus/config.yaml
           subPath: config.yaml
-        - name: is-analytics-dashboard-carbon-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/wso2/dashboard/bin
+        - name: is-analytics-worker-carbon-conf
+          mountPath: /home/wso2carbon/wso2-config-volume/wso2/worker/bin
         {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
-          mountPath: /home/wso2carbon/wso2is-analytics-5.8.0/wso2/dashboard/logs
-      - name: {{ template "fullname" . }}-analytics-dashboard-logstash
+          mountPath: /home/wso2carbon/wso2is-analytics-5.8.0/wso2/worker/logs
+      - name: {{ template "fullname" . }}-analytics-worker-logstash
         image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
         volumeMounts:
           - name: shared-logs
@@ -154,17 +205,17 @@ spec:
             value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
-      {{- if .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullSecrets }}
+      {{- if .Values.wso2.deployment.wso2isAnalyticsWorker2.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullSecrets }}
+      - name: {{ .Values.wso2.deployment.wso2isAnalyticsWorker2.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
       - name: wso2creds
       {{ end }}
       volumes:
-      - name: is-analytics-dashboard-conf
+      - name: is-analytics-worker-conf
         configMap:
-          name: is-analytics-dashboard-conf
+          name: is-analytics-worker-conf
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
@@ -186,7 +237,7 @@ spec:
       - name: identity-server-prometheus-exporter-conf
         configMap:
           name: identity-server-prometheus-exporter-conf
-      - name: is-analytics-dashboard-carbon-conf
+      - name: is-analytics-worker-carbon-conf
         configMap:
-          name: is-analytics-dashboard-carbon-conf
+          name: is-analytics-worker-carbon-conf
       {{ end }}

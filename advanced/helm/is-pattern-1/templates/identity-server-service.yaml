@@ -20,7 +20,7 @@ metadata:
   labels:
     deployment: wso2is
     app: wso2is
-    monitoring: jmx
+    monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
 spec:
   selector:
     deployment: wso2is

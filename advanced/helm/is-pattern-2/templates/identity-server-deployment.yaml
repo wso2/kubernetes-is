@@ -28,10 +28,14 @@ spec:
   selector:
     matchLabels:
       deployment: wso2is
+      app: is-pattern-2
+      monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
   template:
     metadata:
       labels:
         deployment: wso2is
+        app: is-pattern-2
+        monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
     spec:
       initContainers:
       {{ if .Values.wso2.mysql.enabled }}
@@ -39,6 +43,12 @@ spec:
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ default "wso2is-rdbms-service-mysql" .Values.wso2.mysql.host }} 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{ end }}
+      - name: init-analytics-1
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Analytics Server 1 deployment"; while ! nc -z {{ template "fullname" . }}-analytics-worker-1-service 9091; do sleep 1; printf "-"; done; echo -e "  >> Analytics Server 1 has started";']
+      - name: init-analytics-2
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Analytics Server 2 deployment"; while ! nc -z {{ template "fullname" . }}-analytics-worker-2-service 9091; do sleep 1; printf "-"; done; echo -e "  >> Analytics Server 2 has started";']
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: init-logstash-plugins-install
         image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
@@ -54,6 +64,19 @@ spec:
       - name: init-elasticsearch
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+      {{ end }}
+      {{ if .Values.wso2.monitoring.enabled }}
+      - name: init-jmx-exporter
+        image: busybox:1.31
+        command:
+          - /bin/sh
+          - "-c"
+          - |
+            set -e
+            wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -P /jmx-jar/
+        volumeMounts:
+          - name: shared-prometheus-jmx-jar
+            mountPath: /jmx-jar
       {{ end }}
       containers:
       - name: wso2is
@@ -101,6 +124,11 @@ spec:
           protocol: TCP
         - containerPort: 9443
           protocol: TCP
+        {{ if .Values.wso2.monitoring.enabled }}
+        - containerPort: 2222
+          protocol: TCP
+          name: metrics
+        {{ end }}
         volumeMounts:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
@@ -125,10 +153,15 @@ spec:
         - name: identity-server-conf-entrypoint
           mountPath: /home/wso2carbon/entrypoint.sh
           subPath: docker-entrypoint.sh
-      {{ if not .Values.wso2.deployment.wso2is.hostnameVerificationEnabled }}
+        {{ if .Values.wso2.monitoring.enabled }}
+        - name: shared-prometheus-jmx-jar
+          mountPath: /home/wso2carbon/prometheus
+        - name: identity-server-prometheus-exporter-conf
+          mountPath: /home/wso2carbon/prometheus/config.yaml
+          subPath: config.yaml
         - name: identity-server-bin
           mountPath: /home/wso2carbon/wso2-config-volume/bin
-      {{ end }}
+        {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-5.8.0/repository/logs/
@@ -208,11 +241,6 @@ spec:
         configMap:
           name: identity-server-conf-entrypoint
           defaultMode: 0407
-      {{ if not .Values.wso2.deployment.wso2is.hostnameVerificationEnabled }}
-      - name: identity-server-bin
-        configMap:
-          name: identity-server-bin
-      {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
@@ -227,4 +255,14 @@ spec:
       - name: logstash-elasticsearch-creds
         secret:
           secretName: logstash-elasticsearch-creds
+      {{ end }}
+      {{ if .Values.wso2.monitoring.enabled }}
+      - name: shared-prometheus-jmx-jar
+        emptyDir: {}
+      - name: identity-server-prometheus-exporter-conf
+        configMap:
+          name: identity-server-prometheus-exporter-conf
+      - name: identity-server-bin
+        configMap:
+          name: identity-server-bin
       {{ end }}

@@ -2,7 +2,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-    name: identity-server-prometheus-monitoring
+    name: identity-server-prometheus-jmx-monitoring
     namespace: {{ .Release.Namespace }}
     labels:
         {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}
@@ -12,7 +12,7 @@ spec:
     jobLabel: monitoring
     selector:
         matchLabels:
-            app: wso2is
+            app: is-pattern-2
     Namespace Selector:
         Match Names:
             - {{ .Release.Namespace }}

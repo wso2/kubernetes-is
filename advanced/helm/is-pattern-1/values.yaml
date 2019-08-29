@@ -92,8 +92,10 @@ wso2:
   monitoring:
     # Enable Prometheus monitoring. This will start Prometheus exporter on port 2222 and deploy Service monitors
     # for JVM, JMX and Blackbox exporter for Login calls
-    enabled: true
+    enabled: false
     prometheus:
+      # If the black box exporter is deployed in a different Name space
+      #blackBoxNamespace:
       serviceMonitor:
           # Prometheus Operator labels to identify Service monitors
           labels:
