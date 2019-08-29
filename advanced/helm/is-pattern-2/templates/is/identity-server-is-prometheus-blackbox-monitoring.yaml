@@ -15,7 +15,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
- name: identity-server-prometheus-blackbox-monitoring
+ name: identity-server-is-prometheus-blackbox-monitoring
  namespace: {{ if .Values.wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace }}{{ .Values.wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace  }}{{ else }}{{ .Release.Namespace }}{{ end }}
  labels:
     {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}
@@ -41,13 +41,13 @@ spec:
           - sourceLabels:
                 - __param_target
             targetLabel: instance
-          - replacement: https://{{ template "fullname" . }}-service:9443/carbon/admin/login.jsp
+          - replacement: https://{{ template "fullname" . }}-service.{{ .Release.Namespace }}.svc.cluster.local:9443/carbon/admin/login.jsp
             targetLabel: target
       params:
           module:
               - http_2xx
           target:
-              - https://{{ template "fullname" . }}-service:9443/carbon/admin/login.jsp
+              - https://{{ template "fullname" . }}-service.{{ .Release.Namespace }}.svc.cluster.local:9443/carbon/admin/login.jsp
       path: /probe
       port: http
       scheme: http

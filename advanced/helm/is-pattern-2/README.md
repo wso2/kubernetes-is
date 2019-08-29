@@ -67,7 +67,15 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 | `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | 7.2.0                       |  
 | `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | elastic                     |  
 | `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
-| `wso2.centralizedLogging.logstash.indexNodeID.wso2ISNode`                   | Elasticsearch IS Node log index ID(index name: ${NODE_ID}-${NODE_IP})                     | wso2                        |
+
+###### Monitoring Configurations
+
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.monitoring.enabled`                                                   | Enable Prometheus monitoring                                                              | false                       |                                                                                         |                             |    
+| `wso2.monitoring.prometheus.blackBoxNamespace`                              | Prometheus blackbox exporter namespace                                                    | <RELEASE_NAMESPACE>         |  
+| `wso2.monitoring.prometheus.jmxJobName`                                     | Prometheus job name                                                                       | jmx                         |  
+| `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | "release: monitoring"       |  
 
 ###### Identity Server Configurations
 
@@ -95,36 +103,52 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.wso2isAnalyticsWorker.imageName`                           | Image name for IS node                                                                    | wso2is                     |
-| `wso2.deployment.wso2isAnalyticsWorker.imageTag`                            | Image tag for IS node                                                                     | 5.8.0                       |
-| `wso2.deployment.wso2isAnalyticsWorker.replicas`                            | Number of replicas for IS node                                                            | 2                           |
-| `wso2.deployment.wso2isAnalyticsWorker.minReadySeconds`                     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 1  30                        |
-| `wso2.deployment.wso2isAnalyticsWorker.strategy.rollingUpdate.maxSurge`     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 2                           |
-| `wso2.deployment.wso2isAnalyticsWorker.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 0                           |
-| `wso2.deployment.wso2isAnalyticsWorker.livenessProbe.initialDelaySeconds`   | Initial delay for the live-ness probe for IS node                                         | 20                           |
-| `wso2.deployment.wso2isAnalyticsWorker.livenessProbe.periodSeconds`         | Period of the live-ness probe for IS node                                                 | 10                           |
-| `wso2.deployment.wso2isAnalyticsWorker.readinessProbe.initialDelaySeconds`  | Initial delay for the readiness probe for IS node                                         | 20                           |
-| `wso2.deployment.wso2isAnalyticsWorker.readinessProbe.periodSeconds`        | Period of the readiness probe for IS node                                                 | 10                           |
-| `wso2.deployment.wso2isAnalyticsWorker.imagePullPolicy`                     | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                       |
-| `wso2.deployment.wso2isAnalyticsWorker.resources.requests.memory`           | The minimum amount of memory that should be allocated for a Pod                           | 4Gi                          |
-| `wso2.deployment.wso2isAnalyticsWorker.resources.requests.cpu`              | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
-| `wso2.deployment.wso2isAnalyticsWorker.resources.limits.memory`             | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                          |
-| `wso2.deployment.wso2isAnalyticsWorker.resources.limits.cpu`                | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                        |
+| `wso2.deployment.wso2isAnalyticsWorker1.imageName`                           | Image name for IS Analytics Node 1                                                                   | wso2is                     |
+| `wso2.deployment.wso2isAnalyticsWorker1.imageTag`                            | Image tag for IS Analytics Node 1                                                                    | 5.8.0                       |
+| `wso2.deployment.wso2isAnalyticsWorker1.replicas`                            | Number of replicas for IS Analytics Node 1                                                           | 1                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.minReadySeconds`                     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 1  30                        |
+| `wso2.deployment.wso2isAnalyticsWorker1.strategy.rollingUpdate.maxSurge`     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 2                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 0                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.livenessProbe.initialDelaySeconds`   | Initial delay for the live-ness probe for IS Analytics Node 1                                        | 20                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.livenessProbe.periodSeconds`         | Period of the live-ness probe for IS Analytics Node 1                                                | 10                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.readinessProbe.initialDelaySeconds`  | Initial delay for the readiness probe for IS Analytics Node 1                                        | 20                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.readinessProbe.periodSeconds`        | Period of the readiness probe for IS Analytics Node 1                                                | 10                           |
+| `wso2.deployment.wso2isAnalyticsWorker1.imagePullPolicy`                     | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                       |
+| `wso2.deployment.wso2isAnalyticsWorker1.resources.requests.memory`           | The minimum amount of memory that should be allocated for a Pod                           | 4Gi                          |
+| `wso2.deployment.wso2isAnalyticsWorker1.resources.requests.cpu`              | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
+| `wso2.deployment.wso2isAnalyticsWorker1.resources.limits.memory`             | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                          |
+| `wso2.deployment.wso2isAnalyticsWorker1.resources.limits.cpu`                | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                        |
+| `wso2.deployment.wso2isAnalyticsWorker2.imageName`                           | Image name for IS Analytics Node 1                                                                    | wso2is                     |
+| `wso2.deployment.wso2isAnalyticsWorker2.imageTag`                            | Image tag for IS Analytics Node 1                                                                     | 5.8.0                       |
+| `wso2.deployment.wso2isAnalyticsWorker2.replicas`                            | Number of replicas for IS Analytics Node 1                                                            | 2                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.minReadySeconds`                     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 1  30                        |
+| `wso2.deployment.wso2isAnalyticsWorker2.strategy.rollingUpdate.maxSurge`     | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 2                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 0                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.livenessProbe.initialDelaySeconds`   | Initial delay for the live-ness probe for IS Analytics Node 1                                         | 20                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.livenessProbe.periodSeconds`         | Period of the live-ness probe for IS Analytics Node 1                                                 | 10                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.readinessProbe.initialDelaySeconds`  | Initial delay for the readiness probe for IS Analytics Node 1                                         | 20                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.readinessProbe.periodSeconds`        | Period of the readiness probe for IS Analytics Node 1                                                 | 10                           |
+| `wso2.deployment.wso2isAnalyticsWorker2.imagePullPolicy`                     | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                       |
+| `wso2.deployment.wso2isAnalyticsWorker2.resources.requests.memory`           | The minimum amount of memory that should be allocated for a Pod                           | 4Gi                          |
+| `wso2.deployment.wso2isAnalyticsWorker2.resources.requests.cpu`              | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
+| `wso2.deployment.wso2isAnalyticsWorker2.resources.limits.memory`             | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                          |
+| `wso2.deployment.wso2isAnalyticsWorker2.resources.limits.cpu`                | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                        |
+
 
 ###### Analytics Dashboard Runtime Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.wso2isAnalyticsDashboard.imageName`                        | Image name for IS node                                                                    | wso2is                      |
-| `wso2.deployment.wso2isAnalyticsDashboard.imageTag`                         | Image tag for IS node                                                                     | 5.8.0                       |
-| `wso2.deployment.wso2isAnalyticsDashboard.replicas`                         | Number of replicas for IS node                                                            | 2                           |
+| `wso2.deployment.wso2isAnalyticsDashboard.imageName`                        | Image name for IS Analytics Node 2                                                                    | wso2is                      |
+| `wso2.deployment.wso2isAnalyticsDashboard.imageTag`                         | Image tag for IS Analytics Node 2                                                                     | 5.8.0                       |
+| `wso2.deployment.wso2isAnalyticsDashboard.replicas`                         | Number of replicas for IS Analytics Node 2                                                            | 1                           |
 | `wso2.deployment.wso2isAnalyticsDashboard.minReadySeconds`                  | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 1  30                        |
 | `wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxSurge`  | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 2                           |
 | `wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 0                           |
-| `wso2.deployment.wso2isAnalyticsDashboard.livenessProbe.initialDelaySeconds`| Initial delay for the live-ness probe for IS node                                         | 20                           |
-| `wso2.deployment.wso2isAnalyticsDashboard.livenessProbe.periodSeconds`      | Period of the live-ness probe for IS node                                                 | 10                           |
-| `wso2.deployment.wso2isAnalyticsDashboard.readinessProbe.initialDelaySeconds`| Initial delay for the readiness probe for IS node                                        | 20                           |
-| `wso2.deployment.wso2isAnalyticsDashboard.readinessProbe.periodSeconds`     | Period of the readiness probe for IS node                                                 | 10                           |
+| `wso2.deployment.wso2isAnalyticsDashboard.livenessProbe.initialDelaySeconds`| Initial delay for the live-ness probe for IS Analytics Node 2                                         | 20                           |
+| `wso2.deployment.wso2isAnalyticsDashboard.livenessProbe.periodSeconds`      | Period of the live-ness probe for IS Analytics Node 2                                                 | 10                           |
+| `wso2.deployment.wso2isAnalyticsDashboard.readinessProbe.initialDelaySeconds`| Initial delay for the readiness probe for IS Analytics Node 2                                        | 20                           |
+| `wso2.deployment.wso2isAnalyticsDashboard.readinessProbe.periodSeconds`     | Period of the readiness probe for IS Analytics Node 2                                                 | 10                           |
 | `wso2.deployment.wso2isAnalyticsDashboard.imagePullPolicy`                  | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                       |
 | `wso2.deployment.wso2isAnalyticsDashboard.resources.requests.memory`        | The minimum amount of memory that should be allocated for a Pod                           | 4Gi                          |
 | `wso2.deployment.wso2isAnalyticsDashboard.resources.requests.cpu`           | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
