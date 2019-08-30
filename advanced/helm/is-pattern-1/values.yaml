@@ -92,9 +92,9 @@ wso2:
     # for JVM, JMX and Blackbox exporter for Login calls
     enabled: false
     prometheus:
-      # If the black box exporter is deployed in a different Name space
-      #blackBoxNamespace:
       serviceMonitor:
+          # If the black box exporter is deployed in a different Namespace
+#          blackBoxNamespace:
           # Prometheus Operator labels to identify Service monitors
           labels:
             release: monitoring

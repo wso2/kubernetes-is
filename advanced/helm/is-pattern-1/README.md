@@ -73,9 +73,9 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.monitoring.enabled`                                                   | Enable Prometheus monitoring                                                              | false                       |                                                                                         |                             |    
-| `wso2.monitoring.prometheus.blackBoxNamespace`                              | Prometheus blackbox exporter namespace                                                    | <RELEASE_NAMESPACE>         |  
 | `wso2.monitoring.prometheus.jmxJobName`                                     | Prometheus job name                                                                       | jmx                         |  
 | `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | "release: monitoring"       |  
+| `wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace`               | Prometheus blackbox exporter namespace                                                    | <RELEASE_NAMESPACE>         |  
 
 ###### Identity Server Configurations
 
