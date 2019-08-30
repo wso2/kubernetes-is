@@ -205,7 +205,7 @@ wso2:
     enabled: false
     prometheus:
       serviceMonitor:
-        # If the black box exporter is deployed in a different Name space
+        # If the black box exporter is deployed in a different Namespace
 #        blackBoxNamespace:
 
         # Prometheus Operator labels to identify Service monitors

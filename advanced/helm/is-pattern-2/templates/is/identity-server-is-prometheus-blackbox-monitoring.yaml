@@ -15,7 +15,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
- name: identity-server-is-prometheus-blackbox-monitoring
+ name: identity-server-is-prometheus-blackbox-monitoring-{{ .Release.Name }}
  namespace: {{ if .Values.wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace }}{{ .Values.wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace  }}{{ else }}{{ .Release.Namespace }}{{ end }}
  labels:
     {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}

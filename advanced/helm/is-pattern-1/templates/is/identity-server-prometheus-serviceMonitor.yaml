@@ -14,7 +14,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-    name: identity-server-prometheus-monitoring
+    name: identity-server-prometheus-monitoring-{{ .Release.Name }}
     namespace: {{ .Release.Namespace }}
     labels:
         {{- range $key, $value := .Values.wso2.monitoring.prometheus.serviceMonitor.labels  }}
