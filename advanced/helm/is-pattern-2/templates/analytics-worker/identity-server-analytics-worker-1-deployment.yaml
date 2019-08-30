@@ -210,7 +210,7 @@ spec:
       - name: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-      - name: wso2creds
+      - name: wso2is-deployment-creds
       {{ end }}
       volumes:
       - name: is-analytics-worker-conf
