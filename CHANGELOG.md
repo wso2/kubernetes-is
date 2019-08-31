@@ -3,7 +3,7 @@ All notable changes to this project 5.8.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [V5.8.0.3] - 2019-08-31
+## [v5.8.0.3] - 2019-08-31
 
 ### Added
 - Added MySQL Helm chart as dependencies for deployment patterns.
