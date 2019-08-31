@@ -19,6 +19,11 @@ steps provided in the following quick start guide.<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).Please note that Helm resources for WSO2 product
 deployment patterns are compatible with NGINX Ingress Controller Git release [`nginx-0.22.0`](https://github.com/kubernetes/ingress-nginx/releases/tag/nginx-0.22.0).
+
+* Add the WSO2 Helm chart repository
+```
+ helm repo add wso2 https://helm.wso2.com && helm repo update
+```
   
 ## Quick Start Guide
 >In the context of this document, <br>
