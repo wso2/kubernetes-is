@@ -45,10 +45,3 @@ given below:
 
 We encourage you to report any issues and documentation faults regarding Kubernetes and Helm resources
 for WSO2 IAM. Please report your issues [here](https://github.com/wso2/kubernetes-is/issues).
-
-## Contact us
-
-WSO2 developers can be contacted via the following mailing lists:
-
-* WSO2 Developers Mailing List : [dev@wso2.org](mailto:dev@wso2.org)
-* WSO2 Architecture Mailing List : [architecture@wso2.org](mailto:architecture@wso2.org)
