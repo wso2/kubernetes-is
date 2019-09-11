@@ -106,6 +106,7 @@ spec:
           initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ default 10 .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
         imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2is.imagePullPolicy }}
+        command: ["/home/wso2carbon/entrypoint.sh"]
         resources:
           requests:
             memory: {{ .Values.wso2.deployment.wso2is.resources.requests.memory }}
@@ -119,6 +120,11 @@ spec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         securityContext:
           runAsUser: 802
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         ports:
         - containerPort: 9763
           protocol: TCP
