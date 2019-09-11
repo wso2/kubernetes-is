@@ -114,6 +114,11 @@ spec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
         securityContext:
           runAsUser: 802
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
         ports:
         - containerPort: 9763
           protocol: TCP
