@@ -15,7 +15,7 @@
 (and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10) in order to run the 
 steps provided in the following quick start guide.<br><br>
 
-* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup/pick-right-solution/).<br><br>
+* An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).Please note that Helm resources for WSO2 product
 deployment patterns are compatible with NGINX Ingress Controller Git release [`nginx-0.22.0`](https://github.com/kubernetes/ingress-nginx/releases/tag/nginx-0.22.0).
@@ -49,7 +49,7 @@ b. Open the `<HELM_HOME>/is-pattern-2/values.yaml` and provide the following val
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.mysql.enabled`                                                        | Enable MySQL chart as a dependency                                                        | true                        |
-| `wso2.mysql.host`                                                           | Set MySQL server host                                                                     | wso2ei-rdbms-service-mysql  |
+| `wso2.mysql.host`                                                           | Set MySQL server host                                                                     | wso2is-rdbms-service-mysql  |
 | `wso2.mysql.username`                                                       | Set MySQL server username                                                                 | wso2carbon                  |
 | `wso2.mysql.password`                                                       | Set MySQL server password                                                                 | wso2carbon                  |
 | `wso2.mysql.driverClass`                                                    | Set JDBC driver class for MySQL                                                           | com.mysql.jdbc.Driver       |
@@ -102,7 +102,7 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 | `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 2Gi                          |
 | `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                        |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 Enterprise Integrator server profiles are based on its [official documentation](https://docs.wso2.com/display/IS580/Installation+Prerequisites).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://docs.wso2.com/display/IS580/Installation+Prerequisites).
 
 ###### Analytics Worker Runtime Configurations
 
