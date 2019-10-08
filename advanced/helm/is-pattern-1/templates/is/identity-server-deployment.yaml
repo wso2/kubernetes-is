@@ -57,7 +57,7 @@ spec:
             mountPath: /usr/share/logstash/plugins/
       - name: init-elasticsearch
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of Elasticsearch Server deployment"; while ! nc -z {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} {{ default "9200" .Values.wso2.centralizedLogging.logstash.elasticsearch.port }}; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
       {{ end }}
       {{ if .Values.wso2.monitoring.enabled }}
       - name: init-jmx-exporter
@@ -172,6 +172,10 @@ spec:
           - name: shared-plugins
             mountPath: /usr/share/logstash/plugins/
         env:
+          - name: NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace      
           - name: NODE_ID
             value: {{ .Release.Name }}-is-node
           - name: NODE_IP
@@ -190,6 +194,8 @@ spec:
                 key: password
           - name: ELASTICSEARCH_HOST
             value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
+          - name: ELASTICSEARCH_PORT
+            value: {{ default "9200" .Values.wso2.centralizedLogging.logstash.elasticsearch.port | quote }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if .Values.wso2.deployment.wso2is.imagePullSecrets }}

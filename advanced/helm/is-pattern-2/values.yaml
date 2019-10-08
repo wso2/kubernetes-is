@@ -195,7 +195,8 @@ wso2:
     logstash:
       imageTag: 7.2.0
       elasticsearch:
-        host: "wso2-elasticsearch-master"
+        host: wso2-elasticsearch-master
+        port: 9200
         username: "elastic"
         password: "changeme"
   # Configurations for Prometheus monitoring
