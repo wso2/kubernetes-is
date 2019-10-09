@@ -6,7 +6,7 @@ function usage(){
 }
 function undeploy(){
   echo "Undeploying WSO2 Identity Server ..."
-  kubectl delete ns $namespace
+  kubectl delete ns wso2
   echo "Done."
   exit 0
 }
@@ -47,6 +47,26 @@ function display_msg(){
     msg=$@
     echoBold "${msg}"
     exit 1
+}
+function get_creds(){
+  while [[ -z "$WSO2_SUBSCRIPTION_USERNAME" ]]
+  do
+        read -p "$(echoBold "Enter your WSO2 subscription username: ")" WSO2_SUBSCRIPTION_USERNAME
+        if [[ -z "$WSO2_SUBSCRIPTION_USERNAME" ]]
+        then
+           echo "wso2-subscription-username cannot be empty"
+        fi
+  done
+
+  while [[ -z "$WSO2_SUBSCRIPTION_PASSWORD" ]]
+  do
+        read -sp "$(echoBold "Enter your WSO2 subscription password: ")" WSO2_SUBSCRIPTION_PASSWORD
+        echo ""
+        if [[ -z "$WSO2_SUBSCRIPTION_PASSWORD" ]]
+        then
+          echo "wso2-subscription-password cannot be empty"
+        fi
+  done
 }
 function validate_ip(){
     ip_check=$1
@@ -91,18 +111,7 @@ function get_node_ip(){
   fi
   set -- $NODE_IP; NODE_IP=$1
 }
-function get_nodePorts(){
-  LOWER=30000; UPPER=32767;
-  if [ "$randomPort" == "True" ]; then
-    NP_1=0;
-    while [ $NP_1 -lt $LOWER ]
-    do
-      NP_1=$RANDOM
-      let "NP_1 %= $UPPER"
-    done
-  fi
-  echo -e "[INFO] nodePorts  are set to $NP_1"
-}
+
 function progress_bar(){
   dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.pod=="wso2is")].status.conditions[?(@.type=="Available")].status}')
   pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.pod=="wso2is")].status.conditions[*].status}')
@@ -215,41 +224,47 @@ function deploy(){
     #displaying wso2 product name
     product_name
 
-    if test -f $TG_PROP; then
-        source $TG_PROP
-    fi
+    get_creds  # get wso2 subscription parameters
 
     # getting cluster node ip
     get_node_ip
 
-    # if TG randomPort else default
-    get_nodePorts
+    # create and encode username/password pair
+    auth="$WSO2_SUBSCRIPTION_USERNAME:$WSO2_SUBSCRIPTION_PASSWORD"
+    authb64=`echo -n $auth | base64`
+
+    # create authorisation code
+    authstring='{"auths":{"docker.wso2.com": {"username":"'${WSO2_SUBSCRIPTION_USERNAME}'","password":"'${WSO2_SUBSCRIPTION_PASSWORD}'","email":"'${WSO2_SUBSCRIPTION_USERNAME}'","auth":"'${authb64}'"}}}'
+
+    # encode in base64
+    secdata=`echo -n $authstring | base64`
+
+    for i in $secdata; do
+      str_sec=$str_sec$i
+    done
 
     #create kubernetes object yaml
     create_yaml
 
     # replace placeholders
-    sed -i.bak 's/"$ns.k8s&wso2.is"/'$namespace'/g' $k8s_obj_file
     sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
     sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
 
     rm deployment.yaml.bak
 
-    if ! test -f $TG_PROP; then
-        echoBold "\nDeploying WSO2 Identity Server...\n"
+    echoBold "\nDeploying WSO2 Identity Server...\n"
 
-        # create kubernetes deployment
-        kubectl create -f ${k8s_obj_file}
+    # create kubernetes deployment
+    kubectl create -f ${k8s_obj_file}
 
-        # waiting until deployment is ready
-        progress_bar
+    # waiting until deployment is ready
+    progress_bar
 
-        echoBold "Successfully deployed WSO2 Identity Server.\n\n"
+    echoBold "Successfully deployed WSO2 Identity Server.\n\n"
 
-        echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
-        echoBold "\tusername: admin\n"
-        echoBold "\tpassword: admin\n"
-        echoBold "2. Follow \"https://docs.wso2.com/display/IS570\" to start using WSO2 Identity Server.\n\n "
-    fi
+    echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
+    echoBold "\tusername: admin\n"
+    echoBold "\tpassword: admin\n"
+    echoBold "2. Follow \"https://docs.wso2.com/display/IS590\" to start using WSO2 Identity Server.\n\n "
 }

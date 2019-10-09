@@ -3,7 +3,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-mysql-deployment
-  namespace: "$ns.k8s&wso2.is"
+  namespace: wso2
 spec:
   replicas: 1
   selector:
