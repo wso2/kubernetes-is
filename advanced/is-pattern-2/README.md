@@ -29,7 +29,7 @@ deployment patterns are compatible with NGINX Ingress Controller Git release [`n
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
 Git repository. <br>
->* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/helm/`. <br>
+>* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/`. <br>
 
 ##### 1. Clone the Kubernetes Resources for WSO2 Identity Server Git repository.
 
@@ -159,6 +159,7 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 | `wso2.deployment.wso2isAnalyticsDashboard.resources.requests.cpu`           | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
 | `wso2.deployment.wso2isAnalyticsDashboard.resources.limits.memory`          | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                          |
 | `wso2.deployment.wso2isAnalyticsDashboard.resources.limits.cpu`             | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                        |
+| `wso2.deployment.wso2is.config`                                             | The deployment.toml configuration for the product                                         |                          |
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 Stream Processor server profiles
 (Dashboard and Worker)are based on its [official documentation](https://docs.wso2.com/display/SP440/Installation+Prerequisites).

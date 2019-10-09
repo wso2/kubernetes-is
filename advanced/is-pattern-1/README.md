@@ -29,7 +29,7 @@ deployment patterns are compatible with NGINX Ingress Controller Git release [`n
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
 Git repository. <br>
->* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/helm`. <br>
+>* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/`. <br>
 
 ##### 1. Clone the Kubernetes Resources for WSO2 Identity Server Git repository.
 
