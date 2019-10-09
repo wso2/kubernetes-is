@@ -24,9 +24,9 @@ wso2:
   deployment:
     wso2is:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
-#      dockerRegistry: ""
+      dockerRegistry: "aaquiff"
       imageName: "wso2is"
-      imageTag: "5.8.0"
+      imageTag: "5.9.0"
       # Number of deployment replicas
       replicas: 1
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
@@ -70,7 +70,7 @@ wso2:
             [server]
             hostname = "$env{HOST_NAME}"
             node_ip = "$env{NODE_IP}"
-            base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+            # base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
             [super_admin]
             username = "admin"
