@@ -1,10 +1,10 @@
 #!/bin/bash
-IS_OPEN_SOURCE=false
+IS_OPEN_SOURCE=true
 
 if $IS_OPEN_SOURCE; then
-    SCRIPT="../wso2is-ga.sh"
+    SCRIPT="deployment-scripts/wso2is-ga.sh"
 else
-    SCRIPT="../wso2is-latest.sh"
+    SCRIPT="deployment-scripts/wso2is-latest.sh"
 fi
 
 cat > $SCRIPT << "EOF"
@@ -45,34 +45,29 @@ cat >> $SCRIPT << "EOF"
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
 
-: ${namespace:="wso2"}
-: ${randomPort:="False"}; : ${NP_1:=30443};
+: ${NP_1:=30443};
 
-# testgrid directory
-OUTPUT_DIR=$4; INPUT_DIR=$2; TG_PROP="$INPUT_DIR/infrastructure.properties"
 EOF
 
 echo "function create_yaml(){" >> $SCRIPT
-
-echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT; echo 'EOF' >> $SCRIPT
-echo 'if [ "$namespace" == "wso2" ]; then' >> $SCRIPT
-
-echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
-cat ../../pre-req/wso2is-namespace.yaml >> $SCRIPT
-echo -e "EOF\nfi">> $SCRIPT
+echo "" >> $SCRIPT
+echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT
+cat ./basic-k8s/namespace.yaml >> $SCRIPT
+echo -e "EOF">> $SCRIPT
 
 echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
-cat ../../pre-req/wso2is-serviceaccount.yaml >> $SCRIPT
+cat ./basic-k8s/svcaccount.yaml >> $SCRIPT
 if ! $IS_OPEN_SOURCE ; then
-  cat ../../pre-req/wso2is-secret.yaml >> $SCRIPT
+  cat ./basic-k8s/secret.yaml >> $SCRIPT
 fi
-cat ../../confs/is-confs.yaml >> $SCRIPT
-cat ../../confs/is-conf-ds.yaml >> $SCRIPT
-cat ../../confs/mysql-conf-db.yaml >> $SCRIPT
-cat ../../mysql/wso2is-mysql-service.yaml >> $SCRIPT
-cat ../../is/wso2is-service.yaml >> $SCRIPT
-cat ../../mysql/wso2is-mysql-deployment.yaml >> $SCRIPT
-cat ../../is/wso2is-deployment.yaml >> $SCRIPT
+cat ./is-k8s/identity-server-conf.yaml >> $SCRIPT
+cat ./is-k8s/identity-server-conf-entrypoint.yaml >> $SCRIPT
+cat ./mysql-k8s/mysql-conf-db.yaml >> $SCRIPT
+
+cat ./mysql-k8s/mysql-service.yaml >> $SCRIPT
+cat ./mysql-k8s/mysql-deployment.yaml >> $SCRIPT
+cat ./is-k8s/identity-server-service.yaml >> $SCRIPT
+cat ./is-k8s/identity-server-deployment.yaml >> $SCRIPT
 echo 'EOF' >> $SCRIPT
 echo "}" >> $SCRIPT
 

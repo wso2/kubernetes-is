@@ -24,16 +24,12 @@ IMG_DEST="docker.wso2.com"
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
 
-: ${namespace:="wso2"}
-: ${randomPort:="False"}; : ${NP_1:=30443};
+: ${NP_1:=30443};
 
-# testgrid directory
-OUTPUT_DIR=$4; INPUT_DIR=$2; TG_PROP="$INPUT_DIR/infrastructure.properties"
 function create_yaml(){
+
 cat > $k8s_obj_file << "EOF"
-EOF
-if [ "$namespace" == "wso2" ]; then
-cat >> $k8s_obj_file << "EOF"
+
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -43,16 +39,13 @@ spec:
     - kubernetes
 ---
 EOF
-fi
 cat >> $k8s_obj_file << "EOF"
 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wso2svc-account
-  namespace: "$ns.k8s&wso2.is"
-secrets:
-  - name: wso2svc-account-token-t7s49
+  namespace : wso2
 ---
 
 apiVersion: v1
@@ -60,872 +53,92 @@ data:
     .dockerconfigjson: "$string.&.secret.auth.data"
 kind: Secret
 metadata:
-  name: wso2creds
-  namespace: "$ns.k8s&wso2.is"
+  name: wso2is-deployment-creds
+  namespace: wso2
 type: kubernetes.io/dockerconfigjson
 ---
 
 apiVersion: v1
-data:
-  carbon.xml: |
-    <?xml version="1.0" encoding="ISO-8859-1"?>
-    <!--
-     Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
-
-     Licensed under the Apache License, Version 2.0 (the "License");
-     you may not use this file except in compliance with the License.
-     You may obtain a copy of the License at
-
-     http://www.apache.org/licenses/LICENSE-2.0
-
-     Unless required by applicable law or agreed to in writing, software
-     distributed under the License is distributed on an "AS IS" BASIS,
-     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     See the License for the specific language governing permissions and
-     limitations under the License.
-    -->
-
-    <!--
-        This is the main server configuration file
-
-        ${carbon.home} represents the carbon.home system property.
-        Other system properties can be specified in a similar manner.
-    -->
-    <Server xmlns="http://wso2.org/projects/carbon/carbon.xml">
-
-        <!--
-           Product Name
-        -->
-        <Name>WSO2 Identity Server</Name>
-
-        <!--
-           machine readable unique key to identify each product
-        -->
-        <ServerKey>IS</ServerKey>
-
-        <!--
-           Product Version
-        -->
-        <Version>5.8.0</Version>
-
-        <!--
-           Host name or IP address of the machine hosting this server
-           e.g. www.wso2.org, 192.168.1.10
-           This is will become part of the End Point Reference of the
-           services deployed on this server instance.
-        -->
-        <HostName>wso2is</HostName>
-
-        <!--
-        Host name to be used for the Carbon management console
-        -->
-        <MgtHostName>wso2is</MgtHostName>
-
-        <!--
-            The URL of the back end server. This is where the admin services are hosted and
-            will be used by the clients in the front end server.
-            This is required only for the Front-end server. This is used when seperating BE server from FE server
-           -->
-        <ServerURL>local:/${carbon.context}/services/</ServerURL>
-        <!--
-        <ServerURL>https://localhost:${carbon.management.port}${carbon.context}/services/</ServerURL>
-        -->
-         <!--
-         The URL of the index page. This is where the user will be redirected after signing in to the
-         carbon server.
-         -->
-        <!-- IndexPageURL>/carbon/admin/index.jsp</IndexPageURL-->
-
-        <!--
-        For cApp deployment, we have to identify the roles that can be acted by the current server.
-        The following property is used for that purpose. Any number of roles can be defined here.
-        Regular expressions can be used in the role.
-        Ex : <Role>.*</Role> means this server can act any role
-        -->
-        <ServerRoles>
-            <Role>IdentityServer</Role>
-        </ServerRoles>
-
-        <!-- uncommnet this line to subscribe to a bam instance automatically -->
-        <!--<BamServerURL>https://bamhost:bamport/services/</BamServerURL>-->
-
-        <!--
-           The fully qualified name of the server
-        -->
-        <Package>org.wso2.carbon</Package>
-
-        <!--
-           Webapp context root of WSO2 Carbon management console.
-        -->
-        <WebContextRoot>/</WebContextRoot>
-
-        <!--
-        	Proxy context path is a useful parameter to add a proxy path when a Carbon server is fronted by reverse proxy. In addtion
-            to the proxy host and proxy port this parameter allows you add a path component to external URLs. e.g.
-         		URL of the Carbon server -> https://10.100.1.1:9443/carbon
-       		URL of the reverse proxy -> https://prod.abc.com/appserver/carbon
-
-       	appserver - proxy context path. This specially required whenever you are generating URLs to displace in
-       	Carbon UI components.
-        -->
-        <!--
-        	<MgtProxyContextPath></MgtProxyContextPath>
-        	<ProxyContextPath></ProxyContextPath>
-        -->
-
-        <!-- In-order to  get the registry http Port from the back-end when the default http transport is not the same-->
-        <!--RegistryHttpPort>9763</RegistryHttpPort-->
-
-        <!--
-        Number of items to be displayed on a management console page. This is used at the
-        backend server for pagination of various items.
-        -->
-        <ItemsPerPage>15</ItemsPerPage>
-
-        <!-- The endpoint URL of the cloud instance management Web service -->
-        <!--<InstanceMgtWSEndpoint>https://ec2.amazonaws.com/</InstanceMgtWSEndpoint>-->
-
-        <!--
-           Ports used by this server
-        -->
-        <Ports>
-
-            <!-- Ports offset. This entry will set the value of the ports defined below to
-             the define value + Offset.
-             e.g. Offset=2 and HTTPS port=9443 will set the effective HTTPS port to 9445
-             -->
-            <Offset>0</Offset>
-
-            <!-- The JMX Ports -->
-            <JMX>
-                <!--The port RMI registry is exposed-->
-                <RMIRegistryPort>9999</RMIRegistryPort>
-                <!--The port RMI server should be exposed-->
-                <RMIServerPort>11111</RMIServerPort>
-            </JMX>
-
-            <!-- Embedded LDAP server specific ports -->
-            <EmbeddedLDAP>
-                <!-- Port which embedded LDAP server runs -->
-                <LDAPServerPort>10389</LDAPServerPort>
-                <!-- Port which KDC (Kerberos Key Distribution Center) server runs -->
-                <KDCServerPort>8000</KDCServerPort>
-            </EmbeddedLDAP>
-
-    	<!--
-                 Override datasources JNDIproviderPort defined in bps.xml and datasources.properties files
-    	-->
-    	<!--<JNDIProviderPort>2199</JNDIProviderPort>-->
-    	<!--Override receive port of thrift based entitlement service.-->
-    	<ThriftEntitlementReceivePort>10500</ThriftEntitlementReceivePort>
-
-        <!--
-         This is the proxy port of the worker cluster. These need to be configured in a scenario where
-         manager node is not exposed through the load balancer through which the workers are exposed
-         therefore doesn't have a proxy port.
-        <WorkerHttpProxyPort>80</WorkerHttpProxyPort>
-        <WorkerHttpsProxyPort>443</WorkerHttpsProxyPort>
-        -->
-
-        </Ports>
-
-        <!--
-            JNDI Configuration
-        -->
-        <JNDI>
-            <!--
-                 The fully qualified name of the default initial context factory
-            -->
-            <DefaultInitialContextFactory>org.wso2.carbon.tomcat.jndi.CarbonJavaURLContextFactory</DefaultInitialContextFactory>
-            <!--
-                 The restrictions that are done to various JNDI Contexts in a Multi-tenant environment
-            -->
-            <Restrictions>
-                <!--
-                    Contexts that will be available only to the super-tenant
-                -->
-                <!-- <SuperTenantOnly>
-                    <UrlContexts>
-                        <UrlContext>
-                            <Scheme>foo</Scheme>
-                        </UrlContext>
-                        <UrlContext>
-                            <Scheme>bar</Scheme>
-                        </UrlContext>
-                    </UrlContexts>
-                </SuperTenantOnly> -->
-                <!--
-                    Contexts that are common to all tenants
-                -->
-                <AllTenants>
-                    <UrlContexts>
-                        <UrlContext>
-                            <Scheme>java</Scheme>
-                        </UrlContext>
-                        <!-- <UrlContext>
-                            <Scheme>foo</Scheme>
-                        </UrlContext> -->
-                    </UrlContexts>
-                </AllTenants>
-                <!--
-                     All other contexts not mentioned above will be available on a per-tenant basis
-                     (i.e. will not be shared among tenants)
-                -->
-            </Restrictions>
-        </JNDI>
-
-        <!--
-            Property to determine if the server is running an a cloud deployment environment.
-            This property should only be used to determine deployment specific details that are
-            applicable only in a cloud deployment, i.e when the server deployed *-as-a-service.
-        -->
-        <IsCloudDeployment>false</IsCloudDeployment>
-
-        <!--
-    	Property to determine whether usage data should be collected for metering purposes
-        -->
-        <EnableMetering>false</EnableMetering>
-
-        <!-- The Max time a thread should take for execution in seconds -->
-        <MaxThreadExecutionTime>600</MaxThreadExecutionTime>
-
-        <!--
-            A flag to enable or disable Ghost Deployer. By default this is set to false. That is
-            because the Ghost Deployer works only with the HTTP/S transports. If you are using
-            other transports, don't enable Ghost Deployer.
-        -->
-        <GhostDeployment>
-            <Enabled>false</Enabled>
-        </GhostDeployment>
-
-
-        <!--
-            Eager loading or lazy loading is a design pattern commonly used in computer programming which
-            will initialize an object upon creation or load on-demand. In carbon, lazy loading is used to
-            load tenant when a request is received only. Similarly Eager loading is used to enable load
-            existing tenants after carbon server starts up. Using this feature, you will be able to include
-            or exclude tenants which are to be loaded when server startup.
-
-            We can enable only one LoadingPolicy at a given time.
-
-            1. Tenant Lazy Loading
-               This is the default behaviour and enabled by default. With this policy, tenants are not loaded at
-               server startup, but loaded based on-demand (i.e when a request is received for a tenant).
-               The default tenant idle time is 30 minutes.
-
-            2. Tenant Eager Loading
-               This is by default not enabled. It can be be enabled by un-commenting the <EagerLoading> section.
-               The eager loading configurations supported are as below. These configurations can be given as the
-               value for <Include> element with eager loading.
-                    (i)Load all tenants when server startup             -   *
-                    (ii)Load all tenants except foo.com & bar.com       -   *,!foo.com,!bar.com
-                    (iii)Load only foo.com &  bar.com to be included    -   foo.com,bar.com
-        -->
-        <Tenant>
-            <LoadingPolicy>
-                <LazyLoading>
-                    <IdleTime>30</IdleTime>
-                </LazyLoading>
-                <!-- <EagerLoading>
-                       <Include>*,!foo.com,!bar.com</Include>
-                </EagerLoading>-->
-            </LoadingPolicy>
-
-            <!-- Flag to enable or disable tenant deletion. By default tenant deletion is enabled-->
-            <TenantDelete>true</TenantDelete>
-
-            <!-- Configurations related to listener invocation by tenant admin service-->
-            <ListenerInvocationPolicy>
-                <!-- Flag to enable or disable listener invocation on tenant delete. This is disabled by default-->
-                <InvokeOnDelete>false</InvokeOnDelete>
-            </ListenerInvocationPolicy>
-        </Tenant>
-
-        <!--
-         Caching related configurations
-        -->
-        <Cache>
-            <!-- Default cache timeout in minutes -->
-            <DefaultCacheTimeout>15</DefaultCacheTimeout>
-            <!-- Force all caches to act as local -->
-            <ForceLocalCache>true</ForceLocalCache>
-        </Cache>
-
-        <!--
-        Axis2 related configurations
-        -->
-        <Axis2Config>
-            <!--
-                 Location of the Axis2 Services & Modules repository
-
-                 This can be a directory in the local file system, or a URL.
-
-                 e.g.
-                 1. /home/wso2wsas/repository/ - An absolute path
-                 2. repository - In this case, the path is relative to CARBON_HOME
-                 3. file:///home/wso2wsas/repository/
-                 4. http://wso2wsas/repository/
-            -->
-            <RepositoryLocation>${carbon.home}/repository/deployment/server/</RepositoryLocation>
-
-            <!--
-             Deployment update interval in seconds. This is the interval between repository listener
-             executions.
-            -->
-            <DeploymentUpdateInterval>15</DeploymentUpdateInterval>
-
-            <!--
-                Location of the main Axis2 configuration descriptor file, a.k.a. axis2.xml file
-
-                This can be a file on the local file system, or a URL
-
-                e.g.
-                1. /home/repository/axis2.xml - An absolute path
-                2. conf/axis2.xml - In this case, the path is relative to CARBON_HOME
-                3. file:///home/carbon/repository/axis2.xml
-                4. http://repository/conf/axis2.xml
-            -->
-            <ConfigurationFile>${carbon.home}/repository/conf/axis2/axis2.xml</ConfigurationFile>
-
-            <!--
-              ServiceGroupContextIdleTime, which will be set in ConfigurationContex
-              for multiple clients which are going to access the same ServiceGroupContext
-              Default Value is 30 Sec.
-            -->
-            <ServiceGroupContextIdleTime>30000</ServiceGroupContextIdleTime>
-
-            <!--
-              This repository location is used to crete the client side configuration
-              context used by the server when calling admin services.
-            -->
-            <ClientRepositoryLocation>${carbon.home}/repository/deployment/client/</ClientRepositoryLocation>
-            <!-- This axis2 xml is used in createing the configuration context by the FE server
-             calling to BE server -->
-            <clientAxis2XmlLocation>${carbon.home}/repository/conf/axis2/axis2_client.xml</clientAxis2XmlLocation>
-            <!-- If this parameter is set, the ?wsdl on an admin service will not give the admin service wsdl. -->
-            <HideAdminServiceWSDLs>true</HideAdminServiceWSDLs>
-
-    	<!--WARNING-Use With Care! Uncommenting bellow parameter would expose all AdminServices in HTTP transport.
-    	With HTTP transport your credentials and data routed in public channels are vulnerable for sniffing attacks.
-    	Use bellow parameter ONLY if your communication channels are confirmed to be secured by other means -->
-            <!--HttpAdminServices>*</HttpAdminServices-->
-
-        </Axis2Config>
-
-        <!--
-           The default user roles which will be created when the server
-           is started up for the first time.
-        -->
-        <ServiceUserRoles>
-            <Role>
-                <Name>admin</Name>
-                <Description>Default Administrator Role</Description>
-            </Role>
-            <Role>
-                <Name>user</Name>
-                <Description>Default User Role</Description>
-            </Role>
-        </ServiceUserRoles>
-
-        <!--
-           Configurations related to Carbon Crypto Service which is a crypto framework used inside Carbon products.
-        -->
-        <CryptoService>
-
-            <Enabled>true</Enabled>
-
-            <!-- The crypto provider which is used for internal data encryption and decryption -->
-            <InternalCryptoProviderClassName>org.wso2.carbon.crypto.provider.KeyStoreBasedInternalCryptoProvider</InternalCryptoProviderClassName>
-
-            <!--
-                The crypto provider which is used for the crypto needs which come when communicating with external parties.
-                e.g. Signing, Decrypting.
-            -->
-            <ExternalCryptoProviderClassName>org.wso2.carbon.core.encryption.KeyStoreBasedExternalCryptoProvider</ExternalCryptoProviderClassName>
-
-            <!--
-                The list of key resolvers which will be used based on the context when handling crypto with external parties.
-
-                e.g. Resolving the public key of an external entity.
-            -->
-            <KeyResolvers>
-                <KeyResolver className="org.wso2.carbon.crypto.defaultProvider.resolver.ContextIndependentKeyResolver" priority="-1"/>
-            </KeyResolvers>
-
-        </CryptoService>
-
-        <!--
-          Enable following config to allow Emails as usernames.
-        -->
-        <!--EnableEmailUserName>true</EnableEmailUserName-->
-        <!--EnablePasswordTrim>false</EnablePasswordTrim-->
-        <!--
-          Security configurations
-        -->
-        <Security>
-            <!--
-                KeyStore which will be used for encrypting/decrypting passwords
-                and other sensitive information.
-            -->
-            <KeyStore>
-                <!-- Keystore file location-->
-                <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
-                <!-- Keystore type (JKS/PKCS12 etc.)-->
-                <Type>JKS</Type>
-                <!-- Keystore password-->
-                <Password>wso2carbon</Password>
-                <!-- Private Key alias-->
-                <KeyAlias>wso2carbon</KeyAlias>
-                <!-- Private Key password-->
-                <KeyPassword>wso2carbon</KeyPassword>
-            </KeyStore>
-
-            <!--
-                The KeyStore which is used for encrypting/decrypting internal data.
-                This block is read by Carbon Crypto Service.
-            -->
-            <InternalKeyStore>
-                <!-- Keystore file location-->
-                <Location>${carbon.home}/repository/resources/security/wso2carbon.jks</Location>
-                <!-- Keystore type (JKS/PKCS12 etc.)-->
-                <Type>JKS</Type>
-                <!-- Keystore password-->
-                <Password>wso2carbon</Password>
-                <!-- Private Key alias-->
-                <KeyAlias>wso2carbon</KeyAlias>
-                <!-- Private Key password-->
-                <KeyPassword>wso2carbon</KeyPassword>
-            </InternalKeyStore>
-
-            <!--
-                System wide trust-store which is used to maintain the certificates of all
-                the trusted parties.
-            -->
-            <TrustStore>
-                <!-- trust-store file location -->
-                <Location>${carbon.home}/repository/resources/security/client-truststore.jks</Location>
-                <!-- trust-store type (JKS/PKCS12 etc.) -->
-                <Type>JKS</Type>
-                <!-- trust-store password -->
-                <Password>wso2carbon</Password>
-            </TrustStore>
-
-            <!--
-                The Authenticator configuration to be used at the JVM level. We extend the
-                java.net.Authenticator to make it possible to authenticate to given servers and
-                proxies.
-            -->
-            <NetworkAuthenticatorConfig>
-                <!--
-                    Below is a sample configuration for a single authenticator. Please note that
-                    all child elements are mandatory. Not having some child elements would lead to
-                    exceptions at runtime.
-                -->
-                <!-- <Credential> -->
-                    <!--
-                        the pattern that would match a subset of URLs for which this authenticator
-                        would be used
-                    -->
-                    <!-- <Pattern>regularExpression</Pattern> -->
-                    <!--
-                        the type of this authenticator. Allowed values are:
-                        1. server
-                        2. proxy
-                    -->
-                    <!-- <Type>proxy</Type> -->
-                    <!-- the username used to log in to server/proxy -->
-                    <!-- <Username>username</Username> -->
-                    <!-- the password used to log in to server/proxy -->
-                    <!-- <Password>password</Password> -->
-                <!-- </Credential> -->
-            </NetworkAuthenticatorConfig>
-
-            <!--
-             The Tomcat realm to be used for hosted Web applications. Allowed values are;
-             1. UserManager
-             2. Memory
-
-             If this is set to 'UserManager', the realm will pick users & roles from the system's
-             WSO2 User Manager. If it is set to 'memory', the realm will pick users & roles from
-             CARBON_HOME/repository/conf/tomcat/tomcat-users.xml
-            -->
-            <TomcatRealm>UserManager</TomcatRealm>
-
-    	<!--Option to disable storing of tokens issued by STS-->
-    	<DisableTokenStore>false</DisableTokenStore>
-
-     <STSCallBackHandlerName>org.wso2.carbon.identity.provider.AttributeCallbackHandler</STSCallBackHandlerName>
-
-    	<!--
-    	 Security token store class name. If this is not set, default class will be
-    	 org.wso2.carbon.security.util.SecurityTokenStore
-    	-->
-    	<TokenStoreClassName>org.wso2.carbon.identity.sts.store.DBTokenStore</TokenStoreClassName>
-
-            <XSSPreventionConfig>
-                <Enabled>true</Enabled>
-                <Rule>allow</Rule>
-                <Patterns>
-                    <!--Pattern></Pattern-->
-                </Patterns>
-            </XSSPreventionConfig>
-        </Security>
-    <HideMenuItemIds>
-    <HideMenuItemId>claim_mgt_menu</HideMenuItemId>
-    <HideMenuItemId>identity_mgt_emailtemplate_menu</HideMenuItemId>
-    <HideMenuItemId>identity_security_questions_menu</HideMenuItemId>
-    </HideMenuItemIds>
-
-        <!--
-           The temporary work directory
-        -->
-        <WorkDirectory>${carbon.home}/tmp/work</WorkDirectory>
-
-        <!--
-           House-keeping configuration
-        -->
-        <HouseKeeping>
-
-            <!--
-               true  - Start House-keeping thread on server startup
-               false - Do not start House-keeping thread on server startup.
-                       The user will run it manually as and when he wishes.
-            -->
-            <AutoStart>true</AutoStart>
-
-            <!--
-               The interval in *minutes*, between house-keeping runs
-            -->
-            <Interval>10</Interval>
-
-            <!--
-              The maximum time in *minutes*, temp files are allowed to live
-              in the system. Files/directories which were modified more than
-              "MaxTempFileLifetime" minutes ago will be removed by the
-              house-keeping task
-            -->
-            <MaxTempFileLifetime>30</MaxTempFileLifetime>
-        </HouseKeeping>
-
-        <!--
-           Configuration for handling different types of file upload & other file uploading related
-           config parameters.
-           To map all actions to a particular FileUploadExecutor, use
-           <Action>*</Action>
-        -->
-        <FileUploadConfig>
-            <!--
-               The total file upload size limit in MB
-            -->
-            <TotalFileSizeLimit>100</TotalFileSizeLimit>
-
-            <Mapping>
-                <Actions>
-                    <Action>keystore</Action>
-                    <Action>certificate</Action>
-                    <Action>*</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.AnyFileUploadExecutor</Class>
-            </Mapping>
-
-            <Mapping>
-                <Actions>
-                    <Action>jarZip</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.JarZipUploadExecutor</Class>
-            </Mapping>
-            <Mapping>
-                <Actions>
-                    <Action>dbs</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.DBSFileUploadExecutor</Class>
-            </Mapping>
-            <Mapping>
-                <Actions>
-                    <Action>tools</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.ToolsFileUploadExecutor</Class>
-            </Mapping>
-            <Mapping>
-                <Actions>
-                    <Action>toolsAny</Action>
-                </Actions>
-                <Class>org.wso2.carbon.ui.transports.fileupload.ToolsAnyFileUploadExecutor</Class>
-            </Mapping>
-        </FileUploadConfig>
-
-        <!-- FileNameRegEx is used to validate the file input/upload/write-out names.
-        e.g.
-         <FileNameRegEx>^(?!(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.[^.])?$)[^&lt;&gt:"/\\|?*\x00-\x1F][^&lt;&gt:"/\\|?*\x00-\x1F\ .]$</FileNameRegEx>
-        -->
-        <!--<FileNameRegEx></FileNameRegEx>-->
-
-        <!--
-           Processors which process special HTTP GET requests such as ?wsdl, ?policy etc.
-
-           In order to plug in a processor to handle a special request, simply add an entry to this
-           section.
-
-           The value of the Item element is the first parameter in the query string(e.g. ?wsdl)
-           which needs special processing
-
-           The value of the Class element is a class which implements
-           org.wso2.carbon.transport.HttpGetRequestProcessor
-        -->
-        <HttpGetRequestProcessors>
-            <Processor>
-                <Item>info</Item>
-                <Class>org.wso2.carbon.core.transports.util.InfoProcessor</Class>
-            </Processor>
-            <Processor>
-                <Item>wsdl</Item>
-                <Class>org.wso2.carbon.core.transports.util.Wsdl11Processor</Class>
-            </Processor>
-            <Processor>
-                <Item>wsdl2</Item>
-                <Class>org.wso2.carbon.core.transports.util.Wsdl20Processor</Class>
-            </Processor>
-            <Processor>
-                <Item>xsd</Item>
-                <Class>org.wso2.carbon.core.transports.util.XsdProcessor</Class>
-            </Processor>
-        </HttpGetRequestProcessors>
-
-        <!-- Deployment Synchronizer Configuration. Enable value to true when running with "svn based" dep sync.
-    	In master nodes you need to set both AutoCommit and AutoCheckout to true
-    	and in  worker nodes set only AutoCheckout to true.
-        -->
-        <DeploymentSynchronizer>
-            <Enabled>false</Enabled>
-            <AutoCommit>false</AutoCommit>
-            <AutoCheckout>true</AutoCheckout>
-            <RepositoryType>svn</RepositoryType>
-            <SvnUrl>http://svnrepo.example.com/repos/</SvnUrl>
-            <SvnUser>username</SvnUser>
-            <SvnPassword>password</SvnPassword>
-            <SvnUrlAppendTenantId>true</SvnUrlAppendTenantId>
-        </DeploymentSynchronizer>
-
-        <!-- Mediation persistence configurations. Only valid if mediation features are available i.e. ESB -->
-        <!--<MediationConfig>
-            <LoadFromRegistry>false</LoadFromRegistry>
-            <SaveToFile>false</SaveToFile>
-            <Persistence>enabled</Persistence>
-            <RegistryPersistence>enabled</RegistryPersistence>
-        </MediationConfig>-->
-
-        <!--
-        Server intializing code, specified as implementation classes of org.wso2.carbon.core.ServerInitializer.
-        This code will be run when the Carbon server is initialized
-        -->
-        <ServerInitializers>
-            <!--<Initializer></Initializer>-->
-        </ServerInitializers>
-
-        <!--
-        Indicates whether the Carbon Servlet is required by the system, and whether it should be
-        registered
-        -->
-        <RequireCarbonServlet>${require.carbon.servlet}</RequireCarbonServlet>
-
-        <!--
-        Carbon H2 OSGI Configuration
-        By default non of the servers start.
-            name="web" - Start the web server with the H2 Console
-            name="webPort" - The port (default: 8082)
-            name="webAllowOthers" - Allow other computers to connect
-            name="webSSL" - Use encrypted (HTTPS) connections
-            name="tcp" - Start the TCP server
-            name="tcpPort" - The port (default: 9092)
-            name="tcpAllowOthers" - Allow other computers to connect
-            name="tcpSSL" - Use encrypted (SSL) connections
-            name="pg" - Start the PG server
-            name="pgPort"  - The port (default: 5435)
-            name="pgAllowOthers"  - Allow other computers to connect
-            name="trace" - Print additional trace information; for all servers
-            name="baseDir" - The base directory for H2 databases; for all servers
-        -->
-        <!--H2DatabaseConfiguration>
-            <property name="web" />
-            <property name="webPort">8082</property>
-            <property name="webAllowOthers" />
-            <property name="webSSL" />
-            <property name="tcp" />
-            <property name="tcpPort">9092</property>
-            <property name="tcpAllowOthers" />
-            <property name="tcpSSL" />
-            <property name="pg" />
-            <property name="pgPort">5435</property>
-            <property name="pgAllowOthers" />
-            <property name="trace" />
-            <property name="baseDir">${carbon.home}</property>
-        </H2DatabaseConfiguration-->
-        <!--Disabling statistics reporter by default-->
-        <StatisticsReporterDisabled>true</StatisticsReporterDisabled>
-
-        <!-- Enable accessing Admin Console via HTTP -->
-        <!-- EnableHTTPAdminConsole>true</EnableHTTPAdminConsole -->
-
-        <!--
-           Default Feature Repository of WSO2 Carbon.
-        -->
-        <FeatureRepository>
-    	    <RepositoryName>default repository</RepositoryName>
-    	    <RepositoryURL>http://product-dist.wso2.com/p2/carbon/releases/wilkes/</RepositoryURL>
-        </FeatureRepository>
-
-        <!--
-    	Configure API Management
-       -->
-       <APIManagement>
-
-    	<!--Uses the embedded API Manager by default. If you want to use an external
-    	API Manager instance to manage APIs, configure below  externalAPIManager-->
-
-    	<Enabled>true</Enabled>
-
-    	<!--Uncomment and configure API Gateway and
-    	Publisher URLs to use external API Manager instance-->
-
-    	<!--ExternalAPIManager>
-
-    		<APIGatewayURL>http://localhost:8281</APIGatewayURL>
-    		<APIPublisherURL>http://localhost:8281/publisher</APIPublisherURL>
-
-    	</ExternalAPIManager-->
-
-    	<LoadAPIContextsInServerStartup>true</LoadAPIContextsInServerStartup>
-       </APIManagement>
-
-    </Server>
 kind: ConfigMap
 metadata:
   name: identity-server-conf
-  namespace: "$ns.k8s&wso2.is"
+  namespace : wso2
+data:
+  deployment.toml: |-
+    [server]
+    hostname = "$env{HOST_NAME}"
+    node_ip = "$env{NODE_IP}"
+    base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
+    [super_admin]
+    username = "admin"
+    password = "admin"
+    create_admin_account = true
+
+    [user_store]
+    type = "read_write_ldap"
+    connection_url = "ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}"
+    connection_name = "uid=admin,ou=system"
+    connection_password = "admin"
+    base_dn = "dc=wso2,dc=org"      #refers the base dn on which the user and group search bases will be generated
+
+    [database.identity_db]
+    url = "jdbc:mysql://wso2is-rdbms-service:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
+    username = "wso2carbon"
+    password = "wso2carbon"
+    driver = "com.mysql.jdbc.Driver"
+    [database.identity_db.pool_options]
+    validationQuery = "SELECT 1"
+
+    [database.shared_db]
+    url = "jdbc:mysql://wso2is-rdbms-service:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false"
+    username = "wso2carbon"
+    password = "wso2carbon"
+    driver = "com.mysql.jdbc.Driver"
+    [database.shared_db.pool_options]
+    validationQuery = "SELECT 1"
+
+    [database.bps_database]
+    url = "jdbc:mysql://wso2is-rdbms-service:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
+    username = "wso2carbon"
+    password = "wso2carbon"
+    driver = "com.mysql.jdbc.Driver"
+    [database.bps_database.pool_options]
+    validationQuery = "SELECT 1"
+
+    [keystore.primary]
+    name = "wso2carbon.jks"
+    password = "wso2carbon"
 ---
 
 apiVersion: v1
-data:
-  master-datasources.xml: |
-    <datasources-configuration xmlns:svns="http://org.wso2.securevault/configuration">
-        <providers>
-            <provider>org.wso2.carbon.ndatasource.rdbms.RDBMSDataSourceReader</provider>
-        </providers>
-        <datasources>
-            <datasource>
-                <name>WSO2_CARBON_DB</name>
-                <description>The datasource used for registry and user manager</description>
-                <jndiConfig>
-                    <name>jdbc/WSO2CarbonDB</name>
-                </jndiConfig>
-                <definition type="RDBMS">
-                    <configuration>
-                        <url>jdbc:h2:./repository/database/WSO2CARBON_DB;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=60000</url>
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
-                        <driverClassName>org.h2.Driver</driverClassName>
-                        <maxActive>50</maxActive>
-                        <maxWait>60000</maxWait>
-                        <testOnBorrow>true</testOnBorrow>
-                        <validationQuery>SELECT 1</validationQuery>
-                        <validationInterval>30000</validationInterval>
-                        <defaultAutoCommit>false</defaultAutoCommit>
-                    </configuration>
-                </definition>
-            </datasource>
-            <datasource>
-                <name>WSO2_USER_DB</name>
-                <description>The data source used for user management and user store</description>
-                <jndiConfig>
-                    <name>jdbc/WSO2UserDS</name>
-                </jndiConfig>
-                <definition type="RDBMS">
-                    <configuration>
-                        <url>jdbc:mysql://wso2is-rdbms-service:3306/WSO2IS_USER_DB?autoReconnect=true&amp;useSSL=false</url>
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
-                        <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                        <maxActive>80</maxActive>
-                        <maxWait>60000</maxWait>
-                        <minIdle>5</minIdle>
-                        <testOnBorrow>true</testOnBorrow>
-                        <validationQuery>SELECT 1</validationQuery>
-                        <validationInterval>30000</validationInterval>
-                        <defaultAutoCommit>false</defaultAutoCommit>
-                    </configuration>
-                </definition>
-            </datasource>
-            <datasource>
-                <name>WSO2_CONFIG_REG_DB</name>
-                <description>The data source used for config registry</description>
-                <jndiConfig>
-                    <name>jdbc/WSO2ConfigDS</name>
-                </jndiConfig>
-                <definition type="RDBMS">
-                    <configuration>
-                        <url>jdbc:h2:./repository/database/WSO2IS_REG_DB?autoReconnect=true&amp;useSSL=false</url>
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
-                        <driverClassName>org.h2.Driver</driverClassName>
-                        <maxActive>50</maxActive>
-                        <maxWait>60000</maxWait>
-                        <testOnBorrow>true</testOnBorrow>
-                        <validationQuery>SELECT 1</validationQuery>
-                        <validationInterval>30000</validationInterval>
-                    </configuration>
-                </definition>
-            </datasource>
-            <datasource>
-                <name>WSO2_IDENTITY_DB</name>
-                <description>The data source used for identity</description>
-                <jndiConfig>
-                    <name>jdbc/WSO2IdentityDS</name>
-                </jndiConfig>
-                <definition type="RDBMS">
-                    <configuration>
-                        <url>jdbc:mysql://wso2is-rdbms-service:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false</url>
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
-                        <driverClassName>com.mysql.jdbc.Driver</driverClassName>
-                        <maxActive>80</maxActive>
-                        <maxWait>60000</maxWait>
-                        <minIdle>5</minIdle>
-                        <testOnBorrow>true</testOnBorrow>
-                        <validationQuery>SELECT 1</validationQuery>
-                        <validationInterval>30000</validationInterval>
-                        <defaultAutoCommit>false</defaultAutoCommit>
-                    </configuration>
-                </definition>
-            </datasource>
-            <datasource>
-                <name>WSO2_CONSENT_DB</name>
-                <description>The data source used for consent management</description>
-                <jndiConfig>
-                    <name>jdbc/WSO2ConsentDS</name>
-                </jndiConfig>
-                <definition type="RDBMS">
-                    <configuration>
-                        <url>jdbc:h2:./repository/database/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false</url>
-                        <username>wso2carbon</username>
-                        <password>wso2carbon</password>
-                        <driverClassName>org.h2.Driver</driverClassName>
-                        <maxActive>80</maxActive>
-                        <maxWait>60000</maxWait>
-                        <minIdle>5</minIdle>
-                        <testOnBorrow>true</testOnBorrow>
-                        <validationQuery>SELECT 1</validationQuery>
-                        <validationInterval>30000</validationInterval>
-                        <defaultAutoCommit>false</defaultAutoCommit>
-                    </configuration>
-                </definition>
-            </datasource>
-       </datasources>
-    </datasources-configuration>
 kind: ConfigMap
 metadata:
-  name: identity-server-conf-datasources
-  namespace: "$ns.k8s&wso2.is"
+  name: identity-server-conf-entrypoint
+  namespace : wso2
+data:
+  docker-entrypoint.sh: |
+    #!/bin/sh
+
+    set -e
+
+    # volume mounts
+    config_volume=${WORKING_DIRECTORY}/wso2-config-volume
+    artifact_volume=${WORKING_DIRECTORY}/wso2-artifact-volume
+
+    # check if the WSO2 non-root user home exists
+    test ! -d ${WORKING_DIRECTORY} && echo "WSO2 Docker non-root user home does not exist" && exit 1
+
+    # check if the WSO2 product home exists
+    test ! -d ${WSO2_SERVER_HOME} && echo "WSO2 Docker product home does not exist" && exit 1
+
+    # copy any configuration changes mounted to config_volume
+    test -d ${config_volume} && [ "$(ls -A ${config_volume})" ] && cp -RL ${config_volume}/* ${WSO2_SERVER_HOME}/
+    # copy any artifact changes mounted to artifact_volume
+    test -d ${artifact_volume} && [ "$(ls -A ${artifact_volume})" ] && cp -RL ${artifact_volume}/* ${WSO2_SERVER_HOME}/
+
+    # start WSO2 Carbon server
+    sh ${WSO2_SERVER_HOME}/bin/wso2server.sh "$@"
 ---
 
 apiVersion: v1
@@ -933,25 +146,40 @@ data:
   init.sql: |
     DROP DATABASE IF EXISTS WSO2IS_USER_DB;
     DROP DATABASE IF EXISTS WSO2IS_IDENTITY_DB;
+    DROP DATABASE IF EXISTS WSO2IS_BPS_DB;
+    DROP DATABASE IF EXISTS WSO2_CLUSTER_DB;
+    DROP DATABASE IF EXISTS IS_ANALYTICS_DB;
+    DROP DATABASE IF EXISTS WSO2_PERSISTENCE_DB;
+
     CREATE DATABASE WSO2IS_USER_DB;
     CREATE DATABASE WSO2IS_IDENTITY_DB;
-    CREATE USER IF NOT EXISTS 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    CREATE DATABASE WSO2IS_BPS_DB;
+    CREATE DATABASE WSO2_CLUSTER_DB;
+    CREATE DATABASE IS_ANALYTICS_DB;
+    CREATE DATABASE WSO2_PERSISTENCE_DB;
+
     GRANT ALL ON WSO2IS_USER_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
     GRANT ALL ON WSO2IS_IDENTITY_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON WSO2IS_BPS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON WSO2_CLUSTER_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON IS_ANALYTICS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+    GRANT ALL ON WSO2_PERSISTENCE_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
+
     USE WSO2IS_USER_DB;
+
     -- ################################
     -- USER MANAGER TABLES
     -- ################################
 
     CREATE TABLE UM_TENANT (
-    			UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    	        UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
+          UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+              UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
                 UM_EMAIL VARCHAR(255),
                 UM_ACTIVE BOOLEAN DEFAULT FALSE,
-    	        UM_CREATED_DATE TIMESTAMP NOT NULL,
-    	        UM_USER_CONFIG LONGBLOB,
-    			PRIMARY KEY (UM_ID),
-    			UNIQUE(UM_DOMAIN_NAME)
+              UM_CREATED_DATE TIMESTAMP NOT NULL,
+              UM_USER_CONFIG LONGBLOB,
+          PRIMARY KEY (UM_ID),
+          UNIQUE(UM_DOMAIN_NAME)
     )ENGINE INNODB;
 
     CREATE TABLE UM_DOMAIN(
@@ -992,24 +220,24 @@ data:
                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                  UM_ROLE_NAME VARCHAR(255) NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    		UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
+        UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID),
                  UNIQUE(UM_ROLE_NAME, UM_TENANT_ID)
     )ENGINE INNODB;
 
 
     CREATE TABLE UM_MODULE(
-    	UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
-    	UM_MODULE_NAME VARCHAR(100),
-    	UNIQUE(UM_MODULE_NAME),
-    	PRIMARY KEY(UM_ID)
+      UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
+      UM_MODULE_NAME VARCHAR(100),
+      UNIQUE(UM_MODULE_NAME),
+      PRIMARY KEY(UM_ID)
     )ENGINE INNODB;
 
     CREATE TABLE UM_MODULE_ACTIONS(
-    	UM_ACTION VARCHAR(255) NOT NULL,
-    	UM_MODULE_ID INTEGER NOT NULL,
-    	PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
-    	FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
+      UM_ACTION VARCHAR(255) NOT NULL,
+      UM_MODULE_ID INTEGER NOT NULL,
+      PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
+      FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
     CREATE TABLE UM_PERMISSION (
@@ -1017,8 +245,8 @@ data:
                  UM_RESOURCE_ID VARCHAR(255) NOT NULL,
                  UM_ACTION VARCHAR(255) NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    		UM_MODULE_ID INTEGER DEFAULT 0,
-    			       UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
+        UM_MODULE_ID INTEGER DEFAULT 0,
+                 UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
 
@@ -1030,10 +258,10 @@ data:
                  UM_ROLE_NAME VARCHAR(255) NOT NULL,
                  UM_IS_ALLOWED SMALLINT NOT NULL,
                  UM_TENANT_ID INTEGER DEFAULT 0,
-    	     UM_DOMAIN_ID INTEGER,
+           UM_DOMAIN_ID INTEGER,
                  UNIQUE (UM_PERMISSION_ID, UM_ROLE_NAME, UM_TENANT_ID, UM_DOMAIN_ID),
-    	     FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
-    	     FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+           FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+           FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
 
@@ -1071,14 +299,14 @@ data:
     )ENGINE INNODB;
 
     CREATE TABLE UM_ACCOUNT_MAPPING(
-    	UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    	UM_USER_NAME VARCHAR(255) NOT NULL,
-    	UM_TENANT_ID INTEGER NOT NULL,
-    	UM_USER_STORE_DOMAIN VARCHAR(100),
-    	UM_ACC_LINK_ID INTEGER NOT NULL,
-    	UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
-    	FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
-    	PRIMARY KEY (UM_ID)
+      UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+      UM_USER_NAME VARCHAR(255) NOT NULL,
+      UM_TENANT_ID INTEGER NOT NULL,
+      UM_USER_STORE_DOMAIN VARCHAR(100),
+      UM_ACC_LINK_ID INTEGER NOT NULL,
+      UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
+      FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
+      PRIMARY KEY (UM_ID)
     )ENGINE INNODB;
 
 
@@ -1115,7 +343,7 @@ data:
                 UM_SUPPORTED SMALLINT,
                 UM_REQUIRED SMALLINT,
                 UM_DISPLAY_ORDER INTEGER,
-    	    UM_CHECKED_ATTRIBUTE SMALLINT,
+          UM_CHECKED_ATTRIBUTE SMALLINT,
                 UM_READ_ONLY SMALLINT,
                 UM_TENANT_ID INTEGER DEFAULT 0,
                 UNIQUE(UM_DIALECT_ID, UM_CLAIM_URI, UM_TENANT_ID,UM_MAPPED_ATTRIBUTE_DOMAIN),
@@ -1156,10 +384,10 @@ data:
                 UM_USER_NAME VARCHAR(255),
                 UM_ROLE_ID INTEGER NOT NULL,
                 UM_TENANT_ID INTEGER DEFAULT 0,
-    	    UM_DOMAIN_ID INTEGER,
+          UM_DOMAIN_ID INTEGER,
                 UNIQUE (UM_USER_NAME, UM_ROLE_ID, UM_TENANT_ID, UM_DOMAIN_ID),
                 FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_HYBRID_ROLE(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
-    	    FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+          FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
 
@@ -1185,14 +413,493 @@ data:
 
     CREATE TABLE UM_HYBRID_REMEMBER_ME(
                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
-    			UM_USER_NAME VARCHAR(255) NOT NULL,
-    			UM_COOKIE_VALUE VARCHAR(1024),
-    			UM_CREATED_TIME TIMESTAMP,
+          UM_USER_NAME VARCHAR(255) NOT NULL,
+          UM_COOKIE_VALUE VARCHAR(1024),
+          UM_CREATED_TIME TIMESTAMP,
                 UM_TENANT_ID INTEGER DEFAULT 0,
-    			PRIMARY KEY (UM_ID, UM_TENANT_ID)
+          PRIMARY KEY (UM_ID, UM_TENANT_ID)
     )ENGINE INNODB;
 
+    CREATE TABLE IF NOT EXISTS REG_CLUSTER_LOCK (
+                 REG_LOCK_NAME VARCHAR (20),
+                 REG_LOCK_STATUS VARCHAR (20),
+                 REG_LOCKED_TIME TIMESTAMP,
+                 REG_TENANT_ID INTEGER DEFAULT 0,
+                 PRIMARY KEY (REG_LOCK_NAME)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_LOG (
+                 REG_LOG_ID INTEGER AUTO_INCREMENT,
+                 REG_PATH VARCHAR (750),
+                 REG_USER_ID VARCHAR (31) NOT NULL,
+                 REG_LOGGED_TIME TIMESTAMP NOT NULL,
+                 REG_ACTION INTEGER NOT NULL,
+                 REG_ACTION_DATA VARCHAR (500),
+                 REG_TENANT_ID INTEGER DEFAULT 0,
+                 PRIMARY KEY (REG_LOG_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE INDEX REG_LOG_IND_BY_REGLOG USING HASH ON REG_LOG(REG_LOGGED_TIME, REG_TENANT_ID);
+
+    -- The REG_PATH_VALUE should be less than 767 bytes, and hence was fixed at 750.
+    -- See CARBON-5917.
+
+    CREATE TABLE IF NOT EXISTS REG_PATH(
+                 REG_PATH_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 REG_PATH_VALUE VARCHAR(750) NOT NULL,
+                 REG_PATH_PARENT_ID INTEGER,
+                 REG_TENANT_ID INTEGER DEFAULT 0,
+                 CONSTRAINT PK_REG_PATH PRIMARY KEY(REG_PATH_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE INDEX REG_PATH_IND_BY_PATH_VALUE USING HASH ON REG_PATH(REG_PATH_VALUE, REG_TENANT_ID);
+    CREATE INDEX REG_PATH_IND_BY_PATH_PARENT_ID USING HASH ON REG_PATH(REG_PATH_PARENT_ID, REG_TENANT_ID);
+
+    CREATE TABLE IF NOT EXISTS REG_CONTENT (
+                 REG_CONTENT_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 REG_CONTENT_DATA LONGBLOB,
+                 REG_TENANT_ID INTEGER DEFAULT 0,
+                 CONSTRAINT PK_REG_CONTENT PRIMARY KEY(REG_CONTENT_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_CONTENT_HISTORY (
+                 REG_CONTENT_ID INTEGER NOT NULL,
+                 REG_CONTENT_DATA LONGBLOB,
+                 REG_DELETED   SMALLINT,
+                 REG_TENANT_ID INTEGER DEFAULT 0,
+                 CONSTRAINT PK_REG_CONTENT_HISTORY PRIMARY KEY(REG_CONTENT_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_RESOURCE (
+                REG_PATH_ID         INTEGER NOT NULL,
+                REG_NAME            VARCHAR(256),
+                REG_VERSION         INTEGER NOT NULL AUTO_INCREMENT,
+                REG_MEDIA_TYPE      VARCHAR(500),
+                REG_CREATOR         VARCHAR(31) NOT NULL,
+                REG_CREATED_TIME    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                REG_LAST_UPDATOR    VARCHAR(31),
+                REG_LAST_UPDATED_TIME    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                REG_DESCRIPTION     VARCHAR(1000),
+                REG_CONTENT_ID      INTEGER,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                REG_UUID VARCHAR(100) NOT NULL,
+                CONSTRAINT PK_REG_RESOURCE PRIMARY KEY(REG_VERSION, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    ALTER TABLE REG_RESOURCE ADD CONSTRAINT REG_RESOURCE_FK_BY_PATH_ID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+    ALTER TABLE REG_RESOURCE ADD CONSTRAINT REG_RESOURCE_FK_BY_CONTENT_ID FOREIGN KEY (REG_CONTENT_ID, REG_TENANT_ID) REFERENCES REG_CONTENT (REG_CONTENT_ID, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_IND_BY_NAME USING HASH ON REG_RESOURCE(REG_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_IND_BY_PATH_ID_NAME USING HASH ON REG_RESOURCE(REG_PATH_ID, REG_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_IND_BY_UUID USING HASH ON REG_RESOURCE(REG_UUID);
+    CREATE INDEX REG_RESOURCE_IND_BY_TENAN USING HASH ON REG_RESOURCE(REG_TENANT_ID, REG_UUID);
+    CREATE INDEX REG_RESOURCE_IND_BY_TYPE USING HASH ON REG_RESOURCE(REG_TENANT_ID, REG_MEDIA_TYPE);
+
+    CREATE TABLE IF NOT EXISTS REG_RESOURCE_HISTORY (
+                REG_PATH_ID         INTEGER NOT NULL,
+                REG_NAME            VARCHAR(256),
+                REG_VERSION         INTEGER NOT NULL,
+                REG_MEDIA_TYPE      VARCHAR(500),
+                REG_CREATOR         VARCHAR(31) NOT NULL,
+                REG_CREATED_TIME    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                REG_LAST_UPDATOR    VARCHAR(31),
+                REG_LAST_UPDATED_TIME    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                REG_DESCRIPTION     VARCHAR(1000),
+                REG_CONTENT_ID      INTEGER,
+                REG_DELETED         SMALLINT,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                REG_UUID VARCHAR(100) NOT NULL,
+                CONSTRAINT PK_REG_RESOURCE_HISTORY PRIMARY KEY(REG_VERSION, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    ALTER TABLE REG_RESOURCE_HISTORY ADD CONSTRAINT REG_RESOURCE_HIST_FK_BY_PATHID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+    ALTER TABLE REG_RESOURCE_HISTORY ADD CONSTRAINT REG_RESOURCE_HIST_FK_BY_CONTENT_ID FOREIGN KEY (REG_CONTENT_ID, REG_TENANT_ID) REFERENCES REG_CONTENT_HISTORY (REG_CONTENT_ID, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_HISTORY_IND_BY_NAME USING HASH ON REG_RESOURCE_HISTORY(REG_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_HISTORY_IND_BY_PATH_ID_NAME USING HASH ON REG_RESOURCE(REG_PATH_ID, REG_NAME, REG_TENANT_ID);
+
+    CREATE TABLE IF NOT EXISTS REG_COMMENT (
+                REG_ID        INTEGER NOT NULL AUTO_INCREMENT,
+                REG_COMMENT_TEXT      VARCHAR(500) NOT NULL,
+                REG_USER_ID           VARCHAR(31) NOT NULL,
+                REG_COMMENTED_TIME    TIMESTAMP NOT NULL,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                CONSTRAINT PK_REG_COMMENT PRIMARY KEY(REG_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_RESOURCE_COMMENT (
+                REG_COMMENT_ID          INTEGER NOT NULL,
+                REG_VERSION             INTEGER,
+                REG_PATH_ID             INTEGER,
+                REG_RESOURCE_NAME       VARCHAR(256),
+                REG_TENANT_ID INTEGER DEFAULT 0
+    )ENGINE INNODB;
+
+    ALTER TABLE REG_RESOURCE_COMMENT ADD CONSTRAINT REG_RESOURCE_COMMENT_FK_BY_PATH_ID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+    ALTER TABLE REG_RESOURCE_COMMENT ADD CONSTRAINT REG_RESOURCE_COMMENT_FK_BY_COMMENT_ID FOREIGN KEY (REG_COMMENT_ID, REG_TENANT_ID) REFERENCES REG_COMMENT (REG_ID, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_COMMENT_IND_BY_PATH_ID_AND_RESOURCE_NAME USING HASH ON REG_RESOURCE_COMMENT(REG_PATH_ID, REG_RESOURCE_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_COMMENT_IND_BY_VERSION USING HASH ON REG_RESOURCE_COMMENT(REG_VERSION, REG_TENANT_ID);
+
+    CREATE TABLE IF NOT EXISTS REG_RATING (
+                REG_ID     INTEGER NOT NULL AUTO_INCREMENT,
+                REG_RATING        INTEGER NOT NULL,
+                REG_USER_ID       VARCHAR(31) NOT NULL,
+                REG_RATED_TIME    TIMESTAMP NOT NULL,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                CONSTRAINT PK_REG_RATING PRIMARY KEY(REG_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_RESOURCE_RATING (
+                REG_RATING_ID           INTEGER NOT NULL,
+                REG_VERSION             INTEGER,
+                REG_PATH_ID             INTEGER,
+                REG_RESOURCE_NAME       VARCHAR(256),
+                REG_TENANT_ID INTEGER DEFAULT 0
+    )ENGINE INNODB;
+
+    ALTER TABLE REG_RESOURCE_RATING ADD CONSTRAINT REG_RESOURCE_RATING_FK_BY_PATH_ID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+    ALTER TABLE REG_RESOURCE_RATING ADD CONSTRAINT REG_RESOURCE_RATING_FK_BY_RATING_ID FOREIGN KEY (REG_RATING_ID, REG_TENANT_ID) REFERENCES REG_RATING (REG_ID, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_RATING_IND_BY_PATH_ID_AND_RESOURCE_NAME USING HASH ON REG_RESOURCE_RATING(REG_PATH_ID, REG_RESOURCE_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_RATING_IND_BY_VERSION USING HASH ON REG_RESOURCE_RATING(REG_VERSION, REG_TENANT_ID);
+
+
+    CREATE TABLE IF NOT EXISTS REG_TAG (
+                REG_ID         INTEGER NOT NULL AUTO_INCREMENT,
+                REG_TAG_NAME       VARCHAR(500) NOT NULL,
+                REG_USER_ID        VARCHAR(31) NOT NULL,
+                REG_TAGGED_TIME    TIMESTAMP NOT NULL,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                CONSTRAINT PK_REG_TAG PRIMARY KEY(REG_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_RESOURCE_TAG (
+                REG_TAG_ID              INTEGER NOT NULL,
+                REG_VERSION             INTEGER,
+                REG_PATH_ID             INTEGER,
+                REG_RESOURCE_NAME       VARCHAR(256),
+                REG_TENANT_ID INTEGER DEFAULT 0
+    )ENGINE INNODB;
+
+    ALTER TABLE REG_RESOURCE_TAG ADD CONSTRAINT REG_RESOURCE_TAG_FK_BY_PATH_ID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+    ALTER TABLE REG_RESOURCE_TAG ADD CONSTRAINT REG_RESOURCE_TAG_FK_BY_TAG_ID FOREIGN KEY (REG_TAG_ID, REG_TENANT_ID) REFERENCES REG_TAG (REG_ID, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_TAG_IND_BY_PATH_ID_AND_RESOURCE_NAME USING HASH ON REG_RESOURCE_TAG(REG_PATH_ID, REG_RESOURCE_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_TAG_IND_BY_VERSION USING HASH ON REG_RESOURCE_TAG(REG_VERSION, REG_TENANT_ID);
+
+    CREATE TABLE IF NOT EXISTS REG_PROPERTY (
+                REG_ID         INTEGER NOT NULL AUTO_INCREMENT,
+                REG_NAME       VARCHAR(100) NOT NULL,
+                REG_VALUE        VARCHAR(1000),
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                CONSTRAINT PK_REG_PROPERTY PRIMARY KEY(REG_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_RESOURCE_PROPERTY (
+                REG_PROPERTY_ID         INTEGER NOT NULL,
+                REG_VERSION             INTEGER,
+                REG_PATH_ID             INTEGER,
+                REG_RESOURCE_NAME       VARCHAR(256),
+                REG_TENANT_ID INTEGER DEFAULT 0
+    )ENGINE INNODB;
+
+    ALTER TABLE REG_RESOURCE_PROPERTY ADD CONSTRAINT REG_RESOURCE_PROPERTY_FK_BY_PATH_ID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+    ALTER TABLE REG_RESOURCE_PROPERTY ADD CONSTRAINT REG_RESOURCE_PROPERTY_FK_BY_TAG_ID FOREIGN KEY (REG_PROPERTY_ID, REG_TENANT_ID) REFERENCES REG_PROPERTY (REG_ID, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_PROPERTY_IND_BY_PATH_ID_AND_RESOURCE_NAME USING HASH ON REG_RESOURCE_PROPERTY(REG_PATH_ID, REG_RESOURCE_NAME, REG_TENANT_ID);
+    CREATE INDEX REG_RESOURCE_PROPERTY_IND_BY_VERSION USING HASH ON REG_RESOURCE_PROPERTY(REG_VERSION, REG_TENANT_ID);
+
+    -- CREATE TABLE IF NOT EXISTS REG_ASSOCIATIONS (
+    -- SRC_PATH_ID     INTEGER,
+    -- SRC_RESOURCE_NAME    VARCHAR(256),
+    -- SRC_VERSION     INTEGER,
+    -- TGT_PATH_ID     INTEGER,
+    -- TGT_RESOURCE_NAME    VARCHAR(256),
+    -- TGT_VERSION     INTEGER
+    -- )ENGINE INNODB;
+    --
+    -- ALTER TABLE REG_ASSOCIATIONS ADD CONSTRAINT REG_ASSOCIATIONS_FK_BY_SRC_PATH_ID FOREIGN KEY (SRC_PATH_ID) REFERENCES REG_PATH (PATH_ID);
+    -- ALTER TABLE REG_ASSOCIATIONS ADD CONSTRAINT REG_ASSOCIATIONS_FK_BY_TGT_PATH_ID FOREIGN KEY (TGT_PATH_ID) REFERENCES REG_PATH (PATH_ID);
+    -- CREATE INDEX REG_ASSOCIATIONS_IND_BY_SRC_VERSION ON REG_ASSOCIATIONS(SRC_VERSION);
+    -- CREATE INDEX REG_ASSOCIATIONS_IND_BY_TGT_VERSION ON REG_ASSOCIATIONS(TGT_VERSION);
+    -- CREATE INDEX REG_ASSOCIATIONS_IND_BY_SRC_RESOURCE_NAME ON REG_ASSOCIATIONS(SRC_RESOURCE_NAME);
+    -- CREATE INDEX REG_ASSOCIATIONS_IND_BY_TGT_RESOURCE_NAME ON REG_ASSOCIATIONS(TGT_RESOURCE_NAME);
+
+
+
+    CREATE TABLE IF NOT EXISTS REG_ASSOCIATION (
+                REG_ASSOCIATION_ID INTEGER AUTO_INCREMENT,
+                REG_SOURCEPATH VARCHAR (750) NOT NULL,
+                REG_TARGETPATH VARCHAR (750) NOT NULL,
+                REG_ASSOCIATION_TYPE VARCHAR (2000) NOT NULL,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                PRIMARY KEY (REG_ASSOCIATION_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS REG_SNAPSHOT (
+                REG_SNAPSHOT_ID     INTEGER NOT NULL AUTO_INCREMENT,
+                REG_PATH_ID            INTEGER NOT NULL,
+                REG_RESOURCE_NAME      VARCHAR(255),
+                REG_RESOURCE_VIDS     LONGBLOB NOT NULL,
+                REG_TENANT_ID INTEGER DEFAULT 0,
+                CONSTRAINT PK_REG_SNAPSHOT PRIMARY KEY(REG_SNAPSHOT_ID, REG_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE INDEX REG_SNAPSHOT_IND_BY_PATH_ID_AND_RESOURCE_NAME USING HASH ON REG_SNAPSHOT(REG_PATH_ID, REG_RESOURCE_NAME, REG_TENANT_ID);
+
+    ALTER TABLE REG_SNAPSHOT ADD CONSTRAINT REG_SNAPSHOT_FK_BY_PATH_ID FOREIGN KEY (REG_PATH_ID, REG_TENANT_ID) REFERENCES REG_PATH (REG_PATH_ID, REG_TENANT_ID);
+
     USE WSO2IS_IDENTITY_DB;
+
+
+    -- ################################
+    -- USER MANAGER TABLES
+    -- ################################
+
+    CREATE TABLE UM_TENANT (
+          UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+              UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
+                UM_EMAIL VARCHAR(255),
+                UM_ACTIVE BOOLEAN DEFAULT FALSE,
+              UM_CREATED_DATE TIMESTAMP NOT NULL,
+              UM_USER_CONFIG LONGBLOB,
+          PRIMARY KEY (UM_ID),
+          UNIQUE(UM_DOMAIN_NAME)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_DOMAIN(
+                UM_DOMAIN_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_DOMAIN_NAME VARCHAR(255),
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                PRIMARY KEY (UM_DOMAIN_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE UNIQUE INDEX INDEX_UM_TENANT_UM_DOMAIN_NAME
+                        ON UM_TENANT (UM_DOMAIN_NAME);
+
+    CREATE TABLE UM_USER (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_USER_NAME VARCHAR(255) NOT NULL,
+                 UM_USER_PASSWORD VARCHAR(255) NOT NULL,
+                 UM_SALT_VALUE VARCHAR(31),
+                 UM_REQUIRE_CHANGE BOOLEAN DEFAULT FALSE,
+                 UM_CHANGED_TIME TIMESTAMP NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID),
+                 UNIQUE(UM_USER_NAME, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_SYSTEM_USER (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_USER_NAME VARCHAR(255) NOT NULL,
+                 UM_USER_PASSWORD VARCHAR(255) NOT NULL,
+                 UM_SALT_VALUE VARCHAR(31),
+                 UM_REQUIRE_CHANGE BOOLEAN DEFAULT FALSE,
+                 UM_CHANGED_TIME TIMESTAMP NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID),
+                 UNIQUE(UM_USER_NAME, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_ROLE (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_ROLE_NAME VARCHAR(255) NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+        UM_SHARED_ROLE BOOLEAN DEFAULT FALSE,
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID),
+                 UNIQUE(UM_ROLE_NAME, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+
+    CREATE TABLE UM_MODULE(
+      UM_ID INTEGER  NOT NULL AUTO_INCREMENT,
+      UM_MODULE_NAME VARCHAR(100),
+      UNIQUE(UM_MODULE_NAME),
+      PRIMARY KEY(UM_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_MODULE_ACTIONS(
+      UM_ACTION VARCHAR(255) NOT NULL,
+      UM_MODULE_ID INTEGER NOT NULL,
+      PRIMARY KEY(UM_ACTION, UM_MODULE_ID),
+      FOREIGN KEY (UM_MODULE_ID) REFERENCES UM_MODULE(UM_ID) ON DELETE CASCADE
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_PERMISSION (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_RESOURCE_ID VARCHAR(255) NOT NULL,
+                 UM_ACTION VARCHAR(255) NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+        UM_MODULE_ID INTEGER DEFAULT 0,
+                 UNIQUE(UM_RESOURCE_ID,UM_ACTION, UM_TENANT_ID),
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE INDEX INDEX_UM_PERMISSION_UM_RESOURCE_ID_UM_ACTION ON UM_PERMISSION (UM_RESOURCE_ID, UM_ACTION, UM_TENANT_ID);
+
+    CREATE TABLE UM_ROLE_PERMISSION (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_PERMISSION_ID INTEGER NOT NULL,
+                 UM_ROLE_NAME VARCHAR(255) NOT NULL,
+                 UM_IS_ALLOWED SMALLINT NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+           UM_DOMAIN_ID INTEGER,
+                 UNIQUE (UM_PERMISSION_ID, UM_ROLE_NAME, UM_TENANT_ID, UM_DOMAIN_ID),
+           FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+           FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    -- REMOVED UNIQUE (UM_PERMISSION_ID, UM_ROLE_ID)
+    CREATE TABLE UM_USER_PERMISSION (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_PERMISSION_ID INTEGER NOT NULL,
+                 UM_USER_NAME VARCHAR(255) NOT NULL,
+                 UM_IS_ALLOWED SMALLINT NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+                 FOREIGN KEY (UM_PERMISSION_ID, UM_TENANT_ID) REFERENCES UM_PERMISSION(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    -- REMOVED UNIQUE (UM_PERMISSION_ID, UM_USER_ID)
+    CREATE TABLE UM_USER_ROLE (
+                 UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                 UM_ROLE_ID INTEGER NOT NULL,
+                 UM_USER_ID INTEGER NOT NULL,
+                 UM_TENANT_ID INTEGER DEFAULT 0,
+                 UNIQUE (UM_USER_ID, UM_ROLE_ID, UM_TENANT_ID),
+                 FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_ROLE(UM_ID, UM_TENANT_ID),
+                 FOREIGN KEY (UM_USER_ID, UM_TENANT_ID) REFERENCES UM_USER(UM_ID, UM_TENANT_ID),
+                 PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_SHARED_USER_ROLE(
+        UM_ROLE_ID INTEGER NOT NULL,
+        UM_USER_ID INTEGER NOT NULL,
+        UM_USER_TENANT_ID INTEGER NOT NULL,
+        UM_ROLE_TENANT_ID INTEGER NOT NULL,
+        UNIQUE(UM_USER_ID,UM_ROLE_ID,UM_USER_TENANT_ID, UM_ROLE_TENANT_ID),
+        FOREIGN KEY(UM_ROLE_ID,UM_ROLE_TENANT_ID) REFERENCES UM_ROLE(UM_ID,UM_TENANT_ID) ON DELETE CASCADE,
+        FOREIGN KEY(UM_USER_ID,UM_USER_TENANT_ID) REFERENCES UM_USER(UM_ID,UM_TENANT_ID) ON DELETE CASCADE
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_ACCOUNT_MAPPING(
+      UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+      UM_USER_NAME VARCHAR(255) NOT NULL,
+      UM_TENANT_ID INTEGER NOT NULL,
+      UM_USER_STORE_DOMAIN VARCHAR(100),
+      UM_ACC_LINK_ID INTEGER NOT NULL,
+      UNIQUE(UM_USER_NAME, UM_TENANT_ID, UM_USER_STORE_DOMAIN, UM_ACC_LINK_ID),
+      FOREIGN KEY (UM_TENANT_ID) REFERENCES UM_TENANT(UM_ID) ON DELETE CASCADE,
+      PRIMARY KEY (UM_ID)
+    )ENGINE INNODB;
+
+
+    CREATE TABLE UM_USER_ATTRIBUTE (
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_ATTR_NAME VARCHAR(255) NOT NULL,
+                UM_ATTR_VALUE VARCHAR(1024),
+                UM_PROFILE_ID VARCHAR(255),
+                UM_USER_ID INTEGER,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                FOREIGN KEY (UM_USER_ID, UM_TENANT_ID) REFERENCES UM_USER(UM_ID, UM_TENANT_ID),
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE INDEX UM_USER_ID_INDEX ON UM_USER_ATTRIBUTE(UM_USER_ID);
+
+    CREATE TABLE UM_DIALECT(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_DIALECT_URI VARCHAR(255) NOT NULL,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                UNIQUE(UM_DIALECT_URI, UM_TENANT_ID),
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_CLAIM(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_DIALECT_ID INTEGER NOT NULL,
+                UM_CLAIM_URI VARCHAR(255) NOT NULL,
+                UM_DISPLAY_TAG VARCHAR(255),
+                UM_DESCRIPTION VARCHAR(255),
+                UM_MAPPED_ATTRIBUTE_DOMAIN VARCHAR(255),
+                UM_MAPPED_ATTRIBUTE VARCHAR(255),
+                UM_REG_EX VARCHAR(255),
+                UM_SUPPORTED SMALLINT,
+                UM_REQUIRED SMALLINT,
+                UM_DISPLAY_ORDER INTEGER,
+          UM_CHECKED_ATTRIBUTE SMALLINT,
+                UM_READ_ONLY SMALLINT,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                UNIQUE(UM_DIALECT_ID, UM_CLAIM_URI, UM_TENANT_ID,UM_MAPPED_ATTRIBUTE_DOMAIN),
+                FOREIGN KEY(UM_DIALECT_ID, UM_TENANT_ID) REFERENCES UM_DIALECT(UM_ID, UM_TENANT_ID),
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+
+    CREATE TABLE UM_PROFILE_CONFIG(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_DIALECT_ID INTEGER NOT NULL,
+                UM_PROFILE_NAME VARCHAR(255),
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                FOREIGN KEY(UM_DIALECT_ID, UM_TENANT_ID) REFERENCES UM_DIALECT(UM_ID, UM_TENANT_ID),
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE IF NOT EXISTS UM_CLAIM_BEHAVIOR(
+        UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+        UM_PROFILE_ID INTEGER,
+        UM_CLAIM_ID INTEGER,
+        UM_BEHAVIOUR SMALLINT,
+        UM_TENANT_ID INTEGER DEFAULT 0,
+        FOREIGN KEY(UM_PROFILE_ID, UM_TENANT_ID) REFERENCES UM_PROFILE_CONFIG(UM_ID,UM_TENANT_ID),
+        FOREIGN KEY(UM_CLAIM_ID, UM_TENANT_ID) REFERENCES UM_CLAIM(UM_ID,UM_TENANT_ID),
+        PRIMARY KEY(UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_HYBRID_ROLE(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_ROLE_NAME VARCHAR(255),
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_HYBRID_USER_ROLE(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_USER_NAME VARCHAR(255),
+                UM_ROLE_ID INTEGER NOT NULL,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+          UM_DOMAIN_ID INTEGER,
+                UNIQUE (UM_USER_NAME, UM_ROLE_ID, UM_TENANT_ID, UM_DOMAIN_ID),
+                FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_HYBRID_ROLE(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+          FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE TABLE UM_SYSTEM_ROLE(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_ROLE_NAME VARCHAR(255),
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+    CREATE INDEX SYSTEM_ROLE_IND_BY_RN_TI ON UM_SYSTEM_ROLE(UM_ROLE_NAME, UM_TENANT_ID);
+
+    CREATE TABLE UM_SYSTEM_USER_ROLE(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                UM_USER_NAME VARCHAR(255),
+                UM_ROLE_ID INTEGER NOT NULL,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+                UNIQUE (UM_USER_NAME, UM_ROLE_ID, UM_TENANT_ID),
+                FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_SYSTEM_ROLE(UM_ID, UM_TENANT_ID),
+                PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
+
+    CREATE TABLE UM_HYBRID_REMEMBER_ME(
+                UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+          UM_USER_NAME VARCHAR(255) NOT NULL,
+          UM_COOKIE_VALUE VARCHAR(1024),
+          UM_CREATED_TIME TIMESTAMP,
+                UM_TENANT_ID INTEGER DEFAULT 0,
+          PRIMARY KEY (UM_ID, UM_TENANT_ID)
+    )ENGINE INNODB;
+
     CREATE TABLE IF NOT EXISTS IDN_BASE_TABLE (
                 PRODUCT_NAME VARCHAR(20),
                 PRIMARY KEY (PRODUCT_NAME)
@@ -1223,10 +930,10 @@ data:
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDN_OAUTH2_SCOPE_VALIDATORS (
-    	APP_ID INTEGER NOT NULL,
-    	SCOPE_VALIDATOR VARCHAR (128) NOT NULL,
-    	PRIMARY KEY (APP_ID,SCOPE_VALIDATOR),
-    	FOREIGN KEY (APP_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
+      APP_ID INTEGER NOT NULL,
+      SCOPE_VALIDATOR VARCHAR (128) NOT NULL,
+      PRIMARY KEY (APP_ID,SCOPE_VALIDATOR),
+      FOREIGN KEY (APP_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDN_OAUTH1A_REQUEST_TOKEN (
@@ -1480,22 +1187,22 @@ data:
     CREATE TABLE IF NOT EXISTS SP_APP (
             ID INTEGER NOT NULL AUTO_INCREMENT,
             TENANT_ID INTEGER NOT NULL,
-    	    	APP_NAME VARCHAR (255) NOT NULL ,
-    	    	USER_STORE VARCHAR (255) NOT NULL,
+            APP_NAME VARCHAR (255) NOT NULL ,
+            USER_STORE VARCHAR (255) NOT NULL,
             USERNAME VARCHAR (255) NOT NULL ,
             DESCRIPTION VARCHAR (1024),
-    	    	ROLE_CLAIM VARCHAR (512),
+            ROLE_CLAIM VARCHAR (512),
             AUTH_TYPE VARCHAR (255) NOT NULL,
-    	    	PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
-    	    	IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
-    	    	IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
-    	    	IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
+            PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
+            IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
+            IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
+            IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
             IS_USE_TENANT_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
             IS_USE_USER_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
             ENABLE_AUTHORIZATION CHAR(1) DEFAULT '0',
-    	    	SUBJECT_CLAIM_URI VARCHAR (512),
-    	    	IS_SAAS_APP CHAR(1) DEFAULT '0',
-    	    	IS_DUMB_MODE CHAR(1) DEFAULT '0',
+            SUBJECT_CLAIM_URI VARCHAR (512),
+            IS_SAAS_APP CHAR(1) DEFAULT '0',
+            IS_DUMB_MODE CHAR(1) DEFAULT '0',
             PRIMARY KEY (ID)
     )ENGINE INNODB;
 
@@ -1549,11 +1256,11 @@ data:
     ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE;
 
     CREATE TABLE IF NOT EXISTS SP_CLAIM_DIALECT (
-    	   	ID INTEGER NOT NULL AUTO_INCREMENT,
-    	   	TENANT_ID INTEGER NOT NULL,
-    	   	SP_DIALECT VARCHAR (512) NOT NULL,
-    	   	APP_ID INTEGER NOT NULL,
-    	   	PRIMARY KEY (ID));
+          ID INTEGER NOT NULL AUTO_INCREMENT,
+          TENANT_ID INTEGER NOT NULL,
+          SP_DIALECT VARCHAR (512) NOT NULL,
+          APP_ID INTEGER NOT NULL,
+          PRIMARY KEY (ID));
 
     ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE;
 
@@ -1564,7 +1271,7 @@ data:
                 SP_CLAIM VARCHAR (512) NOT NULL ,
                 APP_ID INTEGER NOT NULL,
                 IS_REQUESTED VARCHAR(128) DEFAULT '0',
-    	    IS_MANDATORY VARCHAR(128) DEFAULT '0',
+          IS_MANDATORY VARCHAR(128) DEFAULT '0',
                 DEFAULT_VALUE VARCHAR(255),
                 PRIMARY KEY (ID)
     )ENGINE INNODB;
@@ -1635,59 +1342,59 @@ data:
       CONSTRAINT IDN_AUTH_WAIT_STATUS_KEY UNIQUE (LONG_WAIT_KEY));
 
     CREATE TABLE IF NOT EXISTS IDP (
-    			ID INTEGER AUTO_INCREMENT,
-    			TENANT_ID INTEGER,
-    			NAME VARCHAR(254) NOT NULL,
-    			IS_ENABLED CHAR(1) NOT NULL DEFAULT '1',
-    			IS_PRIMARY CHAR(1) NOT NULL DEFAULT '0',
-    			HOME_REALM_ID VARCHAR(254),
-    			IMAGE MEDIUMBLOB,
-    			CERTIFICATE BLOB,
-    			ALIAS VARCHAR(254),
-    			INBOUND_PROV_ENABLED CHAR (1) NOT NULL DEFAULT '0',
-    			INBOUND_PROV_USER_STORE_ID VARCHAR(254),
-     			USER_CLAIM_URI VARCHAR(254),
-     			ROLE_CLAIM_URI VARCHAR(254),
-      			DESCRIPTION VARCHAR (1024),
-     			DEFAULT_AUTHENTICATOR_NAME VARCHAR(254),
-     			DEFAULT_PRO_CONNECTOR_NAME VARCHAR(254),
-     			PROVISIONING_ROLE VARCHAR(128),
-     			IS_FEDERATION_HUB CHAR(1) NOT NULL DEFAULT '0',
-     			IS_LOCAL_CLAIM_DIALECT CHAR(1) NOT NULL DEFAULT '0',
+          ID INTEGER AUTO_INCREMENT,
+          TENANT_ID INTEGER,
+          NAME VARCHAR(254) NOT NULL,
+          IS_ENABLED CHAR(1) NOT NULL DEFAULT '1',
+          IS_PRIMARY CHAR(1) NOT NULL DEFAULT '0',
+          HOME_REALM_ID VARCHAR(254),
+          IMAGE MEDIUMBLOB,
+          CERTIFICATE BLOB,
+          ALIAS VARCHAR(254),
+          INBOUND_PROV_ENABLED CHAR (1) NOT NULL DEFAULT '0',
+          INBOUND_PROV_USER_STORE_ID VARCHAR(254),
+          USER_CLAIM_URI VARCHAR(254),
+          ROLE_CLAIM_URI VARCHAR(254),
+            DESCRIPTION VARCHAR (1024),
+          DEFAULT_AUTHENTICATOR_NAME VARCHAR(254),
+          DEFAULT_PRO_CONNECTOR_NAME VARCHAR(254),
+          PROVISIONING_ROLE VARCHAR(128),
+          IS_FEDERATION_HUB CHAR(1) NOT NULL DEFAULT '0',
+          IS_LOCAL_CLAIM_DIALECT CHAR(1) NOT NULL DEFAULT '0',
                 DISPLAY_NAME VARCHAR(255),
-    			PRIMARY KEY (ID),
-    			UNIQUE (TENANT_ID, NAME)
+          PRIMARY KEY (ID),
+          UNIQUE (TENANT_ID, NAME)
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDP_ROLE (
-    			ID INTEGER AUTO_INCREMENT,
-    			IDP_ID INTEGER,
-    			TENANT_ID INTEGER,
-    			ROLE VARCHAR(254),
-    			PRIMARY KEY (ID),
-    			UNIQUE (IDP_ID, ROLE),
-    			FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
+          ID INTEGER AUTO_INCREMENT,
+          IDP_ID INTEGER,
+          TENANT_ID INTEGER,
+          ROLE VARCHAR(254),
+          PRIMARY KEY (ID),
+          UNIQUE (IDP_ID, ROLE),
+          FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDP_ROLE_MAPPING (
-    			ID INTEGER AUTO_INCREMENT,
-    			IDP_ROLE_ID INTEGER,
-    			TENANT_ID INTEGER,
-    			USER_STORE_ID VARCHAR (253),
-    			LOCAL_ROLE VARCHAR(253),
-    			PRIMARY KEY (ID),
-    			UNIQUE (IDP_ROLE_ID, TENANT_ID, USER_STORE_ID, LOCAL_ROLE),
-    			FOREIGN KEY (IDP_ROLE_ID) REFERENCES IDP_ROLE(ID) ON DELETE CASCADE
+          ID INTEGER AUTO_INCREMENT,
+          IDP_ROLE_ID INTEGER,
+          TENANT_ID INTEGER,
+          USER_STORE_ID VARCHAR (253),
+          LOCAL_ROLE VARCHAR(253),
+          PRIMARY KEY (ID),
+          UNIQUE (IDP_ROLE_ID, TENANT_ID, USER_STORE_ID, LOCAL_ROLE),
+          FOREIGN KEY (IDP_ROLE_ID) REFERENCES IDP_ROLE(ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDP_CLAIM (
-    			ID INTEGER AUTO_INCREMENT,
-    			IDP_ID INTEGER,
-    			TENANT_ID INTEGER,
-    			CLAIM VARCHAR(254),
-    			PRIMARY KEY (ID),
-    			UNIQUE (IDP_ID, CLAIM),
-    			FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
+          ID INTEGER AUTO_INCREMENT,
+          IDP_ID INTEGER,
+          TENANT_ID INTEGER,
+          CLAIM VARCHAR(254),
+          PRIMARY KEY (ID),
+          UNIQUE (IDP_ID, CLAIM),
+          FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
     CREATE TABLE IF NOT EXISTS IDP_CLAIM_MAPPING (
@@ -2074,6 +1781,131 @@ data:
                 FOREIGN KEY (EXTERNAL_CLAIM_ID) REFERENCES IDN_CLAIM(ID) ON DELETE CASCADE
     )ENGINE INNODB;
 
+    CREATE TABLE CM_PII_CATEGORY (
+      ID           INTEGER AUTO_INCREMENT,
+      NAME         VARCHAR(255) NOT NULL,
+      DESCRIPTION  VARCHAR(1023),
+      DISPLAY_NAME VARCHAR(255),
+      IS_SENSITIVE INTEGER      NOT NULL,
+      TENANT_ID    INTEGER DEFAULT '-1234',
+      UNIQUE KEY (NAME, TENANT_ID),
+      PRIMARY KEY (ID)
+    );
+
+    CREATE TABLE CM_RECEIPT (
+      CONSENT_RECEIPT_ID  VARCHAR(255) NOT NULL,
+      VERSION             VARCHAR(255) NOT NULL,
+      JURISDICTION        VARCHAR(255) NOT NULL,
+      CONSENT_TIMESTAMP   TIMESTAMP    NOT NULL,
+      COLLECTION_METHOD   VARCHAR(255) NOT NULL,
+      LANGUAGE            VARCHAR(255) NOT NULL,
+      PII_PRINCIPAL_ID    VARCHAR(255) NOT NULL,
+      PRINCIPAL_TENANT_ID INTEGER DEFAULT '-1234',
+      POLICY_URL          VARCHAR(255) NOT NULL,
+      STATE               VARCHAR(255) NOT NULL,
+      PII_CONTROLLER      VARCHAR(2048) NOT NULL,
+      PRIMARY KEY (CONSENT_RECEIPT_ID)
+    );
+
+    CREATE TABLE CM_PURPOSE (
+      ID            INTEGER AUTO_INCREMENT,
+      NAME          VARCHAR(255) NOT NULL,
+      DESCRIPTION   VARCHAR(1023),
+      PURPOSE_GROUP VARCHAR(255) NOT NULL,
+      GROUP_TYPE    VARCHAR(255) NOT NULL,
+      TENANT_ID     INTEGER DEFAULT '-1234',
+      UNIQUE KEY (NAME, TENANT_ID, PURPOSE_GROUP, GROUP_TYPE),
+      PRIMARY KEY (ID)
+    );
+
+    CREATE TABLE CM_PURPOSE_CATEGORY (
+      ID          INTEGER AUTO_INCREMENT,
+      NAME        VARCHAR(255) NOT NULL,
+      DESCRIPTION VARCHAR(1023),
+      TENANT_ID   INTEGER DEFAULT '-1234',
+      UNIQUE KEY (NAME, TENANT_ID),
+      PRIMARY KEY (ID)
+    );
+
+    CREATE TABLE CM_RECEIPT_SP_ASSOC (
+      ID                 INTEGER AUTO_INCREMENT,
+      CONSENT_RECEIPT_ID VARCHAR(255) NOT NULL,
+      SP_NAME            VARCHAR(255) NOT NULL,
+      SP_DISPLAY_NAME    VARCHAR(255),
+      SP_DESCRIPTION     VARCHAR(255),
+      SP_TENANT_ID       INTEGER DEFAULT '-1234',
+      UNIQUE KEY (CONSENT_RECEIPT_ID, SP_NAME, SP_TENANT_ID),
+      PRIMARY KEY (ID)
+    );
+
+    CREATE TABLE CM_SP_PURPOSE_ASSOC (
+      ID                     INTEGER AUTO_INCREMENT,
+      RECEIPT_SP_ASSOC       INTEGER      NOT NULL,
+      PURPOSE_ID             INTEGER      NOT NULL,
+      CONSENT_TYPE           VARCHAR(255) NOT NULL,
+      IS_PRIMARY_PURPOSE     INTEGER      NOT NULL,
+      TERMINATION            VARCHAR(255) NOT NULL,
+      THIRD_PARTY_DISCLOSURE INTEGER      NOT NULL,
+      THIRD_PARTY_NAME       VARCHAR(255),
+      UNIQUE KEY (RECEIPT_SP_ASSOC, PURPOSE_ID),
+      PRIMARY KEY (ID)
+    );
+
+    CREATE TABLE CM_SP_PURPOSE_PURPOSE_CAT_ASSC (
+      SP_PURPOSE_ASSOC_ID INTEGER NOT NULL,
+      PURPOSE_CATEGORY_ID INTEGER NOT NULL,
+      UNIQUE KEY (SP_PURPOSE_ASSOC_ID, PURPOSE_CATEGORY_ID)
+    );
+
+    CREATE TABLE CM_PURPOSE_PII_CAT_ASSOC (
+      PURPOSE_ID         INTEGER NOT NULL,
+      CM_PII_CATEGORY_ID INTEGER NOT NULL,
+      IS_MANDATORY       INTEGER NOT NULL,
+      UNIQUE KEY (PURPOSE_ID, CM_PII_CATEGORY_ID)
+    );
+
+    CREATE TABLE CM_SP_PURPOSE_PII_CAT_ASSOC (
+      SP_PURPOSE_ASSOC_ID INTEGER NOT NULL,
+      PII_CATEGORY_ID     INTEGER NOT NULL,
+      VALIDITY            VARCHAR(1023),
+      UNIQUE KEY (SP_PURPOSE_ASSOC_ID, PII_CATEGORY_ID)
+    );
+
+    CREATE TABLE CM_CONSENT_RECEIPT_PROPERTY (
+      CONSENT_RECEIPT_ID VARCHAR(255)  NOT NULL,
+      NAME               VARCHAR(255)  NOT NULL,
+      VALUE              VARCHAR(1023) NOT NULL,
+      UNIQUE KEY (CONSENT_RECEIPT_ID, NAME)
+    );
+
+    ALTER TABLE CM_RECEIPT_SP_ASSOC
+      ADD CONSTRAINT CM_RECEIPT_SP_ASSOC_fk0 FOREIGN KEY (CONSENT_RECEIPT_ID) REFERENCES CM_RECEIPT (CONSENT_RECEIPT_ID);
+
+    ALTER TABLE CM_SP_PURPOSE_ASSOC
+      ADD CONSTRAINT CM_SP_PURPOSE_ASSOC_fk0 FOREIGN KEY (RECEIPT_SP_ASSOC) REFERENCES CM_RECEIPT_SP_ASSOC (ID);
+
+    ALTER TABLE CM_SP_PURPOSE_ASSOC
+      ADD CONSTRAINT CM_SP_PURPOSE_ASSOC_fk1 FOREIGN KEY (PURPOSE_ID) REFERENCES CM_PURPOSE (ID);
+
+    ALTER TABLE CM_SP_PURPOSE_PURPOSE_CAT_ASSC
+      ADD CONSTRAINT CM_SP_P_P_CAT_ASSOC_fk0 FOREIGN KEY (SP_PURPOSE_ASSOC_ID) REFERENCES CM_SP_PURPOSE_ASSOC (ID);
+
+    ALTER TABLE CM_SP_PURPOSE_PURPOSE_CAT_ASSC
+      ADD CONSTRAINT CM_SP_P_P_CAT_ASSOC_fk1 FOREIGN KEY (PURPOSE_CATEGORY_ID) REFERENCES CM_PURPOSE_CATEGORY (ID);
+
+    ALTER TABLE CM_SP_PURPOSE_PII_CAT_ASSOC
+      ADD CONSTRAINT CM_SP_P_PII_CAT_ASSOC_fk0 FOREIGN KEY (SP_PURPOSE_ASSOC_ID) REFERENCES CM_SP_PURPOSE_ASSOC (ID);
+
+    ALTER TABLE CM_SP_PURPOSE_PII_CAT_ASSOC
+      ADD CONSTRAINT CM_SP_P_PII_CAT_ASSOC_fk1 FOREIGN KEY (PII_CATEGORY_ID) REFERENCES CM_PII_CATEGORY (ID);
+
+    ALTER TABLE CM_CONSENT_RECEIPT_PROPERTY
+      ADD CONSTRAINT CM_CONSENT_RECEIPT_PRT_fk0 FOREIGN KEY (CONSENT_RECEIPT_ID) REFERENCES CM_RECEIPT (CONSENT_RECEIPT_ID);
+
+    INSERT INTO CM_PURPOSE (NAME, DESCRIPTION, PURPOSE_GROUP, GROUP_TYPE, TENANT_ID) VALUES ('DEFAULT', 'For core functionalities of the product', 'DEFAULT', 'SP', '-1234');
+
+    INSERT INTO CM_PURPOSE_CATEGORY (NAME, DESCRIPTION, TENANT_ID) VALUES ('DEFAULT','For core functionalities of the product', '-1234');
+
 
 
     -- --------------------------- INDEX CREATION -----------------------------
@@ -2140,17 +1972,190 @@ data:
 
     -- IDN_OIDC_PROPERTY --
     CREATE INDEX IDX_IOP_TID_CK ON IDN_OIDC_PROPERTY(TENANT_ID,CONSUMER_KEY);
+
+    USE WSO2IS_BPS_DB;
+
+    --
+    -- Licensed to the Apache Software Foundation (ASF) under one
+    -- or more contributor license agreements.  See the NOTICE file
+    -- distributed with this work for additional information
+    -- regarding copyright ownership.  The ASF licenses this file
+    -- to you under the Apache License, Version 2.0 (the
+    -- "License"); you may not use this file except in compliance
+    -- with the License.  You may obtain a copy of the License at
+    --
+    --    http://www.apache.org/licenses/LICENSE-2.0
+    --
+    -- Unless required by applicable law or agreed to in writing,
+    -- software distributed under the License is distributed on an
+    -- "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+    -- KIND, either express or implied.  See the License for the
+    -- specific language governing permissions and limitations
+    -- under the License.
+    --
+
+    --
+    -- BPEL Related SQL Scripts
+    --
+
+
+    create table ODE_SCHEMA_VERSION (VERSION integer);
+    insert into ODE_SCHEMA_VERSION values (6);
+    -- Apache ODE - SimpleScheduler Database Schema
+    --
+    -- MySQL scripts by Maciej Szefler.
+    --
+    --
+    DROP TABLE IF EXISTS ODE_JOB;
+
+    CREATE TABLE ODE_JOB (
+      jobid CHAR(64)  NOT NULL DEFAULT '',
+      ts BIGINT  NOT NULL DEFAULT 0,
+      nodeid char(64)  NULL,
+      scheduled int  NOT NULL DEFAULT 0,
+      transacted int  NOT NULL DEFAULT 0,
+
+      instanceId BIGINT,
+      mexId varchar(255),
+      processId varchar(255),
+      type varchar(255),
+      channel varchar(255),
+      correlatorId varchar(255),
+      correlationKeySet varchar(255),
+      retryCount int,
+      inMem int,
+      detailsExt blob(4096),
+
+      PRIMARY KEY(jobid),
+      INDEX IDX_ODE_JOB_TS(ts),
+      INDEX IDX_ODE_JOB_NODEID(nodeid)
+    )
+    ENGINE=innodb;
+
+    COMMIT;
+
+    CREATE TABLE TASK_ATTACHMENT (ATTACHMENT_ID BIGINT NOT NULL, MESSAGE_EXCHANGE_ID VARCHAR(255), PRIMARY KEY (ATTACHMENT_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_ACTIVITY_RECOVERY (ID BIGINT NOT NULL, ACTIONS VARCHAR(255), ACTIVITY_ID BIGINT, CHANNEL VARCHAR(255), DATE_TIME DATETIME, DETAILS TEXT, INSTANCE_ID BIGINT, REASON VARCHAR(255), RETRIES INTEGER, PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE ODE_CORRELATION_SET (CORRELATION_SET_ID BIGINT NOT NULL, CORRELATION_KEY VARCHAR(255), NAME VARCHAR(255), SCOPE_ID BIGINT, PRIMARY KEY (CORRELATION_SET_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_CORRELATOR (CORRELATOR_ID BIGINT NOT NULL, CORRELATOR_KEY VARCHAR(255), PROC_ID BIGINT, PRIMARY KEY (CORRELATOR_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_CORSET_PROP (ID BIGINT NOT NULL, CORRSET_ID BIGINT, PROP_KEY VARCHAR(255), PROP_VALUE VARCHAR(255), PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE ODE_EVENT (EVENT_ID BIGINT NOT NULL, DETAIL VARCHAR(255), DATA BLOB, SCOPE_ID BIGINT, TSTAMP DATETIME, TYPE VARCHAR(255), INSTANCE_ID BIGINT, PROCESS_ID BIGINT, PRIMARY KEY (EVENT_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_FAULT (FAULT_ID BIGINT NOT NULL, ACTIVITY_ID INTEGER, DATA TEXT, MESSAGE VARCHAR(4000), LINE_NUMBER INTEGER, NAME VARCHAR(255), PRIMARY KEY (FAULT_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_MESSAGE (MESSAGE_ID BIGINT NOT NULL, DATA TEXT, HEADER TEXT, TYPE VARCHAR(255), MESSAGE_EXCHANGE_ID VARCHAR(255), PRIMARY KEY (MESSAGE_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_MESSAGE_EXCHANGE (MESSAGE_EXCHANGE_ID VARCHAR(255) NOT NULL, CALLEE VARCHAR(255), CHANNEL VARCHAR(255), CORRELATION_ID VARCHAR(255), CORRELATION_KEYS VARCHAR(255), CORRELATION_STATUS VARCHAR(255), CREATE_TIME DATETIME, DIRECTION INTEGER, EPR TEXT, FAULT VARCHAR(255), FAULT_EXPLANATION VARCHAR(255), OPERATION VARCHAR(255), PARTNER_LINK_MODEL_ID INTEGER, PATTERN VARCHAR(255), PIPED_ID VARCHAR(255), PORT_TYPE VARCHAR(255), PROPAGATE_TRANS BIT, STATUS VARCHAR(255), SUBSCRIBER_COUNT INTEGER, CORR_ID BIGINT, PARTNER_LINK_ID BIGINT, PROCESS_ID BIGINT, PROCESS_INSTANCE_ID BIGINT, REQUEST_MESSAGE_ID BIGINT, RESPONSE_MESSAGE_ID BIGINT, PRIMARY KEY (MESSAGE_EXCHANGE_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_MESSAGE_ROUTE (MESSAGE_ROUTE_ID BIGINT NOT NULL, CORRELATION_KEY VARCHAR(255), GROUP_ID VARCHAR(255), ROUTE_INDEX INTEGER, PROCESS_INSTANCE_ID INTEGER, ROUTE_POLICY VARCHAR(16), CORR_ID BIGINT, PRIMARY KEY (MESSAGE_ROUTE_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_MEX_PROP (ID BIGINT NOT NULL, MEX_ID VARCHAR(255), PROP_KEY VARCHAR(255), PROP_VALUE VARCHAR(2000), PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE ODE_PARTNER_LINK (PARTNER_LINK_ID BIGINT NOT NULL, MY_EPR TEXT, MY_ROLE_NAME VARCHAR(255), MY_ROLE_SERVICE_NAME VARCHAR(255), MY_SESSION_ID VARCHAR(255), PARTNER_EPR TEXT, PARTNER_LINK_MODEL_ID INTEGER, PARTNER_LINK_NAME VARCHAR(255), PARTNER_ROLE_NAME VARCHAR(255), PARTNER_SESSION_ID VARCHAR(255), SCOPE_ID BIGINT, PRIMARY KEY (PARTNER_LINK_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_PROCESS (ID BIGINT NOT NULL, GUID VARCHAR(255), PROCESS_ID VARCHAR(255), PROCESS_TYPE VARCHAR(255), VERSION BIGINT, PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE ODE_PROCESS_INSTANCE (ID BIGINT NOT NULL, DATE_CREATED DATETIME, EXECUTION_STATE BLOB, FAULT_ID BIGINT, LAST_ACTIVE_TIME DATETIME, LAST_RECOVERY_DATE DATETIME, PREVIOUS_STATE SMALLINT, SEQUENCE BIGINT, INSTANCE_STATE SMALLINT, INSTANTIATING_CORRELATOR_ID BIGINT, PROCESS_ID BIGINT, ROOT_SCOPE_ID BIGINT, PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE ODE_SCOPE (SCOPE_ID BIGINT NOT NULL, MODEL_ID INTEGER, SCOPE_NAME VARCHAR(255), SCOPE_STATE VARCHAR(255), PROCESS_INSTANCE_ID BIGINT, PARENT_SCOPE_ID BIGINT, PRIMARY KEY (SCOPE_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_XML_DATA (XML_DATA_ID BIGINT NOT NULL, DATA TEXT, IS_SIMPLE_TYPE BIT, NAME VARCHAR(255), SCOPE_ID BIGINT, PRIMARY KEY (XML_DATA_ID)) ENGINE=innodb;
+    CREATE TABLE ODE_XML_DATA_PROP (ID BIGINT NOT NULL, XML_DATA_ID BIGINT, PROP_KEY VARCHAR(255), PROP_VALUE VARCHAR(255), PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE OPENJPA_SEQUENCE_TABLE (ID TINYINT NOT NULL, SEQUENCE_VALUE BIGINT, PRIMARY KEY (ID)) ENGINE=innodb;
+    CREATE TABLE STORE_DU (NAME VARCHAR(255) NOT NULL, DEPLOYDT DATETIME, DEPLOYER VARCHAR(255), DIR VARCHAR(255), PRIMARY KEY (NAME)) ENGINE=innodb;
+    CREATE TABLE STORE_PROCESS (PID VARCHAR(255) NOT NULL, STATE VARCHAR(255), TYPE VARCHAR(255), VERSION BIGINT, DU VARCHAR(255), PRIMARY KEY (PID)) ENGINE=innodb;
+    CREATE TABLE STORE_PROCESS_PROP (id BIGINT NOT NULL, PROP_KEY VARCHAR(255), PROP_VAL VARCHAR(255), PRIMARY KEY (id)) ENGINE=innodb;
+    CREATE TABLE STORE_PROC_TO_PROP (PROCESSCONFDAOIMPL_PID VARCHAR(255), ELEMENT_ID BIGINT) ENGINE=innodb;
+    CREATE TABLE STORE_VERSIONS (id BIGINT NOT NULL, VERSION BIGINT, PRIMARY KEY (id)) ENGINE=innodb;
+    CREATE INDEX I_D_TASK_ATTACMENT ON TASK_ATTACHMENT (MESSAGE_EXCHANGE_ID);
+    CREATE INDEX I_D_CTVRY_INSTANCE ON ODE_ACTIVITY_RECOVERY (INSTANCE_ID);
+    CREATE INDEX I_D_CR_ST_SCOPE ON ODE_CORRELATION_SET (SCOPE_ID);
+    CREATE INDEX I_D_CRLTR_PROCESS ON ODE_CORRELATOR (PROC_ID);
+    CREATE INDEX I_D_CRPRP_CORRSET ON ODE_CORSET_PROP (CORRSET_ID);
+    CREATE INDEX I_OD_VENT_INSTANCE ON ODE_EVENT (INSTANCE_ID);
+    CREATE INDEX I_OD_VENT_PROCESS ON ODE_EVENT (PROCESS_ID);
+    CREATE INDEX I_OD_MSSG_MESSAGEEXCHANGE ON ODE_MESSAGE (MESSAGE_EXCHANGE_ID);
+    CREATE INDEX I_D_MSHNG_CORRELATOR ON ODE_MESSAGE_EXCHANGE (CORR_ID);
+    CREATE INDEX I_D_MSHNG_PARTNERLINK ON ODE_MESSAGE_EXCHANGE (PARTNER_LINK_ID);
+    CREATE INDEX I_D_MSHNG_PROCESS ON ODE_MESSAGE_EXCHANGE (PROCESS_ID);
+    CREATE INDEX I_D_MSHNG_PROCESSINST ON ODE_MESSAGE_EXCHANGE (PROCESS_INSTANCE_ID);
+    CREATE INDEX I_D_MSHNG_REQUEST ON ODE_MESSAGE_EXCHANGE (REQUEST_MESSAGE_ID);
+    CREATE INDEX I_D_MSHNG_RESPONSE ON ODE_MESSAGE_EXCHANGE (RESPONSE_MESSAGE_ID);
+    CREATE INDEX I_D_MS_RT_CORRELATOR ON ODE_MESSAGE_ROUTE (CORR_ID);
+    CREATE INDEX I_D_MS_RT_PROCESSINST ON ODE_MESSAGE_ROUTE (PROCESS_INSTANCE_ID);
+    CREATE INDEX I_D_MXPRP_MEX ON ODE_MEX_PROP (MEX_ID);
+    CREATE INDEX I_D_PRLNK_SCOPE ON ODE_PARTNER_LINK (SCOPE_ID);
+    CREATE INDEX I_D_PRTNC_FAULT ON ODE_PROCESS_INSTANCE (FAULT_ID);
+    CREATE INDEX I_D_PRTNC_INSTANTIATINGCORRELATOR ON ODE_PROCESS_INSTANCE (INSTANTIATING_CORRELATOR_ID);
+    CREATE INDEX I_D_PRTNC_PROCESS ON ODE_PROCESS_INSTANCE (PROCESS_ID);
+    CREATE INDEX I_D_PRTNC_ROOTSCOPE ON ODE_PROCESS_INSTANCE (ROOT_SCOPE_ID);
+    CREATE INDEX I_OD_SCOP_PARENTSCOPE ON ODE_SCOPE (PARENT_SCOPE_ID);
+    CREATE INDEX I_OD_SCOP_PROCESSINSTANCE ON ODE_SCOPE (PROCESS_INSTANCE_ID);
+    CREATE INDEX I_D_XM_DT_SCOPE ON ODE_XML_DATA (SCOPE_ID);
+    CREATE INDEX I_D_XMPRP_XMLDATA ON ODE_XML_DATA_PROP (XML_DATA_ID);
+    CREATE INDEX I_STR_CSS_DU ON STORE_PROCESS (DU);
+    CREATE INDEX I_STR_PRP_ELEMENT ON STORE_PROC_TO_PROP (ELEMENT_ID);
+    CREATE INDEX I_STR_PRP_PROCESSCONFDAOIMPL_PID ON STORE_PROC_TO_PROP (PROCESSCONFDAOIMPL_PID);
+
+
+
+    --
+    -- Human Task Related SQL Scripts
+    --
+
+
+    CREATE TABLE HT_DEADLINE (id BIGINT NOT NULL, DEADLINE_DATE DATETIME NOT NULL, DEADLINE_NAME VARCHAR(255) NOT NULL, STATUS_TOBE_ACHIEVED VARCHAR(255) NOT NULL, TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_DEPLOYMENT_UNIT (id BIGINT NOT NULL, CHECKSUM VARCHAR(255) NOT NULL, DEPLOYED_ON DATETIME, DEPLOY_DIR VARCHAR(255) NOT NULL, NAME VARCHAR(255) NOT NULL, PACKAGE_NAME VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, TENANT_ID BIGINT NOT NULL, VERSION BIGINT NOT NULL, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_EVENT (id BIGINT NOT NULL, EVENT_DETAILS VARCHAR(255), NEW_STATE VARCHAR(255), OLD_STATE VARCHAR(255), EVENT_TIMESTAMP DATETIME NOT NULL, EVENT_TYPE VARCHAR(255) NOT NULL, EVENT_USER VARCHAR(255) NOT NULL, TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_GENERIC_HUMAN_ROLE (GHR_ID BIGINT NOT NULL, GHR_TYPE VARCHAR(255), TASK_ID BIGINT, PRIMARY KEY (GHR_ID)) ENGINE = innodb;
+    CREATE TABLE HT_HUMANROLE_ORGENTITY (HUMANROLE_ID BIGINT, ORGENTITY_ID BIGINT) ENGINE = innodb;
+    CREATE TABLE HT_JOB (id BIGINT NOT NULL, JOB_DETAILS VARCHAR(4000), JOB_NAME VARCHAR(255), NODEID VARCHAR(255), SCHEDULED VARCHAR(1) NOT NULL, TASKID BIGINT NOT NULL, JOB_TIME BIGINT NOT NULL, TRANSACTED VARCHAR(1) NOT NULL, JOB_TYPE VARCHAR(255) NOT NULL, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_MESSAGE (MESSAGE_ID BIGINT NOT NULL, MESSAGE_DATA LONGTEXT, MESSAGE_HEADER LONGTEXT, MESSAGE_TYPE VARCHAR(255), MESSAGE_NAME VARCHAR(512), TASK_ID BIGINT, PRIMARY KEY (MESSAGE_ID)) ENGINE = innodb;
+    CREATE TABLE HT_ORG_ENTITY (ORG_ENTITY_ID BIGINT NOT NULL, ORG_ENTITY_NAME VARCHAR(255), ORG_ENTITY_TYPE VARCHAR(255), PRIMARY KEY (ORG_ENTITY_ID)) ENGINE = innodb;
+    CREATE TABLE HT_PRESENTATION_ELEMENT (id BIGINT NOT NULL, PE_CONTENT VARCHAR(2000), XML_LANG VARCHAR(255), PE_TYPE VARCHAR(31), CONTENT_TYPE VARCHAR(255), TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_PRESENTATION_PARAM (id BIGINT NOT NULL, PARAM_NAME VARCHAR(255), PARAM_TYPE VARCHAR(255), PARAM_VALUE VARCHAR(2000), TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_TASK (id BIGINT NOT NULL, ACTIVATION_TIME DATETIME, COMPLETE_BY_TIME DATETIME, CREATED_ON DATETIME, ESCALATED VARCHAR(1), EXPIRATION_TIME DATETIME, TASK_NAME VARCHAR(255) NOT NULL, PACKAGE_NAME VARCHAR(255) NOT NULL, PRIORITY INTEGER NOT NULL, SKIPABLE VARCHAR(1), START_BY_TIME DATETIME, STATUS VARCHAR(255) NOT NULL, STATUS_BEFORE_SUSPENSION VARCHAR(255), TASK_DEF_NAME VARCHAR(255) NOT NULL, TASK_VERSION BIGINT NOT NULL, TENANT_ID INTEGER NOT NULL, TASK_TYPE VARCHAR(255) NOT NULL, UPDATED_ON DATETIME, FAILURE_MESSAGE BIGINT, INPUT_MESSAGE BIGINT, OUTPUT_MESSAGE BIGINT, PARENTTASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_TASK_ATTACHMENT (id BIGINT NOT NULL, ACCESS_TYPE VARCHAR(255), ATTACHED_AT DATETIME, CONTENT_TYPE VARCHAR(255), ATTACHMENT_NAME VARCHAR(255), ATTACHMENT_VALUE VARCHAR(255), TASK_ID BIGINT, ATTACHED_BY BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_TASK_COMMENT (id BIGINT NOT NULL, COMMENT_TEXT VARCHAR(4000), COMMENTED_BY VARCHAR(100), COMMENTED_ON DATETIME, MODIFIED_BY VARCHAR(100), MODIFIED_ON DATETIME, TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE TABLE HT_VERSIONS (id BIGINT NOT NULL, TASK_VERSION BIGINT NOT NULL, PRIMARY KEY (id)) ENGINE = innodb;
+    CREATE INDEX I_HT_DDLN_TASK ON HT_DEADLINE (TASK_ID);
+    CREATE INDEX I_HT_VENT_TASK ON HT_EVENT (TASK_ID);
+    CREATE INDEX I_HT_G_RL_TASK ON HT_GENERIC_HUMAN_ROLE (TASK_ID);
+    CREATE INDEX I_HT_HTTY_ELEMENT ON HT_HUMANROLE_ORGENTITY (ORGENTITY_ID);
+    CREATE INDEX I_HT_HTTY_HUMANROLE_ID ON HT_HUMANROLE_ORGENTITY (HUMANROLE_ID);
+    CREATE INDEX I_HT_MSSG_TASK ON HT_MESSAGE (TASK_ID);
+    CREATE INDEX I_HT_PMNT_DTYPE ON HT_PRESENTATION_ELEMENT (PE_TYPE);
+    CREATE INDEX I_HT_PMNT_TASK ON HT_PRESENTATION_ELEMENT (TASK_ID);
+    CREATE INDEX I_HT_PPRM_TASK ON HT_PRESENTATION_PARAM (TASK_ID);
+    CREATE INDEX I_HT_TASK_FAILUREMESSAGE ON HT_TASK (FAILURE_MESSAGE);
+    CREATE INDEX I_HT_TASK_INPUTMESSAGE ON HT_TASK (INPUT_MESSAGE);
+    CREATE INDEX I_HT_TASK_OUTPUTMESSAGE ON HT_TASK (OUTPUT_MESSAGE);
+    CREATE INDEX I_HT_TASK_PARENTTASK ON HT_TASK (PARENTTASK_ID);
+    CREATE INDEX I_HT_TMNT_ATTACHEDBY ON HT_TASK_ATTACHMENT (ATTACHED_BY);
+    CREATE INDEX I_HT_TMNT_TASK ON HT_TASK_ATTACHMENT (TASK_ID);
+    CREATE INDEX I_HT_TMNT_TASK1 ON HT_TASK_COMMENT (TASK_ID);
+
+    --
+    -- Attachment Management Related SQL Scripts
+    --
+    CREATE TABLE ATTACHMENT (
+      id BIGINT NOT NULL AUTO_INCREMENT,
+      CREATED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      ATTACHMENT_NAME VARCHAR(255) NOT NULL,
+      CREATED_BY VARCHAR(255) NOT NULL,
+      CONTENT_TYPE VARCHAR(255) NOT NULL,
+      ATTACHMENT_URL VARCHAR(2048) NOT NULL,
+      ATTACHMENT_CONTENT BLOB,
+      PRIMARY KEY (id));
+
+    -- CREATE INDEX I_ATTACHMENT_URL ON ATTACHMENT (ATTACHMENT_URL);
+
+
+    --
+    -- B4P Related SQL Scripts
+    --
+    CREATE TABLE HT_COORDINATION_DATA (MESSAGE_ID VARCHAR(255) NOT NULL, PROCESS_INSTANCE_ID VARCHAR(255), PROTOCOL_HANDlER_URL VARCHAR(255) NOT NULL, TASK_ID VARCHAR(255), PRIMARY KEY (MESSAGE_ID)) ENGINE = innodb;
 kind: ConfigMap
 metadata:
   name: mysql-dbscripts
-  namespace: "$ns.k8s&wso2.is"
+  namespace: wso2
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: wso2is-rdbms-service
-  namespace: "$ns.k8s&wso2.is"
+  name: wso2is-rdbms-service-mysql
+  namespace: wso2
 spec:
   type: ClusterIP
   selector:
@@ -2162,34 +2167,11 @@ spec:
       protocol: TCP
 ---
 
-apiVersion: v1
-kind: Service
-metadata:
-  name: wso2is-is-service
-  namespace: "$ns.k8s&wso2.is"
-  labels:
-    deployment: wso2is-is
-spec:
-  selector:
-    deployment: wso2is-is
-  type: NodePort
-  ports:
-    - name: servlet-http
-      port: 9763
-      targetPort: 9763
-      protocol: TCP
-    - name: servlet-https
-      port: 9443
-      targetPort: 9443
-      protocol: TCP
-      nodePort: "$nodeport.k8s.&.1.wso2is"
----
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: wso2is-mysql-deployment
-  namespace: "$ns.k8s&wso2.is"
+  namespace: wso2
 spec:
   replicas: 1
   selector:
@@ -2245,11 +2227,38 @@ spec:
       serviceAccountName: "wso2svc-account"
 ---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: wso2is-service
+  namespace : wso2
+  labels:
+    deployment: wso2is
+    app: wso2is
+    monitoring: jmx
+    pod: wso2is
+spec:
+  selector:
+    deployment: wso2is
+    app: wso2is
+  type: NodePort
+  ports:
+  - name: servlet-http
+    port: 9763
+    targetPort: 9763
+    protocol: TCP
+  - name: servlet-https
+    port: 9443
+    targetPort: 9443
+    protocol: TCP
+    nodePort: "$nodeport.k8s.&.1.wso2is"
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wso2is-is-deployment
-  namespace: "$ns.k8s&wso2.is"
+  name: wso2is-deployment
+  namespace : wso2
 spec:
   replicas: 1
   minReadySeconds: 30
@@ -2260,68 +2269,84 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      deployment: wso2is-is
+      deployment: wso2is
+      app: wso2is
+      monitoring: jmx
       pod: wso2is
   template:
     metadata:
       labels:
-        deployment: wso2is-is
+        deployment: wso2is
+        app: wso2is
+        monitoring: jmx
         pod: wso2is
     spec:
-      hostAliases:
-        - ip: "127.0.0.1"
-          hostnames:
-            - "wso2is"
-      containers:
-        - name: wso2is-is
-          image: "$image.pull.@.wso2"/wso2is:5.8.0
-          livenessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          readinessProbe:
-            exec:
-              command:
-                - /bin/sh
-                - -c
-                - nc -z localhost 9443
-            initialDelaySeconds: 60
-            periodSeconds: 10
-          lifecycle:
-            preStop:
-              exec:
-                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
-          imagePullPolicy: Always
-          securityContext:
-            runAsUser: 802
-          ports:
-            - containerPort: 9763
-              protocol: TCP
-            - containerPort: 9443
-              protocol: TCP
-          volumeMounts:
-            - name: identity-server-conf
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-            - name: identity-server-conf-datasources
-              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
       initContainers:
-        - name: init-is
-          image: busybox
-          command: ['sh', '-c', 'echo -e "checking for the availability of MySQL"; while ! nc -z wso2is-rdbms-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL started";']
+      - name: init-is-db
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      containers:
+      - name: wso2is
+        image: "$image.pull.@.wso2"/wso2is:5.8.0
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - nc -z localhost 9443
+          initialDelaySeconds: 250
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - nc -z localhost 9443
+          initialDelaySeconds: 250
+          periodSeconds: 10
+        imagePullPolicy: Always
+        command: ["/home/wso2carbon/entrypoint.sh"]
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+        securityContext:
+          runAsUser: 802
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        ports:
+        - containerPort: 9763
+          protocol: TCP
+        - containerPort: 9443
+          protocol: TCP
+        volumeMounts:
+        - name: identity-server-conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+          subPath: deployment.toml
+        - name: identity-server-conf-entrypoint
+          mountPath: /home/wso2carbon/entrypoint.sh
+          subPath: docker-entrypoint.sh
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
-        - name: wso2creds
+        - name: wso2is-deployment-creds
       volumes:
-        - name: identity-server-conf
-          configMap:
-            name: identity-server-conf
-        - name: identity-server-conf-datasources
-          configMap:
-            name: identity-server-conf-datasources
+      - name: identity-server-conf
+        configMap:
+          name: identity-server-conf
+      - name: identity-server-conf-entrypoint
+        configMap:
+          name: identity-server-conf-entrypoint
+          defaultMode: 0407
 ---
 EOF
 }
@@ -2333,7 +2358,7 @@ function usage(){
 }
 function undeploy(){
   echo "Undeploying WSO2 Identity Server ..."
-  kubectl delete ns $namespace
+  kubectl delete ns wso2
   echo "Done."
   exit 0
 }
@@ -2438,18 +2463,7 @@ function get_node_ip(){
   fi
   set -- $NODE_IP; NODE_IP=$1
 }
-function get_nodePorts(){
-  LOWER=30000; UPPER=32767;
-  if [ "$randomPort" == "True" ]; then
-    NP_1=0;
-    while [ $NP_1 -lt $LOWER ]
-    do
-      NP_1=$RANDOM
-      let "NP_1 %= $UPPER"
-    done
-  fi
-  echo -e "[INFO] nodePorts  are set to $NP_1"
-}
+
 function progress_bar(){
   dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.pod=="wso2is")].status.conditions[?(@.type=="Available")].status}')
   pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.pod=="wso2is")].status.conditions[*].status}')
@@ -2562,11 +2576,7 @@ function deploy(){
     #displaying wso2 product name
     product_name
 
-    if test -f $TG_PROP; then
-        source $TG_PROP
-    else
-        get_creds  # get wso2 subscription parameters
-    fi
+    get_creds  # get wso2 subscription parameters
 
     # getting cluster node ip
     get_node_ip
@@ -2585,36 +2595,30 @@ function deploy(){
       str_sec=$str_sec$i
     done
 
-    # if TG randomPort else default
-    get_nodePorts
-
     #create kubernetes object yaml
     create_yaml
 
     # replace placeholders
-    sed -i.bak 's/"$ns.k8s&wso2.is"/'$namespace'/g' $k8s_obj_file
     sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
     sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
 
     rm deployment.yaml.bak
 
-    if ! test -f $TG_PROP; then
-        echoBold "\nDeploying WSO2 Identity Server...\n"
+    echoBold "\nDeploying WSO2 Identity Server...\n"
 
-        # create kubernetes deployment
-        kubectl create -f ${k8s_obj_file}
+    # create kubernetes deployment
+    kubectl create -f ${k8s_obj_file}
 
-        # waiting until deployment is ready
-        progress_bar
+    # waiting until deployment is ready
+    progress_bar
 
-        echoBold "Successfully deployed WSO2 Identity Server.\n\n"
+    echoBold "Successfully deployed WSO2 Identity Server.\n\n"
 
-        echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
-        echoBold "\tusername: admin\n"
-        echoBold "\tpassword: admin\n"
-        echoBold "2. Follow \"https://docs.wso2.com/display/IS570\" to start using WSO2 Identity Server.\n\n "
-    fi
+    echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
+    echoBold "\tusername: admin\n"
+    echoBold "\tpassword: admin\n"
+    echoBold "2. Follow \"https://docs.wso2.com/display/IS590\" to start using WSO2 Identity Server.\n\n "
 }
 arg=$1
 if [[ -z $arg ]]
