@@ -1,3 +1,34 @@
+#!/bin/bash
+
+#-------------------------------------------------------------------------------
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#--------------------------------------------------------------------------------
+
+set -e
+# bash variables
+k8s_obj_file="deployment.yaml"; NODE_IP=''; str_sec=""
+IMG_DEST="wso2"
+
+# wso2 subscription variables
+WUMUsername=''; WUMPassword=''
+
+: ${NP_1:=30443};
+
+function create_yaml(){
+
+cat > $k8s_obj_file << "EOF"
 
 apiVersion: v1
 kind: Namespace
@@ -7,22 +38,14 @@ spec:
   finalizers:
     - kubernetes
 ---
+EOF
+cat >> $k8s_obj_file << "EOF"
 
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: wso2svc-account
   namespace : wso2
----
-
-apiVersion: v1
-data:
-    .dockerconfigjson: eyJhdXRocyI6eyJkb2NrZXIud3NvMi5jb20iOiB7InVzZXJuYW1lIjoibmlzaGlrYUB3c28yLmNvbSIsInBhc3N3b3JkIjoiTmlzaGlAd3NvMiM5NCIsImVtYWlsIjoibmlzaGlrYUB3c28yLmNvbSIsImF1dGgiOiJibWx6YUdscllVQjNjMjh5TG1OdmJUcE9hWE5vYVVCM2MyOHlJemswIn19fQ==
-kind: Secret
-metadata:
-  name: wso2is-deployment-creds
-  namespace: wso2
-type: kubernetes.io/dockerconfigjson
 ---
 
 apiVersion: v1
@@ -2218,7 +2241,7 @@ spec:
     port: 9443
     targetPort: 9443
     protocol: TCP
-    nodePort: 30443
+    nodePort: "$nodeport.k8s.&.1.wso2is"
 ---
 
 apiVersion: apps/v1
@@ -2254,7 +2277,7 @@ spec:
         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
       - name: wso2is
-        image: docker.wso2.com/wso2is:5.8.0
+        image: "$image.pull.@.wso2"/wso2is:5.8.0
         livenessProbe:
           exec:
             command:
@@ -2315,3 +2338,261 @@ spec:
           name: identity-server-conf-entrypoint
           defaultMode: 0407
 ---
+EOF
+}
+function usage(){
+  echo "Usage: "
+  echo -e "-d, --deploy     Deploy WSO2 Identity Server"
+  echo -e "-u, --undeploy   Undeploy WSO2 Identity Server"
+  echo -e "-h, --help       Display usage instrusctions"
+}
+function undeploy(){
+  echo "Undeploying WSO2 Identity Server ..."
+  kubectl delete ns wso2
+  echo "Done."
+  exit 0
+}
+function echoBold () {
+    echo -en  $'\e[1m'"${1}"$'\e[0m'
+}
+
+function st(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold "* "
+    let "i=i+1"
+  done
+}
+function sp(){
+  cycles=${1}
+  i=0
+  while [[ i -lt $cycles ]]
+  do
+    echoBold " "
+    let "i=i+1"
+  done
+}
+function product_name(){
+  #wso2is
+  echo -e "\n"
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; sp 1; st 3; sp 3; sp 8; st 5; sp 2; sp 1; st 3; sp 3; echo ""
+  st 1; sp 8; st 1; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 4; st 1; sp 2; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 4; st 1; echo ""
+  st 1; sp 3; st 1; sp 3; st 1; sp 2; st 1; sp 8; st 1; sp 6; st 1; sp 2; sp 6; st 1; sp 2; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 8; echo ""
+  st 1; sp 2; st 1; st 1; sp 2; st 1; sp 2; sp 1; st 3; sp 3; st 1; sp 6; st 1; sp 2; sp 4; st 1; sp 4; st 3; sp 2; sp 4; st 1; sp 4; sp 2; sp 1; st 3; sp 1; echo ""
+  st 1; sp 1; st 1; sp 2; st 1; sp 1; st 1; sp 2; sp 6; st 1; sp 2; st 1; sp 6; st 1; sp 2; sp 2; st 1; sp 6; sp 8; sp 4; st 1; sp 4; sp 2; sp 6; st 1; echo ""
+  st 2; sp 4; st 2; sp 2; st 1; sp 4; st 1; sp 2; st 1; sp 6; st 1; sp 2; st 1; sp 8; sp 8; sp 4; st 1; sp 4; sp 2; st 1; sp 4; st 1; echo ""
+  st 1; sp 8; st 1; sp 2; sp 1; st 3; sp 3; sp 2; st 3; sp 4; st 4; sp 2; sp 8; st 5; sp 2; sp 1; st 3; sp 1; echo -e "\n"
+}
+function display_msg(){
+    msg=$@
+    echoBold "${msg}"
+    exit 1
+}
+function validate_ip(){
+    ip_check=$1
+    if [[ $ip_check =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+      IFS='.'
+      ip=$ip_check
+      set -- $ip
+      if [[ $1 -le 255 ]] && [[ $2 -le 255 ]] && [[ $3 -le 255 ]] && [[ $4 -le 255 ]]; then
+        IFS=''
+        NODE_IP=$ip_check
+      else
+        IFS=''
+        echo "Invalid IP. Please try again."
+        NODE_IP=""
+      fi
+    else
+      echo "Invalid IP. Please try again."
+      NODE_IP=""
+    fi
+}
+function get_node_ip(){
+  NODE_IP=$(kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP")].address}')
+
+  if [[ -z $NODE_IP ]]
+  then
+      if [[ $(kubectl config current-context)="minikube" ]]
+      then
+          NODE_IP=$(minikube ip)
+      else
+        echo "We could not find your cluster node-ip."
+        while [[ -z "$NODE_IP" ]]
+        do
+              read -p "$(echo "Enter one of your cluster Node IPs to provision instant access to server: ")" NODE_IP
+              if [[ -z "$NODE_IP" ]]
+              then
+                echo "cluster node ip cannot be empty"
+              else
+                validate_ip $NODE_IP
+              fi
+        done
+      fi
+  fi
+  set -- $NODE_IP; NODE_IP=$1
+}
+
+function progress_bar(){
+  dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.pod=="wso2is")].status.conditions[?(@.type=="Available")].status}')
+  pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.pod=="wso2is")].status.conditions[*].status}')
+
+  num_true_const=0; progress_unit="";time_proc=0;
+
+  arr_dep=($dep_status); arr_pod=($pod_status)
+
+  let "length_total= ${#arr_pod[@]} + ${#arr_dep[@]}";
+
+  echo ""
+
+  while [[ $num_true -lt $length_total ]]
+  do
+      sleep 4
+      num_true=0
+      dep_status=$(kubectl get deployments -n wso2 -o jsonpath='{.items[?(@.spec.selector.matchLabels.pod=="wso2is")].status.conditions[?(@.type=="Available")].status}')
+      pod_status=$(kubectl get pods -n wso2 -o jsonpath='{.items[?(@.metadata.labels.pod=="wso2is")].status.conditions[*].status}')
+
+      arr_dep=($dep_status); arr_pod=($pod_status); let "length_total= ${#arr_pod[@]} + ${#arr_dep[@]}";
+
+      for ele_dep in $dep_status
+      do
+          if [ "$ele_dep" = "True" ]
+          then
+              let "num_true=num_true+1"
+          fi
+      done
+
+      for ele_pod in $pod_status
+      do
+          if [ "$ele_pod" = "True" ]
+          then
+              let "num_true=num_true+1"
+          fi
+      done
+
+      printf "Processing WSO2 Identity Server ... |"
+
+      printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' %\r'
+
+      printf "Processing WSO2 Identity Server ... |"
+      s=$(printf "%-$((5 * ${num_true_const}))s" "H")
+      echo -en "${s// /H}"
+
+      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' %\r '
+
+      if [ $num_true -ne $num_true_const ]
+      then
+          i=0
+          while [[ $i -lt  $((5 * $((${num_true} - ${num_true_const})))) ]]
+          do
+              let "i=i+1"
+              progress_unit=$progress_unit"H"
+              printf "Processing WSO2 Identity Server ... |"
+              echo -n $progress_unit
+              printf "%-$((5 * $((${length_total} - ${num_true_const})) - $i))s| $(($(( 100 * $(($num_true_const))/ $length_total)) + 2 * $i ))"; echo -en ' %\r '
+              sleep 0.25
+          done
+          num_true_const=$num_true
+          time_proc=0
+      else
+          let "time_proc=time_proc + 5"
+      fi
+      printf "Processing WSO2 Identity Server ... |"
+
+      printf "%-$((5 * ${length_total-1}))s| $(($num_true_const * 100/ $length_total))"; echo -en ' %\r '
+
+      printf "Processing WSO2 Identity Server ... |"
+      s=$(printf "%-$((5 * ${num_true_const}))s" "H")
+      echo -en "${s// /H}"
+
+      printf "%-$((5 * $(($length_total - $num_true_const))))s| $((100 * $(($num_true_const))/ $length_total))"; echo -en ' % \r'
+
+      sleep 1
+
+      if [[ $time_proc -gt 250 ]]
+      then
+          echoBold "\nSomething went wrong! Please Follow \"https://wso2.com/products/install/faq/#Kubernetes\" for more information\n"
+          exit 2
+      fi
+  done
+
+  echo -e "\n"
+
+}
+function deploy(){
+
+    #checking for required tools
+    if [[ ! $(which kubectl) ]]
+    then
+       display_msg "Please install Kubernetes command-line tool (kubectl) before you start with the setup\n"
+    fi
+
+    if [[ ! $(which base64) ]]
+    then
+       display_msg "Please install base64 before you start with the setup\n"
+    fi
+
+    echoBold "Checking for an enabled cluster... Your patience is appreciated..."
+    cluster_isReady=$(kubectl cluster-info) > /dev/null 2>&1  || true
+
+    if [[ ! $cluster_isReady == *"DNS"* ]]
+    then
+        echoBold "Done.\n"
+        display_msg "\nPlease enable your cluster before running the setup.\n\nIf you don't have a kubernetes cluster, follow: https://kubernetes.io/docs/setup/\n\n"
+    fi
+    echoBold "Done.\n"
+
+    #displaying wso2 product name
+    product_name
+
+    # getting cluster node ip
+    get_node_ip
+
+    #create kubernetes object yaml
+    create_yaml
+
+    # replace placeholders
+    sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
+    sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
+    sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
+
+    rm deployment.yaml.bak
+
+    echoBold "\nDeploying WSO2 Identity Server...\n"
+
+    # create kubernetes deployment
+    kubectl create -f ${k8s_obj_file}
+
+    # waiting until deployment is ready
+    progress_bar
+
+    echoBold "Successfully deployed WSO2 Identity Server.\n\n"
+
+    echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
+    echoBold "\tusername: admin\n"
+    echoBold "\tpassword: admin\n"
+    echoBold "2. Follow \"https://docs.wso2.com/display/IS590\" to start using WSO2 Identity Server.\n\n "
+}
+arg=$1
+if [[ -z $arg ]]
+then
+    echoBold "Expected parameter is missing\n"
+    usage
+else
+  case $arg in
+    -d|--deploy)
+      deploy
+      ;;
+    -u|--undeploy)
+      undeploy
+      ;;
+    -h|--help)
+      usage
+      ;;
+    *)
+      echoBold "Invalid parameter\n"
+      usage
+      ;;
+  esac
+fi
