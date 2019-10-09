@@ -119,6 +119,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: HOST_NAME
+            value: {{ .Release.Name }}
         ports:
         - containerPort: 9763
           protocol: TCP
@@ -131,23 +133,8 @@ spec:
         {{ end }}
         volumeMounts:
         - name: identity-server-conf
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf
-        - name: identity-server-conf-axis2
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/axis2
-        - name: identity-server-conf-datasources
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/datasources
-        - name: identity-server-conf-identity
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity
-        - name: identity-server-conf-tomcat
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat
-        - name: identity-server-conf-tomcat-carbon-web
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/tomcat/carbon/WEB-INF
-        - name: identity-server-shindig-properties
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/webapps/shindig/WEB-INF/classes
-        - name: identity-server-dashboard
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/dashboard/conf
-        - name: identity-server-portal
-          mountPath: /home/wso2carbon/wso2-config-volume/repository/deployment/server/jaggeryapps/portal/conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+          subPath: deployment.toml
         - name: identity-server-conf-entrypoint
           mountPath: /home/wso2carbon/entrypoint.sh
           subPath: docker-entrypoint.sh
@@ -208,30 +195,6 @@ spec:
       - name: identity-server-conf
         configMap:
           name: identity-server-conf
-      - name: identity-server-conf-axis2
-        configMap:
-          name: identity-server-conf-axis2
-      - name: identity-server-conf-datasources
-        configMap:
-          name: identity-server-conf-datasources
-      - name: identity-server-conf-identity
-        configMap:
-          name: identity-server-conf-identity
-      - name: identity-server-conf-tomcat
-        configMap:
-          name: identity-server-conf-tomcat
-      - name: identity-server-conf-tomcat-carbon-web
-        configMap:
-          name: identity-server-conf-tomcat-carbon-web
-      - name: identity-server-shindig-properties
-        configMap:
-          name: identity-server-shindig-properties
-      - name: identity-server-dashboard
-        configMap:
-          name: identity-server-dashboard
-      - name: identity-server-portal
-        configMap:
-          name: identity-server-portal
       - name: identity-server-conf-entrypoint
         configMap:
           name: identity-server-conf-entrypoint
