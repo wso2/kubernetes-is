@@ -1,0 +1,95 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wso2is-deployment
+  namespace : wso2
+spec:
+  replicas: 1
+  minReadySeconds: 30
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      deployment: wso2is
+      app: wso2is
+      monitoring: jmx
+      pod: wso2is
+  template:
+    metadata:
+      labels:
+        deployment: wso2is
+        app: wso2is
+        monitoring: jmx
+        pod: wso2is
+    spec:
+      initContainers:
+      - name: init-is-db
+        image: busybox:1.31
+        command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      containers:
+      - name: wso2is
+        image: "$image.pull.@.wso2"/wso2is:5.8.0
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - nc -z localhost 9443
+          initialDelaySeconds: 250
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+              - /bin/sh
+              - -c
+              - nc -z localhost 9443
+          initialDelaySeconds: 250
+          periodSeconds: 10
+        imagePullPolicy: Always
+        command: ["/home/wso2carbon/entrypoint.sh"]
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "2000m"
+          limits:
+            memory: "4Gi"
+            cpu: "4000m"
+        lifecycle:
+          preStop:
+            exec:
+              command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+        securityContext:
+          runAsUser: 802
+        env:
+          - name: NODE_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        ports:
+        - containerPort: 9763
+          protocol: TCP
+        - containerPort: 9443
+          protocol: TCP
+        volumeMounts:
+        - name: identity-server-conf
+          mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+          subPath: deployment.toml
+        - name: identity-server-conf-entrypoint
+          mountPath: /home/wso2carbon/entrypoint.sh
+          subPath: docker-entrypoint.sh
+      serviceAccountName: "wso2svc-account"
+      imagePullSecrets:
+        - name: wso2is-deployment-creds
+      volumes:
+      - name: identity-server-conf
+        configMap:
+          name: identity-server-conf
+      - name: identity-server-conf-entrypoint
+        configMap:
+          name: identity-server-conf-entrypoint
+          defaultMode: 0407
+---
