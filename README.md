@@ -15,14 +15,6 @@ given below:
 
 * [A Simplified Setup for  WSO2 Identity Server](simple/single-script/README.md)
 
-### Advanced
-
-**Note**: We consider Helm to be the primary source of installation of WSO2 product deployment patterns in Kubernetes environments. Hence, pure Kubernetes resources for product deployment patterns will be deprecated from 5.8.0.3 onwards. Please adjust your usage accordingly.
-
-* [A clustered deployment of WSO2 Identity Server](advanced/is/README.md)
-
-* [A clustered deployment of WSO2 Identity Server with Analytics support](advanced/is-with-analytics/README.md)
-
 ## Deploy Helm resources
 
 In order to deploy Helm resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
