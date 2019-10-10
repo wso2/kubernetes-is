@@ -18,13 +18,13 @@ metadata:
   name: is-analytics-worker-conf
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $analytics_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/IS_ANALYTICS_DB?useSSL=false" }}
-  {{- $cluster_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/WSO2_CLUSTER_DB?useSSL=false" }}
-  {{- $persistence_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.mysql.host ":3306/WSO2_PERSISTENCE_DB?useSSL=false" }}
-  {{- $db_driver_class_name := .Values.wso2.mysql.driverClass }}
-  {{- $db_validation_query := .Values.wso2.mysql.validationQuery }}
-  {{- $db_username := .Values.wso2.mysql.username }}
-  {{- $db_password := .Values.wso2.mysql.password }}
+  {{- $analytics_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.analyticsMysql.host ":3306/IS_ANALYTICS_DB?useSSL=false" }}
+  {{- $cluster_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.analyticsMysql.host ":3306/WSO2_CLUSTER_DB?useSSL=false" }}
+  {{- $persistence_dburl := printf "%s%s%s" "jdbc:mysql://" .Values.wso2.analyticsMysql.host ":3306/WSO2_PERSISTENCE_DB?useSSL=false" }}
+  {{- $db_driver_class_name := .Values.wso2.analyticsMysql.driverClass }}
+  {{- $db_validation_query := .Values.wso2.analyticsMysql.validationQuery }}
+  {{- $db_username := .Values.wso2.analyticsMysql.username }}
+  {{- $db_password := .Values.wso2.analyticsMysql.password }}
   {{- $file := .Files }}
   {{- range $path, $byte := .Files.Glob "confs/is-analytics-worker/conf/worker/*" }}
   {{- $list := $path | splitList "/"}}

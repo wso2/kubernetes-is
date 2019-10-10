@@ -12,20 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 wso2:
-  # MySQL datasource configurations
+  # MySQL Chart
   #   enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+  mysql:
+    enabled: true
+
+  # Mysql datasource configurations for analytics
   #   host:             Hostname of the MySQL database
   #   username:         MySQL database username
   #   password:         MySQL database password
   #   driverClass:      JDBC Driver class name
   #   validationQuery:  SQL validation query
-  mysql:
-    enabled: true
+  analyticsMysql:
     host: wso2is-rdbms-service-mysql
     username: wso2carbon
     password: wso2carbon
     driverClass: com.mysql.jdbc.Driver
     validationQuery: "SELECT 1"
+    
   # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
   # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
@@ -196,6 +200,12 @@ wso2:
           cpu: "2000m"
       imagePullPolicy: Always
     wso2isAnalyticsWorker2:
+      mysql:
+        host: wso2is-rdbms-service-mysql
+        username: wso2carbon
+        password: wso2carbon
+        driverClass: com.mysql.jdbc.Driver
+        validationQuery: "SELECT 1"
       imageName: "wso2is-analytics-worker"
       imageTag: "5.8.0"
       # Number of deployment replicas

@@ -44,16 +44,21 @@ configurations as necessary.
 
 b. Open the `<HELM_HOME>/is-pattern-2/values.yaml` and provide the following values. 
 
-###### MySQL Configurations
+###### MySQL Chart Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.mysql.enabled`                                                        | Enable MySQL chart as a dependency                                                        | true                        |
-| `wso2.mysql.host`                                                           | Set MySQL server host                                                                     | wso2is-rdbms-service-mysql  |
-| `wso2.mysql.username`                                                       | Set MySQL server username                                                                 | wso2carbon                  |
-| `wso2.mysql.password`                                                       | Set MySQL server password                                                                 | wso2carbon                  |
-| `wso2.mysql.driverClass`                                                    | Set JDBC driver class for MySQL                                                           | com.mysql.jdbc.Driver       |
-| `wso2.mysql.validationQuery`                                                | Validation query for the MySQL server                                                     | SELECT 1                    |
+
+###### Analytics MySQL Configurations
+
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.analyticsMysql.host`                                                           | Set MySQL server host                                                                     | wso2is-rdbms-service-mysql  |
+| `wso2.analyticsMysql.username`                                                       | Set MySQL server username                                                                 | wso2carbon                  |
+| `wso2.analyticsMysql.password`                                                       | Set MySQL server password                                                                 | wso2carbon                  |
+| `wso2.analyticsMysql.driverClass`                                                    | Set JDBC driver class for MySQL                                                           | com.mysql.jdbc.Driver       |
+| `wso2.analyticsMysql.validationQuery`                                                | Validation query for the MySQL server                                                     | SELECT 1                    |
 
 ###### WSO2 Subscription Configurations
 
