@@ -26,13 +26,17 @@ spec:
         monitoring: jmx
         pod: wso2is
     spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "wso2is"
       initContainers:
       - name: init-is-db
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.8.0
+        image: "$image.pull.@.wso2"/wso2is:5.9.0
         livenessProbe:
           exec:
             command:
@@ -69,6 +73,8 @@ spec:
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
+          - name: HOST_NAME
+            value: wso2is
         ports:
         - containerPort: 9763
           protocol: TCP
