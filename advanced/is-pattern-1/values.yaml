@@ -24,7 +24,7 @@ wso2:
   deployment:
     wso2is:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
-      dockerRegistry: "aaquiff"
+      # dockerRegistry: ""
       imageName: "wso2is"
       imageTag: "5.9.0"
       # Number of deployment replicas
