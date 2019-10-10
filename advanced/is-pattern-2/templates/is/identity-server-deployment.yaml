@@ -37,6 +37,10 @@ spec:
         app: is-pattern-2
         monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
     spec:
+      hostAliases:
+        - ip: "127.0.0.1"
+          hostnames:
+            - "{{ .Release.Name }}"
       initContainers:
       {{ if .Values.wso2.mysql.enabled }}
       - name: init-is-db
