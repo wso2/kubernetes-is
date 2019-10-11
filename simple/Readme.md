@@ -13,7 +13,7 @@
 
 ## Quick Start Guide
 1. Download simplified kubernetes setup for WSO2 Identity Server (**deployment-scripts/wso2is-ga.sh**).
-2. In the command line, move into the directory where you have downloaded the simplified kubernetes-is setup. 
+2. In the command line, move into the directory where you have downloaded the simplified kubernetes-is setup.
 3. Provide permissions for the setup file to execute by running
 ```
 chmod +x wso2is-ga.sh
@@ -26,4 +26,4 @@ chmod +x wso2is-ga.sh
 
 5. Try navigating to https://< NODE-IP >:30443/carbon/ your favourite browser using credentials admin/admin. Your < NODE-IP > will be provided at the end of the deployment.
 
-6. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://docs.wso2.com/display/IS580)**.
+6. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/5.9.0/)**.
