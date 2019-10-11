@@ -104,7 +104,6 @@ spec:
           initialDelaySeconds: {{ default 250 .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
           periodSeconds: {{ default 10 .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
         imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2is.imagePullPolicy }}
-        command: ["/home/wso2carbon/entrypoint.sh"]
         resources:
           requests:
             memory: {{ .Values.wso2.deployment.wso2is.resources.requests.memory }}
@@ -139,9 +138,6 @@ spec:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
-        - name: identity-server-conf-entrypoint
-          mountPath: /home/wso2carbon/entrypoint.sh
-          subPath: docker-entrypoint.sh
         {{ if .Values.wso2.monitoring.enabled }}
         - name: shared-prometheus-jmx-jar
           mountPath: /home/wso2carbon/prometheus
@@ -199,10 +195,6 @@ spec:
       - name: identity-server-conf
         configMap:
           name: identity-server-conf
-      - name: identity-server-conf-entrypoint
-        configMap:
-          name: identity-server-conf-entrypoint
-          defaultMode: 0407
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
