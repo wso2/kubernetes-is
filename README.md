@@ -13,16 +13,16 @@ given below:
 
 ### Simple
 
-* [A Simplified Setup for  WSO2 Identity Server](simple/single-script/README.md)
+* [A Simplified Setup for  WSO2 Identity Server](simple/Readme.md)
 
 ## Deploy Helm resources
 
 In order to deploy Helm resources for each deployment pattern, follow the **Quick Start Guide** for each deployment pattern
 given below:
 
-* [A clustered deployment of WSO2 Identity Server](advanced/helm/is/README.md)
+* [A clustered deployment of WSO2 Identity Server](advanced/is-pattern-1/README.md)
 
-* [A clustered deployment of WSO2 Identity Server with Analytics support](advanced/helm/is-with-analytics/README.md)
+* [A clustered deployment of WSO2 Identity Server with Analytics support](advanced/is-pattern-2/README.md)
 
 ## Advanced topics
 
