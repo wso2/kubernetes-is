@@ -16,6 +16,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: identity-server-conf
+  namespace : {{ .Release.Namespace }}
 data:
   {{- $namespace := .Release.Namespace }}
   {{- $file := .Files }}
