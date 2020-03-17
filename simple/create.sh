@@ -1,5 +1,5 @@
 #!/bin/bash
-IS_OPEN_SOURCE=true
+IS_OPEN_SOURCE=false
 
 if $IS_OPEN_SOURCE; then
     SCRIPT="deployment-scripts/wso2is-ga.sh"
@@ -32,6 +32,10 @@ EOF
 cat >> $SCRIPT << "EOF"
 # bash variables
 k8s_obj_file="deployment.yaml"; NODE_IP=''; str_sec=""
+license_text="LICENSE.txt"
+
+# wso2 subscription variables
+WUMUsername=''; WUMPassword=''
 EOF
 
 if $IS_OPEN_SOURCE; then
@@ -49,6 +53,13 @@ WUMUsername=''; WUMPassword=''
 
 EOF
 
+echo "function createLicenseText(){" >> $SCRIPT
+echo 'cat > ${license_text} << "EOF"' >> $SCRIPT
+cat eulatxt >> $SCRIPT
+echo "EOF" >> $SCRIPT; echo "" >> $SCRIPT
+echo "viewLicenseText" >> $SCRIPT; echo "}" >> $SCRIPT
+
+
 echo "function create_yaml(){" >> $SCRIPT
 echo "" >> $SCRIPT
 echo 'cat > $k8s_obj_file << "EOF"' >> $SCRIPT
@@ -61,7 +72,7 @@ if ! $IS_OPEN_SOURCE ; then
   cat ./basic-k8s/secret.yaml >> $SCRIPT
 fi
 cat ./is-k8s/identity-server-conf.yaml >> $SCRIPT
-cat ./is-k8s/identity-server-conf-entrypoint.yaml >> $SCRIPT
+#cat ./is-k8s/identity-server-conf-entrypoint.yaml >> $SCRIPT
 cat ./mysql-k8s/mysql-conf-db.yaml >> $SCRIPT
 
 cat ./mysql-k8s/mysql-service.yaml >> $SCRIPT
