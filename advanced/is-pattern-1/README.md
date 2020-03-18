@@ -12,13 +12,13 @@
   . Otherwise you can proceed with docker images which are created using GA releases.<br><br>
 
 * Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://github.com/kubernetes/helm/blob/master/docs/install.md)
-(and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.10) in order to run the 
+(and Tiller) and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) (compatible with v1.17) in order to run the 
 steps provided in the following quick start guide.<br><br>
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
 
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/). Please note that Helm resources for WSO2 product
-deployment patterns are compatible with NGINX Ingress Controller Git release [`nginx-0.22.0`](https://github.com/kubernetes/ingress-nginx/releases/tag/nginx-0.22.0).
+deployment patterns are compatible with NGINX Ingress Controller Git release [`nginx-0.30.0`](https://github.com/kubernetes/ingress-nginx/releases/tag/nginx-0.22.0).
 
 * Add the WSO2 Helm chart repository
 ```
@@ -48,7 +48,8 @@ b. Open the `<HELM_HOME>/is-pattern-1/values.yaml` and provide the following val
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.mysql.enabled`                                                        | Enable MySQL chart as a dependency                                                        | true                        |                                                   | SELECT 1                    |
+| `wso2.deployment.dependencies.mysql.enabled`                                                        | Enable MySQL chart as a dependency                                                        | true                        |
+| `wso2.deployment.dependencies.nfsServerProvisioner.enabled`                                                        | Enable NFS Server Provisioner chart as a dependency                                                        | true                        |                                                   | SELECT 1                    |
 
 ###### WSO2 Subscription Configurations
 
@@ -63,7 +64,7 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | true                        |                                                                                         |                             |    
+| `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | false                        |                                                                                         |                             |    
 | `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | 7.2.0                       |  
 | `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | elastic                     |  
 | `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
@@ -82,21 +83,21 @@ If you do not have active WSO2 subscription do not change the parameters `wso2.s
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.wso2is.imageName`                                          | Image name for IS node                                                                    | wso2is                     |
-| `wso2.deployment.wso2is.imageTag`                                           | Image tag for IS node                                                                     | 6.5.0                       |
-| `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 1                           |
-| `wso2.deployment.wso2is.minReadySeconds`                                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 1  75                        |
+| `wso2.deployment.wso2is.imageTag`                                           | Image tag for IS node                                                                     | 5.10.0                       |
+| `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 2                           |
+| `wso2.deployment.wso2is.minReadySeconds`                                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentspec-v1-apps)| 30                        |
 | `wso2.deployment.wso2is.strategy.rollingUpdate.maxSurge`                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 1                           |
 | `wso2.deployment.wso2is.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/#deploymentstrategy-v1-apps) | 0                           |
-| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 40                           |
+| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                           |
 | `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                           |
-| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 40                           |
+| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                           |
 | `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                           |
 | `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                       |
-| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 1Gi                          |
+| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                          |
 | `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
-| `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 2Gi                          |
-| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                        |
-| `wso2.deployment.wso2is.config`                                             | The deployment.toml configuration for the product                                         |                          |
+| `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                          |
+| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                        |
+
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://docs.wso2.com/display/IS580/Installation+Prerequisites).
 
@@ -128,7 +129,7 @@ wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	<RELEASE_NAME>
+<EXTERNAL-IP> <RELEASE_NAME>
 ```
 
 c. Try navigating to `https://<RELEASE_NAME>/carbon` from your favorite browser.
