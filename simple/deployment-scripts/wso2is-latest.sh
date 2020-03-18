@@ -404,8 +404,8 @@ metadata:
 data:
   deployment.toml: |-
     [server]
-    hostname = "localhost"
-    node_ip = "127.0.0.1"
+    hostname = "$env{HOST_NAME}"
+    node_ip = "$env{NODE_IP}"
     # base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
     [super_admin]
