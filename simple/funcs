@@ -301,5 +301,5 @@ function deploy(){
     echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
     echoBold "\tusername: admin\n"
     echoBold "\tpassword: admin\n"
-    echoBold "2. Follow \"https://is.docs.wso2.com/en/5.9.0/\" to start using WSO2 Identity Server.\n\n "
+    echoBold "2. Follow \"https://is.docs.wso2.com/en/5.10.0/\" to start using WSO2 Identity Server.\n\n "
 }
