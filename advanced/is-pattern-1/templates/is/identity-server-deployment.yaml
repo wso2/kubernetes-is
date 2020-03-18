@@ -83,9 +83,9 @@ spec:
         {{- $tag := .Values.wso2.deployment.wso2is.imageTag }}
         {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
         {{ else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-        image: wso2/{{ default "wso2is" .Values.wso2.deployment.wso2is.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2is.imageTag }}
+        image: wso2/{{ default "wso2is" .Values.wso2.deployment.wso2is.imageName }}:{{ default "5.10.0" .Values.wso2.deployment.wso2is.imageTag }}
         {{ else }}
-        image: docker.wso2.com/{{ default "wso2is" .Values.wso2.deployment.wso2is.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2is.imageTag }}
+        image: docker.wso2.com/{{ default "wso2is" .Values.wso2.deployment.wso2is.imageName }}:{{ default "5.10.0" .Values.wso2.deployment.wso2is.imageTag }}
         {{ end }}
         livenessProbe:
           exec:
@@ -138,6 +138,10 @@ spec:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
+        - name: identity-server-volume-claim-tenants
+          mountPath: /home/wso2carbon/wso2is-5.10.0/repository/tenants
+        - name: identity-server-volume-claim-userstore
+          mountPath: /home/wso2carbon/wso2is-5.10.0/repository/deployment/server/userstores
         {{ if .Values.wso2.monitoring.enabled }}
         - name: shared-prometheus-jmx-jar
           mountPath: /home/wso2carbon/prometheus
@@ -195,6 +199,12 @@ spec:
       - name: identity-server-conf
         configMap:
           name: identity-server-conf
+      - name: identity-server-volume-claim-tenants
+        persistentVolumeClaim:
+          claimName: identity-server-volume-claim-tenants
+      - name: identity-server-volume-claim-userstore
+        persistentVolumeClaim:
+          claimName: identity-server-volume-claim-userstore
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}

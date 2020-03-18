@@ -12,23 +12,42 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 wso2:
-  # MySQL configurations
-  #   enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
-  mysql:
-    enabled: true
+
   # WSO2 subscription parameters. If you do not have an active subscription, do not provide values for the parameters.
   # If you do not possess an active WSO2 subscription already, you can sign up for a WSO2 Free Trial Subscription at (https://wso2.com/free-trial-subscription).
   subscription:
     username: ""
     password: ""
+
+  persistentRuntimeArtifacts:
+    # Persistent storage provider expected to be used for sharing persistent runtime artifacts
+    # This can be one of the following.
+    #   1. internal-nfs - Using the NFS dynamic provisioner for Kubernetes
+    #   2. external-nfs - Using an externally configured NFS server
+    cloudProvider: "internal-nfs"
+    # External NFS Server IP
+    nfsServerIP: ""
+    # Exported location on external NFS Server to be mounted at <IS_HOME>/repository/tenants
+    sharedTenants: ""
+    # Exported location on external NFS Server to be mounted at <IS_HOME>/repository/deployment/server/userstores
+    sharedUserstores: ""
+
   deployment:
+
+    dependencies:
+      # MySQL configurations
+      # enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+      mysql: true
+      # Enable NFS dynamic provisioner for Kubernetes
+      nfsServerProvisioner: true
+
     wso2is:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       # dockerRegistry: ""
       imageName: "wso2is"
-      imageTag: "5.9.0"
+      imageTag: "5.10.0"
       # Number of deployment replicas
-      replicas: 1
+      replicas: 2
       # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
       minReadySeconds: 30
       strategy:
@@ -40,13 +59,13 @@ wso2:
       # Indicates whether the container is running.
       livenessProbe:
         # Number of seconds after the container has started before liveness probes are initiated.
-        initialDelaySeconds: 250
+        initialDelaySeconds: 120
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       # Indicates whether the container is ready to service requests.
       readinessProbe:
         # Number of seconds after the container has started before readiness probes are initiated.
-        initialDelaySeconds: 250
+        initialDelaySeconds: 120
         # How often (in seconds) to perform the probe.
         periodSeconds: 10
       resources:
@@ -64,66 +83,6 @@ wso2:
           cpu: "4000m"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
-      config:
-        deployment.toml: |-
-          # Deployment config for identity server deployment
-            [server]
-            hostname = "$env{HOST_NAME}"
-            node_ip = "$env{NODE_IP}"
-            # base_path = "https://$ref{server.hostname}:${carbon.management.port}"
-
-            [super_admin]
-            username = "admin"
-            password = "admin"
-            create_admin_account = true
-
-            [user_store]
-            type = "read_write_ldap"
-            connection_url = "ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}"
-            connection_name = "uid=admin,ou=system"
-            connection_password = "admin"
-            base_dn = "dc=wso2,dc=org"      #refers the base dn on which the user and group search bases will be generated
-
-            [database.identity_db]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.jdbc.Driver"
-            [database.identity_db.pool_options]
-            validationQuery = "SELECT 1"
-
-            [database.shared_db]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.jdbc.Driver"
-            [database.shared_db.pool_options]
-            validationQuery = "SELECT 1"
-
-            [database.bps_database]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.jdbc.Driver"
-            [database.bps_database.pool_options]
-            validationQuery = "SELECT 1"
-
-            [[datasource]]
-            id = "WSO2ConsentDS"
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.jdbc.Driver"
-            pool_options.validationQuery="SELECT 1"
-            pool_options.maxActive=50
-            pool_options.maxWait = 60000 # wait in milliseconds
-            pool_options.testOnBorrow = true
-            pool_options.jmxEnabled = false
-
-            [keystore.primary]
-            name = "wso2carbon.jks"
-            password = "wso2carbon"
-
   # Configurations for the logstash container image and elasticsearch authorization credentials
   # Centralized logging is disabled by default. If it is required to enable centralized logging, please follow the instructions
   # provided in the documentation (https://github.com/wso2/kubernetes-is/tree/master/advanced/helm/is-pattern-1#enabling-centralized-logging)
