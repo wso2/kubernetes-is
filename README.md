@@ -13,7 +13,7 @@ given below:
 
 ### Simple
 
-* [A Simplified Setup for  WSO2 Identity Server](simple/Readme.md)
+* [A Simplified Setup for  WSO2 Identity Server](simple/README.md)
 
 ## Deploy Helm resources
 
@@ -22,14 +22,9 @@ given below:
 
 * [A clustered deployment of WSO2 Identity Server](advanced/is-pattern-1/README.md)
 
-## Advanced topics
-
-* [Update product configurations](advanced/ManageConfigurations.md)
-* [Introduce additional artifacts](advanced/ManageArtifacts.md)
-
 ## Changelog
 
-**Change log** from previous v5.8.0.3 release: [View Here](CHANGELOG.md)
+**Change log** from previous v5.9.0.1 release: [View Here](CHANGELOG.md)
 
 ## Reporting issues
 
