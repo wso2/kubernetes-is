@@ -3,6 +3,11 @@ All notable changes to this project 5.9.x per each release will be documented in
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+## [v5.10.0.1] - 2020-03-18
+
+### Added
+- Introduce Helm charts for WSO2 Identity Server 5.10.0 patterns.
+
 ## [v5.9.0.1] - 2019-10-11
 
 ### Added
