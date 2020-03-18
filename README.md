@@ -22,8 +22,6 @@ given below:
 
 * [A clustered deployment of WSO2 Identity Server](advanced/is-pattern-1/README.md)
 
-* [A clustered deployment of WSO2 Identity Server with Analytics support](advanced/is-pattern-2/README.md)
-
 ## Advanced topics
 
 * [Update product configurations](advanced/ManageConfigurations.md)
