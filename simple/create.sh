@@ -53,12 +53,13 @@ WUMUsername=''; WUMPassword=''
 
 EOF
 
-echo "function createLicenseText(){" >> $SCRIPT
-echo 'cat > ${license_text} << "EOF"' >> $SCRIPT
-cat eulatxt >> $SCRIPT
-echo "EOF" >> $SCRIPT; echo "" >> $SCRIPT
-echo "viewLicenseText" >> $SCRIPT; echo "}" >> $SCRIPT
-
+if ! $IS_OPEN_SOURCE ; then
+  echo "function createLicenseText(){" >> $SCRIPT
+  echo 'cat > ${license_text} << "EOF"' >> $SCRIPT
+  cat eulatxt >> $SCRIPT
+  echo "EOF" >> $SCRIPT; echo "" >> $SCRIPT
+  echo "viewLicenseText" >> $SCRIPT; echo "}" >> $SCRIPT
+fi
 
 echo "function create_yaml(){" >> $SCRIPT
 echo "" >> $SCRIPT

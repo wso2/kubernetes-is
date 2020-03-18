@@ -33,17 +33,13 @@ WUMUsername=''; WUMPassword=''
 function createLicenseText(){
 cat > ${license_text} << "EOF"
 WSO2 SOFTWARE LICENSE
-
 This WSO2 Software License Agreement (the “Agreement”) is entered into by you and the applicable WSO2 entity, as described below. If you are an
 individual accepting this Agreement on behalf of a company or other legal entity, you represent that you are authorized to bind the entity to
 the terms of this Agreement and “You” or “Your” will refer to the entity bound to this Agreement, not to you as an individual.
-
 By using or accessing the Software, signing this Agreement or any document that references this Agreement (such as an Order), or by clicking
 “I agree to the Terms” (or similar button or checkbox) upon downloading or installing the Software, You indicate Your assent to be bound by
 this Agreement. If You do not agree to this Agreement, do not use or access the Software.
-
 1. Definitions
-
 a) “Order” is a document submitted by You authorizing the purchase of the Products requested by You, the Support Plan, associated fees, and
 any additional terms.
 b) “Products” means collectively Software, Support and/or other Services obtained by You from WSO2 subject to the terms of this Agreement.
@@ -56,72 +52,57 @@ f) “Support Plan” means the service level specified in an Order, from among 
 g) “Subscription” is a commercial offering from WSO2 consisting of a license to use, and access to Support for, the Software, for a specific period
 of time.
 h) “Subscription Period” is the commencement date and duration of a Subscription, as specified in an Order.
-
 2. License Grant
-
 2.1 Free License for Non-commercial, Educational, or Trial use. WSO2 hereby grants You a worldwide, non-exclusive, royalty-free, non-transferable,
 non-sublicensable, terminable license to use the Software for Non-commercial, Educational, or Trial purposes. Non-commercial, as used in this
 Agreement, means personal use whereby no commercial advantage or monetary compensation is sought or received for use of the Software or for works,
 data or services that use the Software. Educational or Trial Use, as used in this Agreement, means use for the purpose of learning to use the
 Software, teaching others to use the Software, evaluating the Software capabilities, or for scholarly or artistic purposes.
-
 2.2 License for commercial use. If You purchase a Subscription from WSO2 or one of its authorized Resellers, WSO2 hereby grants to You,
 as “Subscriber”, a worldwide, non-exclusive, non-transferable, non-sublicensable, terminable license to use the Software for the duration of the
 Subscription Period. This license is limited to the specific Software configuration or limit defined in the Order. The Order will specify the
 scope of the Subscription purchased by Subscriber, including:
 (1) product versions; (2) production or non-production use; (3) usage limits (e.g. cores or transaction limits); and
 (4) any other license parameters.
-
 3. Conditions of Use. A license granted to You by this Agreement is valid only if You adhere to the following conditions
-
 3.1 Maintenance of Copyright Notices.  You shall not remove or alter any copyright or license notices that appear in or on the Product.
 3.2 Modification.  You shall not modify, alter, decompile, decrypt, disassemble, translate, or reverse engineer the Product.
 3.3 Distribution.  You shall not sublicense, transfer, lease, rent, or otherwise distribute or make available the Software to any third party.
 3.4 SaaS.  Unless authorized by WSO2, You shall not make the Software available as commercial Software-as-a-Service.
 3.5 Compliance with Applicable Laws.  You shall comply with all applicable laws regarding use of the Software.
-
 4. Subscription Terms and Conditions. If You purchase a Subscription, the following terms and conditions apply.
-
 4.1 Support. WSO2 will provide Subscriber with Support for the Software during the Subscription Period according to the Support Plan
 indicated in the applicable Order, and subject to the WSO2 Support Policy set forth at https://wso2.com/licenses/support-policy. Each
 Subscription includes Query Support subject to a maximum hours limit as indicated in the Order.  Limits can be increased subject to
 additional fees. The maximum hours limit is reset upon renewal for a subsequent annual period; unused hours cannot be rolled over into
 the next annual period.
-
 4.2 Technical Currency.  WSO2 will provide Subscriber with all new versions of the Software that it generally releases, including all updates,
 security updates, improvements, enhancements and bug fixes. All new versions of the Software are provided subject to the terms of the Agreement.
-
 4.3 Online Services.  A Subscription may include online services.  Use of these online services is governed by the WSO2.com Terms of
 Use at https://wso2.com/terms-of-use, the WSO2 Privacy Policy at https://wso2.com/privacy-policy, and the WSO2 Cloud Terms of Use at
 https://wso2.com/cloud/terms-of-use.
-
 4.4 Increases in Software Use. Subscriber may increase its use of the Software during the Subscription Period beyond the scope specified in the
 applicable Orders, provided that Subscriber promptly notifies WSO2 of the additional use and pays the applicable Fees.
-
 4.5 Bursting Use. Subscriber may temporarily exceed the Subscription limits, at no extra Fee, within the bursting limits for the Product
 (“Authorized Bursting Use”). If Subscriber increases its use beyond Authorized Bursting Use, it must notify WSO2, increase the allowed usage
 limits retroactively to the period where limits were exceeded, and pay the applicable Fees.  For products limited to a maximum number of cores,
 Authorized Bursting Use allows up to 3 days (discrete 24-hour periods) within an annual Subscription period during which the core count may
 exceed the Subscription limit by no more than 25%.  For products limited to a maximum number of monthly transactions, Authorized Bursting Use
 allows transactions up to 25% over the monthly cap, within a single calendar month per annual Subscription period.
-
 4.6 Subscription Renewal. Subscriptions automatically renew for additional periods equal to the or one year unless Subscriber notifies WSO2 in
 writing that it wishes to renew for a longer period, or to end the Subscription at least 90 days prior to the end of the Subscription Period.
 Upon renewal, unit fees increase by 5%, unless provided otherwise in an Order. Renewal of promotional or one-time priced Subscriptions will be at
 WSO2’s applicable price list in effect at the time of the discount was granted. Fees for renewal are due according to the Fees and Payment terms
 of this Agreement.
-
 4.7 Termination for Change in Services.  WSO2 may change the terms of Support or Services from time to time without affecting the validity of this
 Agreement.  In the event of any material changes, WSO2 will attempt to provide Subscriber notice by sending an email to the point of contact address
 provided by Subscriber. In the event of a material and adverse change to the terms of Support or Services, Subscriber has the right to terminate
 this Agreement upon 30 day notice to WSO2 at the following email address: support@wso2.com. In the event of such termination, WSO2 shall reimburse
 Subscriber a pro rata amount of any fees actually prepaid by Subscriber.
-
 4.8 Remedies. WSO2’S SOLE OBLIGATION AND SUBSCRIBER’S SOLE REMEDY FOR WSO2’S BREACH OF ANY REPRESENTATIONS, WARRANTIES OR OBLIGATIONS OF THIS
 AGREEMENT IS TO (I) IN THE CASE OF A DEFECTIVE OR FAULTY BUG FIX, PATCH OR THE LIKE, DELIVER TO SUBSCRIBER A CORRECTED VERSION WHICH ALLOWS FOR
 PROPER INSTALLATION; OR (II) IF OPTION (I) IS NOT RELEVANT OR IS DEEMED NOT TO BE COMMERCIALLY FEASIBLE BY WSO2, TERMINATE THIS AGREEMENT AND
 REFUND A PRO RATA PORTION OF THE FEES PAID BY SUBSCRIBER.
-
 4.9 Audit. Upon WSO2’s request with reasonable notice, Subscriber will permit technical and operational audits of Subscriber related to the subject
 matter of this Agreement. Audits may include verifying Subscriber’s user of the Software conforms to the usage limits purchased by Subscriber.
 Audits shall be carried out within Subscriber’s regular business hours and WSO2 will honor confidentiality and data protection requirements. If
@@ -129,10 +110,8 @@ non-compliance is discovered in an audit, Subscriber will be responsible for all
 such audit reveals Subscriber has exceeded the usage subscribed-for, Subscriber shall pay WSO2 prorated fees for the excess usage at the same rate(s)
 designated in the most proximate Order. If the date excess usage began cannot be determined to WSO2’s satisfaction, excess usage shall be deemed to
 have commenced on the start date of the Subscription.
-
 5. WSO2 Consulting Services. QuickStarts, Training, Technical Account Management, Managed Services, and other services WSO2 may offer to Subscriber
 are subject to the following terms.
-
 5.1 Consulting Services Terms. WSO2 provides on-site and remote consulting services according to the Consulting Service Terms at
 https://wso2.com/licenses/consulting-terms, as updated or amended from time to time.
 5.2 Managed Services Terms. WSO2 provides Managed Services according to the WSO2 Managed Services Terms and Service Level Agreement at
@@ -150,9 +129,7 @@ employment or engagement with the other party. For purposes herein, “solicit�
 limitation help wanted advertising and posting of open positions on a party’s internet site. If You hire or engage directly or indirectly any
 personnel of WSO2 in violation of this section, You will pay WSO2 a contractual penalty equal to three times the monthly billing rate
 (assuming 168 hours per month) for such personnel.
-
 6. Reseller Orders. This Section applies if You purchase Products through an authorized reseller of WSO2 (“Reseller”).
-
 6.1 Instead of paying WSO2, You will pay the applicable amounts to the Reseller, as agreed between You and the Reseller. WSO2 may suspend or
 terminate Your Subscription if WSO2 does not receive the corresponding payment from the Reseller.
 6.2 Instead of an Order submitted to WSO2, Your order details will be as stated in the order placed with WSO2 by the Reseller on Your behalf,
@@ -163,9 +140,7 @@ Reseller and the Reseller will be solely responsible for refunding the appropria
 obligations to You other than as set forth in this Agreement.
 6.5 The amount paid or payable by the Reseller to WSO2 for Your use of the applicable Software under this Agreement will be deemed the amount
 actually paid or payable by You to WSO2 under this Agreement for purposes of calculating the liability cap in Section 12.
-
 7. Publicity and Feedback
-
 7.1 WSO2 Logos. WSO2 products may include features for theming the product user interfaces.  You will retain the “WSO2” or “powered by WSO2”
 logos in conformance with WSO2 Logo Usage Guidelines at https://wso2.com/brand.
 7.2 Publicity. You may state publicly that You are a user of the Products. Any identification or use of a party’s brand, logo, or
@@ -173,16 +148,13 @@ trademark shall conform with the trademark use guidelines provided by one party 
 on the WSO2 website. You will participate in a success story/case study related to WSO2.
 7.3 Feedback. If You provide any suggestions, corrections, or feedback regarding the Products, WSO2 may use that information without obligation to You,
 and You hereby irrevocably assign to WSO2 all right, title, and interest in the suggestions, corrections, or feedback.
-
 8. Fees and Payment
-
 8.1 Fees. After You authorize an Order, upon renewal of a Subscription, or for other fees due to WSO2, WSO2 will send you an invoice. You will pay
 all fees specified in invoices. All payments are due within thirty (30) calendar days of receipt of an invoice from WSO2 and are non-refundable.
 WSO2 may suspend or cancel performance of all or part of the Subscription or Services and may change its credit terms (after notifying You) if actual
 payment is not received within sixty (60) calendar days of Your receipt of WSO2’s invoice. Payments past due sixty (60) calendar days will incur
 interest at the rate of one and one-half percent (1.5%) per month or the highest rate permitted by law, whichever is less. In any proceeding brought
 by WSO2 to collect amounts due, WSO2 will also receive its actual costs of collection, including reasonable attorneys’ fees.
-
 8.2 Taxes.  All fees are exclusive of any applicable Taxes. You will pay to WSO2 an amount equal to any taxes arising from or relating to this
 Agreement, including without limitation, sales, service, use or value added taxes, which are paid by or are payable by WSO2. "Taxes" means any
 form of taxation, levy, duty, customs fee, charge, contribution or impost of whatever nature and by whatever authority imposed (including without
@@ -190,12 +162,9 @@ limitation any fine, penalty, surcharge or interest), excluding, however, any ta
 under any applicable law or regulation, domestic or foreign, to withhold or deduct any portion of the payments due to WSO2, then the sum payable
 to WSO2 will be increased by the amount necessary so that WSO2 receives an amount equal to the sum it would have received had Subscriber made no
 withholdings or deductions.
-
 8.3 Purchase Orders. Any pre-printed terms on any purchase order that is issued by You that are in addition to or in conflict with the terms of this
 Agreement are null and void.
-
 9. Term & Termination
-
 9.1 Termination.  This Agreement terminates when:
 a. Your Subscription terminates,
 b. when You cease using the Software, or
@@ -209,121 +178,92 @@ b. all fees owed by Subscriber are immediately due upon receipt of the final inv
 c. You will delete the Software immediately.
 9.4 Survival.  Sections 5.5, 8.1, 10.2, 12, and 14.9, and those provisions intended by their nature to survive termination of this Agreement survive
 termination. Section 13 will survive termination of this Agreement for 3 years.
-
 10. Limited Warranties
-
 10.1 Warranties for Subscriber. If You are a Subscriber, WSO2 warrants that:
 a. the Software will perform substantially in accordance with its documentation (located at https://docs.wso2.com);
 b. it will perform Support and Consulting Services in a diligent and workmanlike manner consistent with industry standards; and
 c. to its knowledge, the Software does not, at the time of delivery to you, include malicious mechanisms or code for the purpose of
 damaging or corrupting the Software.
-
 Subscriber’s exclusive remedy for WSO2’s material breach of warranty is to have WSO2 resolve such breach as provided in the
 WSO2 Support Services Policy, or at WSO2’s option and upon Subscriber’s deletion of the Software, refund the unused portion of any fees
 paid for the Subscription.
-
 10.2 EXCEPT AS EXPRESSLY PROVIDED IN THE AGREEMENT, AND TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, ALL SERVICES, SOFTWARE, AND SUPPORT
 PROVIDED BY WSO2 ARE PROVIDED “AS IS” WITHOUT ANY WARRANTIES OR CONDITIONS OF ANY KIND, INCLUDING IMPLIED WARRANTIES AND CONDITIONS OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. NO WARRANTY, WRITTEN OR ORAL, IS EXPRESSED OR IMPLIED BY WSO2 OR MAY BE INFERRED FROM
 A COURSE OF DEALING OR USAGE OF TRADE. NOTHING STATED IN THIS AGREEMENT IMPLIES THAT THE OPERATION OF ANY SOFTWARE WILL BE UNINTERRUPTED OR ERROR
 FREE, OR THAT ERRORS WILL BE CORRECTED.
-
 11. Indemnification. If You are a Subscriber, the provisions of this section apply to You.
-
 11.1 Subject to the provisions of this Section 11, and commencing from the start of the Subscription Period, WSO2 will defend at its expense any
 suit brought against Subscriber, and will pay any settlement WSO2 makes or approves, or any direct damages (excluding amounts awarded for reputation
 harm or business impact) finally awarded in such suit, insofar as such suit is based on a claim by any third party alleging that the Products
 misappropriate any trade secret recognized under the Uniform Trade Secrets Act or infringe any copyright or United States patent valid within the
 Subscription Period (an “IP Claim”). WSO2’s indemnification obligations are limited to US $7,000,000.
-
 11.2 If any portion of the Software or the Services becomes, or in WSO2’s opinion is likely to become, the subject of an IP Claim, WSO2 may, at
 WSO2’s option: (i) procure for Subscriber the right to continue using the Products; (ii) replace the Products with non-infringing software or
 services which do not materially impair the functionality of the Products; (iii) modify the Products so that it becomes non-infringing; or
 (iv) terminate this Agreement and refund any fees actually paid by Subscriber to WSO2 for the remainder of the Term then in effect, and upon such
 termination, Subscriber will immediately cease all use of the Software, documentation, and Services.
-
 11.3 Notwithstanding anything to the contrary herein, WSO2 has no obligation with respect to any IP Claim based upon (i) any open source software
 components included in the Software; (ii) any use of the Software or the Services not in accordance with this Agreement or as specified in the
 documentation; (iii) any use of the Software in combination with other products, equipment, software or data not supplied by WSO2; or (iv) any
 modification of the Software by any person other than WSO2 or its authorized agents. This Section states the sole and exclusive remedy of Subscriber
 and the entire liability of WSO2, or any of the officers, directors, employees, shareholders, contractors or representatives of either party,
 for IP Claims.
-
 11.4 The indemnifying party’s obligations as set forth above are expressly conditioned upon complying with each of the following:
 (i) the indemnified party must promptly notify the indemnifying party in writing of any threatened or actual claim or suit; (ii) the indemnifying
 party will have sole control of the defense or settlement of any claim or suit; and (iii) the indemnified party must cooperate with the
 indemnifying party to facilitate the settlement or defense of any claim or suit.
-
 12. Limitation of Liability. EXCEPT FOR DAMAGES FOR BODILY INJURY (INCLUDING DEATH), WSO2’S TOTAL AGGREGATE LIABILITY UNDER THIS AGREEMENT IS
 LIMITED TO THE AMOUNT OF FEES PAID BY YOU DURING THE PERIOD OF A MATERIAL BREACH UP TO A MAXIMUM OF ONE YEAR. IF YOU HAVE PAID NO FEES, OR ARE A
 NON-COMMERCIAL, EDUCATIONAL, OR TRIAL LICENSEE, WSO2’S MAXIMUM AGGREGATE LIABILITY TO YOU IS $100.
-
 IN NO EVENT WILL WSO2 OR ITS AFFILIATES BE LIABLE FOR ANY INCIDENTAL INDIRECT, SPECIAL, OR CONSEQUENTIAL COSTS OR DAMAGES INCLUDING, WITHOUT
 LIMITATION, DOWNTIME COSTS; LOST BUSINESS, REVENUES, GOODWILL, OR PROFITS; FAILURE TO REALIZE EXPECTED SAVINGS; LOSS OF OR DAMAGE TO DATA; OR
 SOFTWARE RESTORATION, REGARDLESS OF WHETHER ANY OF THE FOREGOING ARE FORESEEABLE, AND REGARDLESS OF WHETHER WSO2 HAS BEEN NOTIFIED OF THE
 POSSIBILITY OF ANY OF THE FOREGOING. THESE LIMITATIONS APPLY REGARDLESS OF THE BASIS OF LIABILITY; INCLUDING NEGLIGENCE; MISREPRESENTATION; BREACH;
 LIBEL; INFRINGEMENT OF PUBLICITY, PRIVACY, OR INTELLECTUAL PROPERTY RIGHTS; OR ANY OTHER CONTRACT OR TORT CLAIM.
-
 13. Confidentiality
-
 13.1 Definition. “Confidential Information” means any information, documentation, system, or process disclosed by a party or a party’s Affiliate
 that is:
 a. designated as confidential (or a similar designation) at the time of disclosure;
 b. disclosed in circumstances of confidence; or
 c. understood by the parties, exercising reasonable business judgment, to be confidential.
-
 Confidential Information expressly includes proposals or price quotes created by WSO2 for You, Orders, and any changes or amendments to this
 Agreement.
-
 “Affiliate” means any entity that directly or indirectly controls, is controlled by, or is under common control with a party to this Agreement.
-
 13.2 Exclusions. Confidential Information does not include information that:
 a. was lawfully known or received by the receiving party prior to disclosure;
 b. is or becomes part of the public domain other than as a result of a breach of this Agreement;
 c. was disclosed to the receiving party by a third party, provided such third party, or any other party from whom such third party receives
 such information, is not in breach of any confidentiality obligation in respect to such information; or
 d. is independently developed by the receiving party as evidenced by independent written materials.
-
 13.3 Nondisclosure. Each party shall treat as confidential all Confidential Information of the other party, shall not use Confidential Information
 except as set forth in this Agreement, and shall use best efforts not to disclose Confidential Information to any third party. Without limiting the
 foregoing, each of the parties shall use at least the same degree of care that it uses to prevent the disclosure of its own Confidential Information
 of like importance to prevent the disclosure of Confidential Information disclosed to it by the other party under this Agreement. Each party shall
 promptly notify the other party of any actual or suspected misuse or unauthorized disclosure of the other party’s Confidential Information.
-
 13.4 Return of Confidential Information. Upon expiration or termination of this Agreement, each party shall return or destroy all Confidential
 Information received from the other party.
-
 13.5 Remedies. Any breach of the restrictions contained in this section is a breach of this Agreement that may cause irreparable harm to the
 non-breaching party. Any such breach shall entitle the non-breaching party to injunctive relief in addition to all other legal remedies.
-
 14. General
-
 14.1 Severability.  If any provision of this Agreement is held by a court of competent jurisdiction to be contrary to law, such provision shall be
 changed and interpreted so as to best accomplish the objectives of the original provision to the fullest extent allowed by law and the remaining
 provisions of this Agreement shall remain in full force and effect.
-
 14.2 Force Majeure.  Neither party will be liable for performance delays or for non-performance due to causes beyond its reasonable control; however,
 this provision will not apply to Subscriber's payment obligations.
-
 14.3 Headings.  The headings in this Agreement are inserted for convenience only and do not affect its interpretation.
-
 14.4 Assignment.  You may not assign this Agreement, whether by operation of law, merger or reorganization or otherwise, without the prior written
 consent of WSO2; any attempted assignment in violation of the foregoing will be void. WSO2 may assign its rights and delegate its duties under this
 Agreement without Your written consent in connection with a reorganization, reincorporation, merger, or sale of all, or substantially all of the
 shares or assets of WSO2 or the business of WSO2 to which this Agreement relates.
-
 14.5 Export Compliance / Sanctions. The Software may be subject to export laws and regulations of the United States and other jurisdictions.
 The parties represent that each of them is not named on any U.S. Government denied-party list. You will not use the Software in violation of any
 U.S. export law or regulation.
-
 14.6 Complete Agreement. This Agreement, and any terms, policies, or writings referenced within it, constitutes the final and complete agreement
 between the parties with respect to the Products, and supersedes any prior or contemporaneous representations or agreements, whether written or oral.
-
 14.7 Notices. Notice may be directed to WSO2 at legal@wso2.com.
-
 14.8 WSO2 Contracting Entity, Governing Law, and Venue. The WSO2 entity entering into this Agreement, the law that will apply in any dispute
 arising out of this Agreement, and the venue for any dispute depend on where You are domiciled.
-
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 |If You are domiciled in: | The WSO2 entity entering into  | Governing law is:               | Method of dispute resolution is:                                       |
 |                         | this Agreement is:             |                                 |                                                                        |
@@ -363,22 +303,18 @@ arising out of this Agreement, and the venue for any dispute depend on where You
 |                         |                                | Convention on the International |                                                                        |
 |                         |                                | Sale of Goods (CISG)            |                                                                        |
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 14.9 Agreement to Governing Law and Dispute Resolution.  Each party agrees to the applicable governing law above, and to the exclusive method
 of dispute resolution. Where the applicable dispute resolution procedure is arbitration, the award rendered by the arbitrator shall be final and
 binding on the parties, and judgment may be entered in any court of competent jurisdiction. Nothing in the above provision prevents either party
 from applying to a court of competent jurisdiction for equitable or injunctive relief. Any dispute or other action arising out of this Agreement
 must be brought within one year of the date the cause of action accrued. An action for nonpayment may be brought within two years of the date of
 last payment.
-
 14.10 Regional Agreement Variations: WSO2 Australia Pty Limited. Based upon the above, If You enter into this Agreement with WSO2 Australia Pty Limited,
 Sections 4.8, 8.2, and 12 are replaced with the following:
-
 4.8 Remedies. IF ANY WARRANTY OR GUARANTEE CANNOT BE EXCLUDED AT LAW, THEN TO THE EXTENT PERMITTED BY LAW, WSO2’S SOLE LIABILITY AND SUBSCRIBER’S
 SOLE REMEDY FOR BREACH OF A WARRANTY, GUARANTEE, OR OBLIGATION OF THIS AGREEMENT IS LIMITED (AT WSO2’S OPTION) IN THE CASE OF: (A) SERVICES, TO
 THE RESUPPLY OF THE SERVICES OR PAYMENT OF THE COST OF THE SAME; AND (B) GOODS (INCLUDING SOFTWARE), TO THE REPAIR OR REPLACEMENT OF THE GOODS,
 SUPPLY OF EQUIVALENT GOODS OR PAYMENT OF THE COST OF THE SAME.
-
 8.2 Taxes. All fees are exclusive of any applicable Taxes. You will pay to WSO2 an amount equal to any taxes arising from or relating to this
 Agreement, including without limitation, GST, use or value added taxes, which are paid by or are payable by WSO2. "Taxes" means any form of
 taxation, levy, duty, customs fee, charge, contribution or impost of whatever nature and by whatever authority imposed (including without
@@ -386,12 +322,10 @@ limitation any fine, penalty, surcharge or interest), excluding, however, any ta
 under any applicable law or regulation, domestic or foreign, to withhold or deduct any portion of the payments due to WSO2, then the sum payable
 to WSO2 will be increased by the amount necessary so that WSO2 receives an amount equal to the sum it would have received had Subscriber made no
 withholdings or deductions.
-
 Where a supply under this Agreement is a taxable supply, all amounts payable or other consideration provided must be increased by the amount of
 GST payable in relation to the supply.  All GST must be paid at the time any payment for any supply to which it relates is payable (provided a
 valid tax invoice has been issued for the supply).  In this Section, “GST”, “tax invoice” and “taxable supply” have the meanings given to them
 in the A New Tax Systems (Goods and Services Tax) Act 1999 (Cth).
-
 12. Limitation of Liability. EXCEPT FOR LIABILITY DAMAGES FOR BODILY INJURY (INCLUDING DEATH) WHICH SHALL BE UNLIMITED, WSO2’S TOTAL AGGREGATE
 LIABILITY FOR ALL CLAIMS ARISING OUT OF OR IN CONNECTION WITH THIS AGREEMENT, REGARDLESS OF THE FORM OF ACTION (INCLUDING NEGLIGENCE), IS
 LIMITED IN ANY CALENDAR YEAR TO THE AMOUNT PAID BY SUBSCRIBER FOR SERVICES DURING  THAT CALENDAR YEAR. IF YOU HAVE PAID NO FEES, OR ARE A
@@ -403,27 +337,22 @@ THAT DOES NOT ARISE NATURALLY OR ACCORDING TO THE USUAL COURSE OF THINGS FROM A 
 OF WHETHER ANY OF THE FOREGOING ARE FORESEEABLE, AND REGARDLESS OF WHETHER WSO2 HAS BEEN NOTIFIED OF THE POSSIBILITY OF ANY OF THE FOREGOING.
 THESE LIMITATIONS WILL APPLY REGARDLESS OF THE BASIS OF LIABILITY, INCLUDING NEGLIGENCE, MISREPRESENTATION, BREACH, DEFAMATION, INFRINGEMENT OF
 PUBLICITY, PRIVACY, OR INTELLECTUAL PROPERTY RIGHTS, OR ANY OTHER CONTRACT OR TORT CLAIM.
-
 14.11 Regional Agreement Variations: WSO2 Germany GmbH. Based upon the above, If You enter into this Agreement with WSO2 Germany GmbH,
 Sections 5.5, 8.1, and 8.2 are replaced with the following:
-
 5.5 Non-solicitation. During the term of this Agreement and for a period of one (1) year after its termination, neither party will directly
 (a) solicit for hire or engagement any of the other party’s personnel who were involved in the provision or receipt of Services under this
 Agreement or (b) hire or engage any person or entity who is or was employed or engaged by the other party and who was involved in the provision
 or receipt of Services under this Agreement until one hundred eighty (180) calendar days following the termination of the person’s or entity’s
 employment or engagement with the other party.
-
 For purposes herein, “solicit” does not include broad-based recruiting efforts, including without limitation help wanted advertising and posting
 of open positions on a party’s internet site. If You hire or engage directly or indirectly any personnel of WSO2 in violation of this section,
 You will pay WSO2 a contractual penalty equal to three times the monthly billing rate (assuming 168 hours per month) for such personnel.
-
 8.1 Fees. After You sign an Order, or upon renewal of a Subscription, WSO2 will send you an invoice. You will pay all fees specified in invoices.
 All payments are due within thirty (30) calendar days of receipt of an invoice from WSO2 and are non-refundable. WSO2 may suspend or cancel
 performance of all or part of the Subscription or Services and may change its credit terms (after notifying You) if actual payment is not
 received within sixty (60) calendar days of Your receipt of WSO2’s invoice. Payments past due sixty (60) calendar days will incur interest at the
 rate of 9 percentage points above the ECB basic interest rate per year. In addition, Subscriber has to pay 40 EUR in recovering charges. In any
 proceeding brought by WSO2 to collect amounts due, WSO2 will also receive its actual costs of collection, including reasonable attorneys’ fees.
-
 8.2 Taxes. All fees are exclusive of any applicable Taxes. You will pay to WSO2 an amount equal to any taxes arising from or relating to
 this Agreement, including without limitation, VAT which is paid by or is payable by WSO2. "Taxes" means any form of taxation, levy, duty,
 customs fee, charge, contribution or impost of whatever nature and by whatever authority imposed (including without limitation any fine,
@@ -475,8 +404,8 @@ metadata:
 data:
   deployment.toml: |-
     [server]
-    hostname = "$env{HOST_NAME}"
-    node_ip = "$env{NODE_IP}"
+    hostname = "localhost"
+    node_ip = "127.0.0.1"
     # base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 
     [super_admin]
@@ -485,79 +414,47 @@ data:
     create_admin_account = true
 
     [user_store]
-    type = "read_write_ldap"
+    type = "read_write_ldap_unique_id"
     connection_url = "ldap://localhost:${Ports.EmbeddedLDAP.LDAPServerPort}"
     connection_name = "uid=admin,ou=system"
     connection_password = "admin"
     base_dn = "dc=wso2,dc=org"      #refers the base dn on which the user and group search bases will be generated
 
     [database.identity_db]
+    type = "mysql"
     url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
     username = "wso2carbon"
     password = "wso2carbon"
-    driver = "com.mysql.jdbc.Driver"
+    driver = "com.mysql.cj.jdbc.Driver"
     [database.identity_db.pool_options]
     validationQuery = "SELECT 1"
 
+
     [database.shared_db]
+    type = "mysql"
     url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
     username = "wso2carbon"
     password = "wso2carbon"
-    driver = "com.mysql.jdbc.Driver"
+    driver = "com.mysql.cj.jdbc.Driver"
     [database.shared_db.pool_options]
     validationQuery = "SELECT 1"
 
-    [database.bps_database]
-    url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.jdbc.Driver"
-    [database.bps_database.pool_options]
-    validationQuery = "SELECT 1"
-
-    [[datasource]]
-    id = "WSO2ConsentDS"
-    url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.jdbc.Driver"
-    pool_options.validationQuery="SELECT 1"
-    pool_options.maxActive=50
-    pool_options.maxWait = 60000 # wait in milliseconds
-    pool_options.testOnBorrow = true
-    pool_options.jmxEnabled = false
-
     [keystore.primary]
-    name = "wso2carbon.jks"
+    file_name = "wso2carbon.jks"
     password = "wso2carbon"
 ---
 
 apiVersion: v1
 data:
-  init.sql: |
-    DROP DATABASE IF EXISTS WSO2IS_SHARED_DB;
+  init.sql: |-
+      DROP DATABASE IF EXISTS WSO2IS_SHARED_DB;
       DROP DATABASE IF EXISTS WSO2IS_IDENTITY_DB;
-      DROP DATABASE IF EXISTS WSO2IS_BPS_DB;
-      DROP DATABASE IF EXISTS WSO2IS_CONSENT_DB;
-      DROP DATABASE IF EXISTS IS_ANALYTICS_DB;
-      DROP DATABASE IF EXISTS WSO2_CLUSTER_DB;
-      DROP DATABASE IF EXISTS WSO2_PERSISTENCE_DB;
 
       CREATE DATABASE WSO2IS_SHARED_DB;
       CREATE DATABASE WSO2IS_IDENTITY_DB;
-      CREATE DATABASE WSO2IS_BPS_DB;
-      CREATE DATABASE WSO2IS_CONSENT_DB;
-      CREATE DATABASE IS_ANALYTICS_DB;
-      CREATE DATABASE WSO2_CLUSTER_DB;
-      CREATE DATABASE WSO2_PERSISTENCE_DB;
 
       GRANT ALL ON WSO2IS_SHARED_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
       GRANT ALL ON WSO2IS_IDENTITY_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-      GRANT ALL ON WSO2IS_BPS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-      GRANT ALL ON WSO2IS_CONSENT_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-      GRANT ALL ON IS_ANALYTICS_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-      GRANT ALL ON WSO2_CLUSTER_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
-      GRANT ALL ON WSO2_PERSISTENCE_DB.* TO 'wso2carbon'@'%' IDENTIFIED BY 'wso2carbon';
 
       USE WSO2IS_SHARED_DB;
 
@@ -594,7 +491,6 @@ data:
                    CONSTRAINT UNIQUE_REG_PATH_TENANT_ID UNIQUE (REG_PATH_VALUE,REG_TENANT_ID)
       )ENGINE INNODB;
 
-      CREATE INDEX REG_PATH_IND_BY_PATH_VALUE USING HASH ON REG_PATH(REG_PATH_VALUE, REG_TENANT_ID);
       CREATE INDEX REG_PATH_IND_BY_PATH_PARENT_ID USING HASH ON REG_PATH(REG_PATH_PARENT_ID, REG_TENANT_ID);
 
       CREATE TABLE IF NOT EXISTS REG_CONTENT (
@@ -815,6 +711,7 @@ data:
 
       CREATE TABLE UM_USER (
                    UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                   UM_USER_ID VARCHAR(255) NOT NULL,
                    UM_USER_NAME VARCHAR(255) NOT NULL,
                    UM_USER_PASSWORD VARCHAR(255) NOT NULL,
                    UM_SALT_VALUE VARCHAR(31),
@@ -822,7 +719,7 @@ data:
                    UM_CHANGED_TIME TIMESTAMP NOT NULL,
                    UM_TENANT_ID INTEGER DEFAULT 0,
                    PRIMARY KEY (UM_ID, UM_TENANT_ID),
-                   UNIQUE(UM_USER_NAME, UM_TENANT_ID)
+                   UNIQUE(UM_USER_ID, UM_TENANT_ID)
       )ENGINE INNODB;
 
       CREATE TABLE UM_SYSTEM_USER (
@@ -1023,8 +920,6 @@ data:
                   UNIQUE(UM_ROLE_NAME,UM_TENANT_ID)
       )ENGINE INNODB;
 
-      CREATE INDEX SYSTEM_ROLE_IND_BY_RN_TI ON UM_SYSTEM_ROLE(UM_ROLE_NAME, UM_TENANT_ID);
-
       CREATE TABLE UM_SYSTEM_USER_ROLE(
                   UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                   UM_USER_NAME VARCHAR(255),
@@ -1045,7 +940,19 @@ data:
       			PRIMARY KEY (UM_ID, UM_TENANT_ID)
       )ENGINE INNODB;
 
-      USE WSO2IS_IDENTITY_DB
+      CREATE TABLE IF NOT EXISTS UM_UUID_DOMAIN_MAPPER (
+                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                  UM_USER_ID VARCHAR(255) NOT NULL,
+                  UM_DOMAIN_ID INTEGER NOT NULL,
+                  UM_TENANT_ID INTEGER DEFAULT 0,
+                  PRIMARY KEY (UM_ID),
+                  UNIQUE (UM_USER_ID),
+                  FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE
+      )ENGINE INNODB;
+
+      CREATE INDEX UUID_DM_UID_TID ON UM_UUID_DOMAIN_MAPPER(UM_USER_ID, UM_TENANT_ID);
+
+      USE WSO2IS_IDENTITY_DB;
 
       CREATE TABLE IF NOT EXISTS IDN_BASE_TABLE (
                   PRODUCT_NAME VARCHAR(20),
@@ -1128,11 +1035,22 @@ data:
                   SUBJECT_IDENTIFIER VARCHAR(255),
                   ACCESS_TOKEN_HASH VARCHAR(512),
                   REFRESH_TOKEN_HASH VARCHAR(512),
-                  IDP_ID INTEGER,
+                  IDP_ID INTEGER DEFAULT -1 NOT NULL,
+                  TOKEN_BINDING_REF VARCHAR (32) DEFAULT 'NONE',
                   PRIMARY KEY (TOKEN_ID),
                   FOREIGN KEY (CONSUMER_KEY_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE,
                   CONSTRAINT CON_APP_KEY UNIQUE (CONSUMER_KEY_ID,AUTHZ_USER,TENANT_ID,USER_DOMAIN,USER_TYPE,TOKEN_SCOPE_HASH,
-                                                 TOKEN_STATE,TOKEN_STATE_ID,IDP_ID)
+                                                 TOKEN_STATE,TOKEN_STATE_ID,IDP_ID,TOKEN_BINDING_REF)
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_OAUTH2_TOKEN_BINDING (
+                  TOKEN_ID VARCHAR (255),
+                  TOKEN_BINDING_TYPE VARCHAR (32),
+                  TOKEN_BINDING_REF VARCHAR (32),
+                  TOKEN_BINDING_VALUE VARCHAR (1024),
+                  TENANT_ID INTEGER DEFAULT -1,
+                  PRIMARY KEY (TOKEN_ID),
+                  FOREIGN KEY (TOKEN_ID) REFERENCES IDN_OAUTH2_ACCESS_TOKEN(TOKEN_ID) ON DELETE CASCADE
       )ENGINE INNODB;
 
 
@@ -1157,7 +1075,7 @@ data:
                   ACCESS_TOKEN_HASH VARCHAR(512),
                   REFRESH_TOKEN_HASH VARCHAR(512),
                   INVALIDATED_TIME TIMESTAMP NULL,
-                  IDP_ID INTEGER
+                  IDP_ID INTEGER DEFAULT -1 NOT NULL
       );
 
       CREATE TABLE IF NOT EXISTS IDN_OAUTH2_AUTHORIZATION_CODE (
@@ -1169,7 +1087,7 @@ data:
                   AUTHZ_USER VARCHAR (100),
                   TENANT_ID INTEGER,
                   USER_DOMAIN VARCHAR(50),
-                  TIME_CREATED TIMESTAMP,
+                  TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
                   VALIDITY_PERIOD BIGINT,
                   STATE VARCHAR (25) DEFAULT 'ACTIVE',
                   TOKEN_ID VARCHAR(255),
@@ -1177,13 +1095,47 @@ data:
                   PKCE_CODE_CHALLENGE VARCHAR(255),
                   PKCE_CODE_CHALLENGE_METHOD VARCHAR(128),
                   AUTHORIZATION_CODE_HASH VARCHAR(512),
-                  IDP_ID INTEGER,
+                  IDP_ID INTEGER DEFAULT -1 NOT NULL,
                   PRIMARY KEY (CODE_ID),
                   FOREIGN KEY (CONSUMER_KEY_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
       )ENGINE INNODB;
 
 
+      CREATE TABLE IF NOT EXISTS IDN_OAUTH2_AUTHZ_CODE_SCOPE(
+                  CODE_ID   VARCHAR(255),
+                  SCOPE     VARCHAR(60),
+                  TENANT_ID INTEGER DEFAULT -1,
+                  PRIMARY KEY (CODE_ID, SCOPE),
+                  FOREIGN KEY (CODE_ID) REFERENCES IDN_OAUTH2_AUTHORIZATION_CODE (CODE_ID) ON DELETE CASCADE
+      )ENGINE INNODB;
 
+      CREATE TABLE IF NOT EXISTS IDN_OAUTH2_DEVICE_FLOW (
+                  CODE_ID VARCHAR(255),
+                  DEVICE_CODE VARCHAR(255),
+                  USER_CODE VARCHAR(25),
+                  CONSUMER_KEY_ID INTEGER,
+                  LAST_POLL_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  EXPIRY_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  POLL_TIME BIGINT,
+                  STATUS VARCHAR (25) DEFAULT 'PENDING',
+                  AUTHZ_USER VARCHAR (100),
+                  TENANT_ID INTEGER,
+                  USER_DOMAIN VARCHAR(50),
+                  IDP_ID INTEGER,
+                  PRIMARY KEY (DEVICE_CODE),
+                  UNIQUE (CODE_ID),
+                  UNIQUE (USER_CODE),
+                  FOREIGN KEY (CONSUMER_KEY_ID) REFERENCES IDN_OAUTH_CONSUMER_APPS(ID) ON DELETE CASCADE
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_OAUTH2_DEVICE_FLOW_SCOPES (
+                  ID INTEGER NOT NULL AUTO_INCREMENT,
+                  SCOPE_ID VARCHAR(255),
+                  SCOPE VARCHAR(255),
+                  PRIMARY KEY (ID),
+                  FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_DEVICE_FLOW(CODE_ID) ON DELETE CASCADE
+      )ENGINE INNODB;
 
       CREATE TABLE IF NOT EXISTS IDN_OAUTH2_ACCESS_TOKEN_SCOPE (
                   TOKEN_ID VARCHAR (255),
@@ -1199,13 +1151,17 @@ data:
                   DISPLAY_NAME VARCHAR(255) NOT NULL,
                   DESCRIPTION VARCHAR(512),
                   TENANT_ID INTEGER NOT NULL DEFAULT -1,
-                  PRIMARY KEY (SCOPE_ID)
+                  SCOPE_TYPE VARCHAR(255) NOT NULL,
+                  PRIMARY KEY (SCOPE_ID),
+                  UNIQUE (NAME, TENANT_ID)
       )ENGINE INNODB;
 
       CREATE TABLE IF NOT EXISTS IDN_OAUTH2_SCOPE_BINDING (
                   SCOPE_ID INTEGER NOT NULL,
-                  SCOPE_BINDING VARCHAR(255),
-                  FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE(SCOPE_ID) ON DELETE CASCADE
+                  SCOPE_BINDING VARCHAR(255) NOT NULL,
+                  BINDING_TYPE VARCHAR(255) NOT NULL,
+                  FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE (SCOPE_ID) ON DELETE CASCADE,
+                  UNIQUE (SCOPE_ID, SCOPE_BINDING, BINDING_TYPE)
       )ENGINE INNODB;
 
       CREATE TABLE IF NOT EXISTS IDN_OAUTH2_RESOURCE_SCOPE (
@@ -1349,26 +1305,32 @@ data:
       CREATE TABLE IF NOT EXISTS SP_APP (
               ID INTEGER NOT NULL AUTO_INCREMENT,
               TENANT_ID INTEGER NOT NULL,
-      	    	APP_NAME VARCHAR (255) NOT NULL ,
-      	    	USER_STORE VARCHAR (255) NOT NULL,
+              APP_NAME VARCHAR (255) NOT NULL ,
+              USER_STORE VARCHAR (255) NOT NULL,
               USERNAME VARCHAR (255) NOT NULL ,
               DESCRIPTION VARCHAR (1024),
-      	    	ROLE_CLAIM VARCHAR (512),
+              ROLE_CLAIM VARCHAR (512),
               AUTH_TYPE VARCHAR (255) NOT NULL,
-      	    	PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
-      	    	IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
-      	    	IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
-      	    	IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
+              PROVISIONING_USERSTORE_DOMAIN VARCHAR (512),
+              IS_LOCAL_CLAIM_DIALECT CHAR(1) DEFAULT '1',
+              IS_SEND_LOCAL_SUBJECT_ID CHAR(1) DEFAULT '0',
+              IS_SEND_AUTH_LIST_OF_IDPS CHAR(1) DEFAULT '0',
               IS_USE_TENANT_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
               IS_USE_USER_DOMAIN_SUBJECT CHAR(1) DEFAULT '1',
               ENABLE_AUTHORIZATION CHAR(1) DEFAULT '0',
-      	    	SUBJECT_CLAIM_URI VARCHAR (512),
-      	    	IS_SAAS_APP CHAR(1) DEFAULT '0',
-      	    	IS_DUMB_MODE CHAR(1) DEFAULT '0',
+              SUBJECT_CLAIM_URI VARCHAR (512),
+              IS_SAAS_APP CHAR(1) DEFAULT '0',
+              IS_DUMB_MODE CHAR(1) DEFAULT '0',
+              UUID CHAR(36),
+              IMAGE_URL VARCHAR(1024),
+              ACCESS_URL VARCHAR(1024),
+              IS_DISCOVERABLE CHAR(1) DEFAULT '0',
+
               PRIMARY KEY (ID)
       )ENGINE INNODB;
 
       ALTER TABLE SP_APP ADD CONSTRAINT APPLICATION_NAME_CONSTRAINT UNIQUE(APP_NAME, TENANT_ID);
+      ALTER TABLE SP_APP ADD CONSTRAINT APPLICATION_UUID_CONSTRAINT UNIQUE(UUID);
 
       CREATE TABLE IF NOT EXISTS SP_METADATA (
                   ID INTEGER AUTO_INCREMENT,
@@ -1523,9 +1485,12 @@ data:
        			PROVISIONING_ROLE VARCHAR(128),
        			IS_FEDERATION_HUB CHAR(1) NOT NULL DEFAULT '0',
        			IS_LOCAL_CLAIM_DIALECT CHAR(1) NOT NULL DEFAULT '0',
-                  DISPLAY_NAME VARCHAR(255),
+       			DISPLAY_NAME VARCHAR(255),
+       			IMAGE_URL VARCHAR(1024),
+       			UUID CHAR(36) NOT NULL,
       			PRIMARY KEY (ID),
-      			UNIQUE (TENANT_ID, NAME)
+      			UNIQUE (TENANT_ID, NAME),
+      			UNIQUE (UUID)
       )ENGINE INNODB;
 
       CREATE TABLE IF NOT EXISTS IDP_ROLE (
@@ -1668,6 +1633,7 @@ data:
                   IDP_ID INTEGER NOT NULL,
                   DOMAIN_NAME VARCHAR(255) NOT NULL,
                   USER_NAME VARCHAR(255) NOT NULL,
+                  ASSOCIATION_ID CHAR(36) NOT NULL,
                   PRIMARY KEY (ID),
                   UNIQUE(IDP_USER_ID, TENANT_ID, IDP_ID),
                   FOREIGN KEY (IDP_ID) REFERENCES IDP(ID) ON DELETE CASCADE
@@ -1701,6 +1667,8 @@ data:
                   PUBLIC_KEY_COSE VARCHAR(1024) NOT NULL,
                   SIGNATURE_COUNT BIGINT,
                   USER_IDENTITY VARCHAR(512) NOT NULL,
+                  DISPLAY_NAME VARCHAR(255),
+                  IS_USERNAMELESS_SUPPORTED CHAR(1) DEFAULT '0',
                   PRIMARY KEY (CREDENTIAL_ID, USER_HANDLE)
       )ENGINE INNODB;
 
@@ -1818,7 +1786,7 @@ data:
 
       CREATE TABLE IF NOT EXISTS IDN_CLAIM (
         ID INTEGER NOT NULL AUTO_INCREMENT,
-        DIALECT_ID INTEGER,
+        DIALECT_ID INTEGER NOT NULL,
         CLAIM_URI VARCHAR (255) NOT NULL,
         TENANT_ID INTEGER NOT NULL,
         PRIMARY KEY (ID),
@@ -1940,20 +1908,14 @@ data:
                    CONSTRAINT CERTIFICATE_UNIQUE_KEY UNIQUE (NAME, TENANT_ID)
       )ENGINE INNODB;
 
-      CREATE TABLE IF NOT EXISTS IDN_OIDC_SCOPE (
-                  ID INTEGER NOT NULL AUTO_INCREMENT,
-                  NAME VARCHAR(255) NOT NULL,
-                  TENANT_ID INTEGER DEFAULT -1,
-                  PRIMARY KEY (ID)
-      )ENGINE INNODB;
-
       CREATE TABLE IF NOT EXISTS IDN_OIDC_SCOPE_CLAIM_MAPPING (
                   ID INTEGER NOT NULL AUTO_INCREMENT,
-                  SCOPE_ID INTEGER,
-                  EXTERNAL_CLAIM_ID INTEGER,
+                  SCOPE_ID INTEGER NOT NULL,
+                  EXTERNAL_CLAIM_ID INTEGER NOT NULL,
                   PRIMARY KEY (ID),
-                  FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OIDC_SCOPE(ID) ON DELETE CASCADE,
-                  FOREIGN KEY (EXTERNAL_CLAIM_ID) REFERENCES IDN_CLAIM(ID) ON DELETE CASCADE
+                  FOREIGN KEY (SCOPE_ID) REFERENCES IDN_OAUTH2_SCOPE(SCOPE_ID) ON DELETE CASCADE,
+                  FOREIGN KEY (EXTERNAL_CLAIM_ID) REFERENCES IDN_CLAIM(ID) ON DELETE CASCADE,
+                  UNIQUE (SCOPE_ID, EXTERNAL_CLAIM_ID)
       )ENGINE INNODB;
 
       CREATE TABLE IF NOT EXISTS IDN_FUNCTION_LIBRARY (
@@ -1963,6 +1925,40 @@ data:
       	TENANT_ID INTEGER NOT NULL,
       	DATA BLOB NOT NULL,
       	PRIMARY KEY (TENANT_ID,NAME)
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_OAUTH2_CIBA_AUTH_CODE (
+          AUTH_CODE_KEY CHAR (36),
+          AUTH_REQ_ID CHAR (36),
+          ISSUED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          CONSUMER_KEY VARCHAR(255),
+          LAST_POLLED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          POLLING_INTERVAL INTEGER,
+          EXPIRES_IN  INTEGER,
+          AUTHENTICATED_USER_NAME VARCHAR(255),
+          USER_STORE_DOMAIN VARCHAR(100),
+          TENANT_ID INTEGER,
+          AUTH_REQ_STATUS VARCHAR (100) DEFAULT 'REQUESTED',
+          IDP_ID INTEGER,
+          UNIQUE(AUTH_REQ_ID),
+          PRIMARY KEY (AUTH_CODE_KEY),
+          FOREIGN KEY (CONSUMER_KEY) REFERENCES IDN_OAUTH_CONSUMER_APPS(CONSUMER_KEY) ON DELETE CASCADE
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_OAUTH2_CIBA_REQUEST_SCOPES (
+          AUTH_CODE_KEY CHAR (36),
+          SCOPE VARCHAR (255),
+          FOREIGN KEY (AUTH_CODE_KEY) REFERENCES IDN_OAUTH2_CIBA_AUTH_CODE(AUTH_CODE_KEY) ON DELETE CASCADE
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_FED_AUTH_SESSION_MAPPING (
+      	IDP_SESSION_ID VARCHAR(255) NOT NULL,
+      	SESSION_ID VARCHAR(255) NOT NULL,
+      	IDP_NAME VARCHAR(255) NOT NULL,
+      	AUTHENTICATOR_ID VARCHAR(255),
+      	PROTOCOL_TYPE VARCHAR(255),
+      	TIME_CREATED TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      	PRIMARY KEY (IDP_SESSION_ID)
       )ENGINE INNODB;
 
       -- --------------------------- INDEX CREATION -----------------------------
@@ -1976,6 +1972,7 @@ data:
       CREATE INDEX IDX_AT_AU_CKID_TS_UT ON IDN_OAUTH2_ACCESS_TOKEN(AUTHZ_USER, CONSUMER_KEY_ID, TOKEN_STATE, USER_TYPE);
       CREATE INDEX IDX_AT_RTH ON IDN_OAUTH2_ACCESS_TOKEN(REFRESH_TOKEN_HASH);
       CREATE INDEX IDX_AT_RT ON IDN_OAUTH2_ACCESS_TOKEN(REFRESH_TOKEN);
+      CREATE INDEX IDX_AT_CKID_AU_TID_UD_TSH_TS ON IDN_OAUTH2_ACCESS_TOKEN(CONSUMER_KEY_ID, AUTHZ_USER, TENANT_ID, USER_DOMAIN, TOKEN_SCOPE_HASH, TOKEN_STATE);
 
       -- IDN_OAUTH2_AUTHORIZATION_CODE --
       CREATE INDEX IDX_AUTHORIZATION_CODE_HASH ON IDN_OAUTH2_AUTHORIZATION_CODE (AUTHORIZATION_CODE_HASH, CONSUMER_KEY_ID);
@@ -1999,7 +1996,6 @@ data:
 
       -- IDN_OAUTH2_SCOPE --
       CREATE INDEX IDX_SC_TID ON IDN_OAUTH2_SCOPE(TENANT_ID);
-      CREATE INDEX IDX_SC_N_TID ON IDN_OAUTH2_SCOPE(NAME, TENANT_ID);
 
       -- IDN_OAUTH2_SCOPE_BINDING --
       CREATE INDEX IDX_SB_SCPID ON IDN_OAUTH2_SCOPE_BINDING(SCOPE_ID);
@@ -2033,347 +2029,14 @@ data:
       -- IDN_FIDO2_PROPERTY --
       CREATE INDEX IDX_FIDO2_STR ON FIDO2_DEVICE_STORE(USER_NAME, TENANT_ID, DOMAIN_NAME, CREDENTIAL_ID, USER_HANDLE);
 
-      USE WSO2IS_BPS_DB
+      -- IDN_ASSOCIATED_ID --
+      CREATE INDEX IDX_AI_DN_UN_AI ON IDN_ASSOCIATED_ID(DOMAIN_NAME, USER_NAME, ASSOCIATION_ID);
 
-      DROP TABLE IF EXISTS ODE_SCHEMA_VERSION;
+      -- IDN_OAUTH2_TOKEN_BINDING --
+      CREATE INDEX IDX_IDN_AUTH_BIND ON IDN_OAUTH2_TOKEN_BINDING (TOKEN_BINDING_REF);
 
-      --
-      --
-      --
-      DROP TABLE IF EXISTS ODE_JOB;
-
-      DROP TABLE IF EXISTS TASK_ATTACHMENT;
-      DROP TABLE IF EXISTS ODE_ACTIVITY_RECOVERY;
-      DROP TABLE IF EXISTS ODE_CORRELATION_SET;
-      DROP TABLE IF EXISTS ODE_CORRELATOR;
-      DROP TABLE IF EXISTS ODE_CORSET_PROP;
-      DROP TABLE IF EXISTS ODE_EVENT;
-      DROP TABLE IF EXISTS ODE_FAULT;
-      DROP TABLE IF EXISTS ODE_MESSAGE;
-      DROP TABLE IF EXISTS ODE_MESSAGE_EXCHANGE;
-      DROP TABLE IF EXISTS ODE_MESSAGE_ROUTE;
-      DROP TABLE IF EXISTS ODE_MEX_PROP;
-      DROP TABLE IF EXISTS ODE_PARTNER_LINK;
-      DROP TABLE IF EXISTS ODE_PROCESS;
-      DROP TABLE IF EXISTS ODE_PROCESS_INSTANCE;
-      DROP TABLE IF EXISTS ODE_SCOPE;
-      DROP TABLE IF EXISTS ODE_XML_DATA;
-      DROP TABLE IF EXISTS ODE_XML_DATA_PROP;
-      DROP TABLE IF EXISTS OPENJPA_SEQUENCE_TABLE;
-      DROP TABLE IF EXISTS STORE_DU;
-      DROP TABLE IF EXISTS STORE_PROCESS;
-      DROP TABLE IF EXISTS STORE_PROCESS_PROP;
-      DROP TABLE IF EXISTS STORE_PROC_TO_PROP;
-      DROP TABLE IF EXISTS STORE_VERSIONS;
-
-      --
-      -- Human Task Related SQL Scripts
-      --
-
-
-      DROP TABLE IF EXISTS HT_DEADLINE;
-      DROP TABLE IF EXISTS HT_DEPLOYMENT_UNIT;
-      DROP TABLE IF EXISTS HT_EVENT;
-      DROP TABLE IF EXISTS HT_GENERIC_HUMAN_ROLE;
-      DROP TABLE IF EXISTS HT_HUMANROLE_ORGENTITY;
-      DROP TABLE IF EXISTS HT_JOB;
-      DROP TABLE IF EXISTS HT_MESSAGE;
-      DROP TABLE IF EXISTS HT_ORG_ENTITY;
-      DROP TABLE IF EXISTS HT_PRESENTATION_ELEMENT;
-      DROP TABLE IF EXISTS HT_PRESENTATION_PARAM;
-      DROP TABLE IF EXISTS HT_TASK;
-      DROP TABLE IF EXISTS HT_TASK_ATTACHMENT;
-      DROP TABLE IF EXISTS HT_TASK_COMMENT;
-      DROP TABLE IF EXISTS HT_VERSIONS;
-      --
-      -- Attachment Management Related SQL Scripts
-      --
-      DROP TABLE IF EXISTS ATTACHMENT;
-
-
-      --
-      -- B4P Related SQL Scripts
-      --
-      DROP TABLE IF EXISTS HT_COORDINATION_DATA;
-
-      --
-      -- BPEL Related SQL Scripts
-      --
-
-
-      create table ODE_SCHEMA_VERSION (VERSION integer);
-      insert into ODE_SCHEMA_VERSION values (6);
-      -- Apache ODE - SimpleScheduler Database Schema
-      --
-      -- MySQL scripts by Maciej Szefler.
-      --
-      --
-      DROP TABLE IF EXISTS ODE_JOB;
-
-      CREATE TABLE ODE_JOB (
-        jobid CHAR(64)  NOT NULL DEFAULT '',
-        ts BIGINT  NOT NULL DEFAULT 0,
-        nodeid char(64)  NULL,
-        scheduled int  NOT NULL DEFAULT 0,
-        transacted int  NOT NULL DEFAULT 0,
-
-        instanceId BIGINT,
-        mexId varchar(255),
-        processId varchar(255),
-        type varchar(255),
-        channel varchar(255),
-        correlatorId varchar(255),
-        correlationKeySet varchar(255),
-        retryCount int,
-        inMem int,
-        detailsExt blob(4096),
-
-        PRIMARY KEY(jobid),
-        INDEX IDX_ODE_JOB_TS(ts),
-        INDEX IDX_ODE_JOB_NODEID(nodeid)
-      )
-      ENGINE=innodb;
-
-      COMMIT;
-
-      CREATE TABLE TASK_ATTACHMENT (ATTACHMENT_ID BIGINT NOT NULL, MESSAGE_EXCHANGE_ID VARCHAR(255), PRIMARY KEY (ATTACHMENT_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_ACTIVITY_RECOVERY (ID BIGINT NOT NULL, ACTIONS VARCHAR(255), ACTIVITY_ID BIGINT, CHANNEL VARCHAR(255), DATE_TIME DATETIME, DETAILS TEXT, INSTANCE_ID BIGINT, REASON VARCHAR(255), RETRIES INTEGER, PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE ODE_CORRELATION_SET (CORRELATION_SET_ID BIGINT NOT NULL, CORRELATION_KEY VARCHAR(255), NAME VARCHAR(255), SCOPE_ID BIGINT, PRIMARY KEY (CORRELATION_SET_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_CORRELATOR (CORRELATOR_ID BIGINT NOT NULL, CORRELATOR_KEY VARCHAR(255), PROC_ID BIGINT, PRIMARY KEY (CORRELATOR_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_CORSET_PROP (ID BIGINT NOT NULL, CORRSET_ID BIGINT, PROP_KEY VARCHAR(255), PROP_VALUE VARCHAR(255), PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE ODE_EVENT (EVENT_ID BIGINT NOT NULL, DETAIL VARCHAR(255), DATA BLOB, SCOPE_ID BIGINT, TSTAMP DATETIME, TYPE VARCHAR(255), INSTANCE_ID BIGINT, PROCESS_ID BIGINT, PRIMARY KEY (EVENT_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_FAULT (FAULT_ID BIGINT NOT NULL, ACTIVITY_ID INTEGER, DATA TEXT, MESSAGE VARCHAR(4000), LINE_NUMBER INTEGER, NAME VARCHAR(255), PRIMARY KEY (FAULT_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_MESSAGE (MESSAGE_ID BIGINT NOT NULL, DATA TEXT, HEADER TEXT, TYPE VARCHAR(255), MESSAGE_EXCHANGE_ID VARCHAR(255), PRIMARY KEY (MESSAGE_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_MESSAGE_EXCHANGE (MESSAGE_EXCHANGE_ID VARCHAR(255) NOT NULL, CALLEE VARCHAR(255), CHANNEL VARCHAR(255), CORRELATION_ID VARCHAR(255), CORRELATION_KEYS VARCHAR(255), CORRELATION_STATUS VARCHAR(255), CREATE_TIME DATETIME, DIRECTION INTEGER, EPR TEXT, FAULT VARCHAR(255), FAULT_EXPLANATION VARCHAR(255), OPERATION VARCHAR(255), PARTNER_LINK_MODEL_ID INTEGER, PATTERN VARCHAR(255), PIPED_ID VARCHAR(255), PORT_TYPE VARCHAR(255), PROPAGATE_TRANS BIT, STATUS VARCHAR(255), SUBSCRIBER_COUNT INTEGER, CORR_ID BIGINT, PARTNER_LINK_ID BIGINT, PROCESS_ID BIGINT, PROCESS_INSTANCE_ID BIGINT, REQUEST_MESSAGE_ID BIGINT, RESPONSE_MESSAGE_ID BIGINT, PRIMARY KEY (MESSAGE_EXCHANGE_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_MESSAGE_ROUTE (MESSAGE_ROUTE_ID BIGINT NOT NULL, CORRELATION_KEY VARCHAR(255), GROUP_ID VARCHAR(255), ROUTE_INDEX INTEGER, PROCESS_INSTANCE_ID INTEGER, ROUTE_POLICY VARCHAR(16), CORR_ID BIGINT, PRIMARY KEY (MESSAGE_ROUTE_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_MEX_PROP (ID BIGINT NOT NULL, MEX_ID VARCHAR(255), PROP_KEY VARCHAR(255), PROP_VALUE VARCHAR(2000), PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE ODE_PARTNER_LINK (PARTNER_LINK_ID BIGINT NOT NULL, MY_EPR TEXT, MY_ROLE_NAME VARCHAR(255), MY_ROLE_SERVICE_NAME VARCHAR(255), MY_SESSION_ID VARCHAR(255), PARTNER_EPR TEXT, PARTNER_LINK_MODEL_ID INTEGER, PARTNER_LINK_NAME VARCHAR(255), PARTNER_ROLE_NAME VARCHAR(255), PARTNER_SESSION_ID VARCHAR(255), SCOPE_ID BIGINT, PRIMARY KEY (PARTNER_LINK_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_PROCESS (ID BIGINT NOT NULL, GUID VARCHAR(255), PROCESS_ID VARCHAR(255), PROCESS_TYPE VARCHAR(255), VERSION BIGINT, PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE ODE_PROCESS_INSTANCE (ID BIGINT NOT NULL, DATE_CREATED DATETIME, EXECUTION_STATE BLOB, FAULT_ID BIGINT, LAST_ACTIVE_TIME DATETIME, LAST_RECOVERY_DATE DATETIME, PREVIOUS_STATE SMALLINT, SEQUENCE BIGINT, INSTANCE_STATE SMALLINT, INSTANTIATING_CORRELATOR_ID BIGINT, PROCESS_ID BIGINT, ROOT_SCOPE_ID BIGINT, PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE ODE_SCOPE (SCOPE_ID BIGINT NOT NULL, MODEL_ID INTEGER, SCOPE_NAME VARCHAR(255), SCOPE_STATE VARCHAR(255), PROCESS_INSTANCE_ID BIGINT, PARENT_SCOPE_ID BIGINT, PRIMARY KEY (SCOPE_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_XML_DATA (XML_DATA_ID BIGINT NOT NULL, DATA TEXT, IS_SIMPLE_TYPE BIT, NAME VARCHAR(255), SCOPE_ID BIGINT, PRIMARY KEY (XML_DATA_ID)) ENGINE=innodb;
-      CREATE TABLE ODE_XML_DATA_PROP (ID BIGINT NOT NULL, XML_DATA_ID BIGINT, PROP_KEY VARCHAR(255), PROP_VALUE VARCHAR(255), PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE OPENJPA_SEQUENCE_TABLE (ID TINYINT NOT NULL, SEQUENCE_VALUE BIGINT, PRIMARY KEY (ID)) ENGINE=innodb;
-      CREATE TABLE STORE_DU (NAME VARCHAR(255) NOT NULL, DEPLOYDT DATETIME, DEPLOYER VARCHAR(255), DIR VARCHAR(255), PRIMARY KEY (NAME)) ENGINE=innodb;
-      CREATE TABLE STORE_PROCESS (PID VARCHAR(255) NOT NULL, STATE VARCHAR(255), TYPE VARCHAR(255), VERSION BIGINT, DU VARCHAR(255), PRIMARY KEY (PID)) ENGINE=innodb;
-      CREATE TABLE STORE_PROCESS_PROP (id BIGINT NOT NULL, PROP_KEY VARCHAR(255), PROP_VAL VARCHAR(255), PRIMARY KEY (id)) ENGINE=innodb;
-      CREATE TABLE STORE_PROC_TO_PROP (PROCESSCONFDAOIMPL_PID VARCHAR(255), ELEMENT_ID BIGINT) ENGINE=innodb;
-      CREATE TABLE STORE_VERSIONS (id BIGINT NOT NULL, VERSION BIGINT, PRIMARY KEY (id)) ENGINE=innodb;
-      CREATE INDEX I_D_TASK_ATTACMENT ON TASK_ATTACHMENT (MESSAGE_EXCHANGE_ID);
-      CREATE INDEX I_D_CTVRY_INSTANCE ON ODE_ACTIVITY_RECOVERY (INSTANCE_ID);
-      CREATE INDEX I_D_CR_ST_SCOPE ON ODE_CORRELATION_SET (SCOPE_ID);
-      CREATE INDEX I_D_CRLTR_PROCESS ON ODE_CORRELATOR (PROC_ID);
-      CREATE INDEX I_D_CRPRP_CORRSET ON ODE_CORSET_PROP (CORRSET_ID);
-      CREATE INDEX I_OD_VENT_INSTANCE ON ODE_EVENT (INSTANCE_ID);
-      CREATE INDEX I_OD_VENT_PROCESS ON ODE_EVENT (PROCESS_ID);
-      CREATE INDEX I_OD_MSSG_MESSAGEEXCHANGE ON ODE_MESSAGE (MESSAGE_EXCHANGE_ID);
-      CREATE INDEX I_D_MSHNG_CORRELATOR ON ODE_MESSAGE_EXCHANGE (CORR_ID);
-      CREATE INDEX I_D_MSHNG_PARTNERLINK ON ODE_MESSAGE_EXCHANGE (PARTNER_LINK_ID);
-      CREATE INDEX I_D_MSHNG_PROCESS ON ODE_MESSAGE_EXCHANGE (PROCESS_ID);
-      CREATE INDEX I_D_MSHNG_PROCESSINST ON ODE_MESSAGE_EXCHANGE (PROCESS_INSTANCE_ID);
-      CREATE INDEX I_D_MSHNG_REQUEST ON ODE_MESSAGE_EXCHANGE (REQUEST_MESSAGE_ID);
-      CREATE INDEX I_D_MSHNG_RESPONSE ON ODE_MESSAGE_EXCHANGE (RESPONSE_MESSAGE_ID);
-      CREATE INDEX I_D_MS_RT_CORRELATOR ON ODE_MESSAGE_ROUTE (CORR_ID);
-      CREATE INDEX I_D_MS_RT_PROCESSINST ON ODE_MESSAGE_ROUTE (PROCESS_INSTANCE_ID);
-      CREATE INDEX I_D_MXPRP_MEX ON ODE_MEX_PROP (MEX_ID);
-      CREATE INDEX I_D_PRLNK_SCOPE ON ODE_PARTNER_LINK (SCOPE_ID);
-      CREATE INDEX I_D_PRTNC_FAULT ON ODE_PROCESS_INSTANCE (FAULT_ID);
-      CREATE INDEX I_D_PRTNC_INSTANTIATINGCORRELATOR ON ODE_PROCESS_INSTANCE (INSTANTIATING_CORRELATOR_ID);
-      CREATE INDEX I_D_PRTNC_PROCESS ON ODE_PROCESS_INSTANCE (PROCESS_ID);
-      CREATE INDEX I_D_PRTNC_ROOTSCOPE ON ODE_PROCESS_INSTANCE (ROOT_SCOPE_ID);
-      CREATE INDEX I_OD_SCOP_PARENTSCOPE ON ODE_SCOPE (PARENT_SCOPE_ID);
-      CREATE INDEX I_OD_SCOP_PROCESSINSTANCE ON ODE_SCOPE (PROCESS_INSTANCE_ID);
-      CREATE INDEX I_D_XM_DT_SCOPE ON ODE_XML_DATA (SCOPE_ID);
-      CREATE INDEX I_D_XMPRP_XMLDATA ON ODE_XML_DATA_PROP (XML_DATA_ID);
-      CREATE INDEX I_STR_CSS_DU ON STORE_PROCESS (DU);
-      CREATE INDEX I_STR_PRP_ELEMENT ON STORE_PROC_TO_PROP (ELEMENT_ID);
-      CREATE INDEX I_STR_PRP_PROCESSCONFDAOIMPL_PID ON STORE_PROC_TO_PROP (PROCESSCONFDAOIMPL_PID);
-
-
-
-      --
-      -- Human Task Related SQL Scripts
-      --
-
-
-      CREATE TABLE HT_DEADLINE (id BIGINT NOT NULL, DEADLINE_DATE DATETIME NOT NULL, DEADLINE_NAME VARCHAR(255) NOT NULL, STATUS_TOBE_ACHIEVED VARCHAR(255) NOT NULL, TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_DEPLOYMENT_UNIT (id BIGINT NOT NULL, CHECKSUM VARCHAR(255) NOT NULL, DEPLOYED_ON DATETIME, DEPLOY_DIR VARCHAR(255) NOT NULL, NAME VARCHAR(255) NOT NULL, PACKAGE_NAME VARCHAR(255) NOT NULL, STATUS VARCHAR(255) NOT NULL, TENANT_ID BIGINT NOT NULL, VERSION BIGINT NOT NULL, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_EVENT (id BIGINT NOT NULL, EVENT_DETAILS VARCHAR(255), NEW_STATE VARCHAR(255), OLD_STATE VARCHAR(255), EVENT_TIMESTAMP DATETIME NOT NULL, EVENT_TYPE VARCHAR(255) NOT NULL, EVENT_USER VARCHAR(255) NOT NULL, TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_GENERIC_HUMAN_ROLE (GHR_ID BIGINT NOT NULL, GHR_TYPE VARCHAR(255), TASK_ID BIGINT, PRIMARY KEY (GHR_ID)) ENGINE = innodb;
-      CREATE TABLE HT_HUMANROLE_ORGENTITY (HUMANROLE_ID BIGINT, ORGENTITY_ID BIGINT) ENGINE = innodb;
-      CREATE TABLE HT_JOB (id BIGINT NOT NULL, JOB_DETAILS VARCHAR(4000), JOB_NAME VARCHAR(255), NODEID VARCHAR(255), SCHEDULED VARCHAR(1) NOT NULL, TASKID BIGINT NOT NULL, JOB_TIME BIGINT NOT NULL, TRANSACTED VARCHAR(1) NOT NULL, JOB_TYPE VARCHAR(255) NOT NULL, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_MESSAGE (MESSAGE_ID BIGINT NOT NULL, MESSAGE_DATA LONGTEXT, MESSAGE_HEADER LONGTEXT, MESSAGE_TYPE VARCHAR(255), MESSAGE_NAME VARCHAR(512), TASK_ID BIGINT, PRIMARY KEY (MESSAGE_ID)) ENGINE = innodb;
-      CREATE TABLE HT_ORG_ENTITY (ORG_ENTITY_ID BIGINT NOT NULL, ORG_ENTITY_NAME VARCHAR(255), ORG_ENTITY_TYPE VARCHAR(255), PRIMARY KEY (ORG_ENTITY_ID)) ENGINE = innodb;
-      CREATE TABLE HT_PRESENTATION_ELEMENT (id BIGINT NOT NULL, PE_CONTENT VARCHAR(2000), XML_LANG VARCHAR(255), PE_TYPE VARCHAR(31), CONTENT_TYPE VARCHAR(255), TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_PRESENTATION_PARAM (id BIGINT NOT NULL, PARAM_NAME VARCHAR(255), PARAM_TYPE VARCHAR(255), PARAM_VALUE VARCHAR(2000), TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_TASK (id BIGINT NOT NULL, ACTIVATION_TIME DATETIME, COMPLETE_BY_TIME DATETIME, CREATED_ON DATETIME, ESCALATED VARCHAR(1), EXPIRATION_TIME DATETIME, TASK_NAME VARCHAR(255) NOT NULL, PACKAGE_NAME VARCHAR(255) NOT NULL, PRIORITY INTEGER NOT NULL, SKIPABLE VARCHAR(1), START_BY_TIME DATETIME, STATUS VARCHAR(255) NOT NULL, STATUS_BEFORE_SUSPENSION VARCHAR(255), TASK_DEF_NAME VARCHAR(255) NOT NULL, TASK_VERSION BIGINT NOT NULL, TENANT_ID INTEGER NOT NULL, TASK_TYPE VARCHAR(255) NOT NULL, UPDATED_ON DATETIME, FAILURE_MESSAGE BIGINT, INPUT_MESSAGE BIGINT, OUTPUT_MESSAGE BIGINT, PARENTTASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_TASK_ATTACHMENT (id BIGINT NOT NULL, ACCESS_TYPE VARCHAR(255), ATTACHED_AT DATETIME, CONTENT_TYPE VARCHAR(255), ATTACHMENT_NAME VARCHAR(255), ATTACHMENT_VALUE VARCHAR(255), TASK_ID BIGINT, ATTACHED_BY BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_TASK_COMMENT (id BIGINT NOT NULL, COMMENT_TEXT VARCHAR(4000), COMMENTED_BY VARCHAR(100), COMMENTED_ON DATETIME, MODIFIED_BY VARCHAR(100), MODIFIED_ON DATETIME, TASK_ID BIGINT, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE TABLE HT_VERSIONS (id BIGINT NOT NULL, TASK_VERSION BIGINT NOT NULL, PRIMARY KEY (id)) ENGINE = innodb;
-      CREATE INDEX I_HT_DDLN_TASK ON HT_DEADLINE (TASK_ID);
-      CREATE INDEX I_HT_VENT_TASK ON HT_EVENT (TASK_ID);
-      CREATE INDEX I_HT_G_RL_TASK ON HT_GENERIC_HUMAN_ROLE (TASK_ID);
-      CREATE INDEX I_HT_HTTY_ELEMENT ON HT_HUMANROLE_ORGENTITY (ORGENTITY_ID);
-      CREATE INDEX I_HT_HTTY_HUMANROLE_ID ON HT_HUMANROLE_ORGENTITY (HUMANROLE_ID);
-      CREATE INDEX I_HT_MSSG_TASK ON HT_MESSAGE (TASK_ID);
-      CREATE INDEX I_HT_PMNT_DTYPE ON HT_PRESENTATION_ELEMENT (PE_TYPE);
-      CREATE INDEX I_HT_PMNT_TASK ON HT_PRESENTATION_ELEMENT (TASK_ID);
-      CREATE INDEX I_HT_PPRM_TASK ON HT_PRESENTATION_PARAM (TASK_ID);
-      CREATE INDEX I_HT_TASK_FAILUREMESSAGE ON HT_TASK (FAILURE_MESSAGE);
-      CREATE INDEX I_HT_TASK_INPUTMESSAGE ON HT_TASK (INPUT_MESSAGE);
-      CREATE INDEX I_HT_TASK_OUTPUTMESSAGE ON HT_TASK (OUTPUT_MESSAGE);
-      CREATE INDEX I_HT_TASK_PARENTTASK ON HT_TASK (PARENTTASK_ID);
-      CREATE INDEX I_HT_TMNT_ATTACHEDBY ON HT_TASK_ATTACHMENT (ATTACHED_BY);
-      CREATE INDEX I_HT_TMNT_TASK ON HT_TASK_ATTACHMENT (TASK_ID);
-      CREATE INDEX I_HT_TMNT_TASK1 ON HT_TASK_COMMENT (TASK_ID);
-
-      --
-      -- Attachment Management Related SQL Scripts
-      --
-      CREATE TABLE ATTACHMENT (
-      	id BIGINT NOT NULL AUTO_INCREMENT,
-      	CREATED_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-      	ATTACHMENT_NAME VARCHAR(255) NOT NULL,
-      	CREATED_BY VARCHAR(255) NOT NULL,
-      	CONTENT_TYPE VARCHAR(255) NOT NULL,
-      	ATTACHMENT_URL VARCHAR(2048) NOT NULL,
-      	ATTACHMENT_CONTENT BLOB,
-      	PRIMARY KEY (id));
-
-      -- CREATE INDEX I_ATTACHMENT_URL ON ATTACHMENT (ATTACHMENT_URL);
-
-
-      --
-      -- B4P Related SQL Scripts
-      --
-      CREATE TABLE HT_COORDINATION_DATA (MESSAGE_ID VARCHAR(255) NOT NULL, PROCESS_INSTANCE_ID VARCHAR(255), PROTOCOL_HANDlER_URL VARCHAR(255) NOT NULL, TASK_ID VARCHAR(255), PRIMARY KEY (MESSAGE_ID)) ENGINE = innodb;
-
-      USE WSO2IS_CONSENT_DB
-
-      CREATE TABLE CM_PII_CATEGORY (
-        ID           INTEGER AUTO_INCREMENT,
-        NAME         VARCHAR(255) NOT NULL,
-        DESCRIPTION  VARCHAR(1023),
-        DISPLAY_NAME VARCHAR(255),
-        IS_SENSITIVE INTEGER      NOT NULL,
-        TENANT_ID    INTEGER DEFAULT '-1234',
-        UNIQUE KEY (NAME, TENANT_ID),
-        PRIMARY KEY (ID)
-      );
-
-      CREATE TABLE CM_RECEIPT (
-        CONSENT_RECEIPT_ID  VARCHAR(255) NOT NULL,
-        VERSION             VARCHAR(255) NOT NULL,
-        JURISDICTION        VARCHAR(255) NOT NULL,
-        CONSENT_TIMESTAMP   TIMESTAMP    NOT NULL,
-        COLLECTION_METHOD   VARCHAR(255) NOT NULL,
-        LANGUAGE            VARCHAR(255) NOT NULL,
-        PII_PRINCIPAL_ID    VARCHAR(255) NOT NULL,
-        PRINCIPAL_TENANT_ID INTEGER DEFAULT '-1234',
-        POLICY_URL          VARCHAR(255) NOT NULL,
-        STATE               VARCHAR(255) NOT NULL,
-        PII_CONTROLLER      VARCHAR(2048) NOT NULL,
-        PRIMARY KEY (CONSENT_RECEIPT_ID)
-      );
-
-      CREATE TABLE CM_PURPOSE (
-        ID            INTEGER AUTO_INCREMENT,
-        NAME          VARCHAR(255) NOT NULL,
-        DESCRIPTION   VARCHAR(1023),
-        PURPOSE_GROUP VARCHAR(255) NOT NULL,
-        GROUP_TYPE    VARCHAR(255) NOT NULL,
-        TENANT_ID     INTEGER DEFAULT '-1234',
-        UNIQUE KEY (NAME, TENANT_ID, PURPOSE_GROUP, GROUP_TYPE),
-        PRIMARY KEY (ID)
-      );
-
-      CREATE TABLE CM_PURPOSE_CATEGORY (
-        ID          INTEGER AUTO_INCREMENT,
-        NAME        VARCHAR(255) NOT NULL,
-        DESCRIPTION VARCHAR(1023),
-        TENANT_ID   INTEGER DEFAULT '-1234',
-        UNIQUE KEY (NAME, TENANT_ID),
-        PRIMARY KEY (ID)
-      );
-
-      CREATE TABLE CM_RECEIPT_SP_ASSOC (
-        ID                 INTEGER AUTO_INCREMENT,
-        CONSENT_RECEIPT_ID VARCHAR(255) NOT NULL,
-        SP_NAME            VARCHAR(255) NOT NULL,
-        SP_DISPLAY_NAME    VARCHAR(255),
-        SP_DESCRIPTION     VARCHAR(255),
-        SP_TENANT_ID       INTEGER DEFAULT '-1234',
-        UNIQUE KEY (CONSENT_RECEIPT_ID, SP_NAME, SP_TENANT_ID),
-        PRIMARY KEY (ID)
-      );
-
-      CREATE TABLE CM_SP_PURPOSE_ASSOC (
-        ID                     INTEGER AUTO_INCREMENT,
-        RECEIPT_SP_ASSOC       INTEGER      NOT NULL,
-        PURPOSE_ID             INTEGER      NOT NULL,
-        CONSENT_TYPE           VARCHAR(255) NOT NULL,
-        IS_PRIMARY_PURPOSE     INTEGER      NOT NULL,
-        TERMINATION            VARCHAR(255) NOT NULL,
-        THIRD_PARTY_DISCLOSURE INTEGER      NOT NULL,
-        THIRD_PARTY_NAME       VARCHAR(255),
-        UNIQUE KEY (RECEIPT_SP_ASSOC, PURPOSE_ID),
-        PRIMARY KEY (ID)
-      );
-
-      CREATE TABLE CM_SP_PURPOSE_PURPOSE_CAT_ASSC (
-        SP_PURPOSE_ASSOC_ID INTEGER NOT NULL,
-        PURPOSE_CATEGORY_ID INTEGER NOT NULL,
-        UNIQUE KEY (SP_PURPOSE_ASSOC_ID, PURPOSE_CATEGORY_ID)
-      );
-
-      CREATE TABLE CM_PURPOSE_PII_CAT_ASSOC (
-        PURPOSE_ID         INTEGER NOT NULL,
-        CM_PII_CATEGORY_ID INTEGER NOT NULL,
-        IS_MANDATORY       INTEGER NOT NULL,
-        UNIQUE KEY (PURPOSE_ID, CM_PII_CATEGORY_ID)
-      );
-
-      CREATE TABLE CM_SP_PURPOSE_PII_CAT_ASSOC (
-        SP_PURPOSE_ASSOC_ID INTEGER NOT NULL,
-        PII_CATEGORY_ID     INTEGER NOT NULL,
-        VALIDITY            VARCHAR(1023),
-        UNIQUE KEY (SP_PURPOSE_ASSOC_ID, PII_CATEGORY_ID)
-      );
-
-      CREATE TABLE CM_CONSENT_RECEIPT_PROPERTY (
-        CONSENT_RECEIPT_ID VARCHAR(255)  NOT NULL,
-        NAME               VARCHAR(255)  NOT NULL,
-        VALUE              VARCHAR(1023) NOT NULL,
-        UNIQUE KEY (CONSENT_RECEIPT_ID, NAME)
-      );
-
-      ALTER TABLE CM_RECEIPT_SP_ASSOC
-        ADD CONSTRAINT CM_RECEIPT_SP_ASSOC_fk0 FOREIGN KEY (CONSENT_RECEIPT_ID) REFERENCES CM_RECEIPT (CONSENT_RECEIPT_ID);
-
-      ALTER TABLE CM_SP_PURPOSE_ASSOC
-        ADD CONSTRAINT CM_SP_PURPOSE_ASSOC_fk0 FOREIGN KEY (RECEIPT_SP_ASSOC) REFERENCES CM_RECEIPT_SP_ASSOC (ID);
-
-      ALTER TABLE CM_SP_PURPOSE_ASSOC
-        ADD CONSTRAINT CM_SP_PURPOSE_ASSOC_fk1 FOREIGN KEY (PURPOSE_ID) REFERENCES CM_PURPOSE (ID);
-
-      ALTER TABLE CM_SP_PURPOSE_PURPOSE_CAT_ASSC
-        ADD CONSTRAINT CM_SP_P_P_CAT_ASSOC_fk0 FOREIGN KEY (SP_PURPOSE_ASSOC_ID) REFERENCES CM_SP_PURPOSE_ASSOC (ID);
-
-      ALTER TABLE CM_SP_PURPOSE_PURPOSE_CAT_ASSC
-        ADD CONSTRAINT CM_SP_P_P_CAT_ASSOC_fk1 FOREIGN KEY (PURPOSE_CATEGORY_ID) REFERENCES CM_PURPOSE_CATEGORY (ID);
-
-      ALTER TABLE CM_SP_PURPOSE_PII_CAT_ASSOC
-        ADD CONSTRAINT CM_SP_P_PII_CAT_ASSOC_fk0 FOREIGN KEY (SP_PURPOSE_ASSOC_ID) REFERENCES CM_SP_PURPOSE_ASSOC (ID);
-
-      ALTER TABLE CM_SP_PURPOSE_PII_CAT_ASSOC
-        ADD CONSTRAINT CM_SP_P_PII_CAT_ASSOC_fk1 FOREIGN KEY (PII_CATEGORY_ID) REFERENCES CM_PII_CATEGORY (ID);
-
-      ALTER TABLE CM_CONSENT_RECEIPT_PROPERTY
-        ADD CONSTRAINT CM_CONSENT_RECEIPT_PRT_fk0 FOREIGN KEY (CONSENT_RECEIPT_ID) REFERENCES CM_RECEIPT (CONSENT_RECEIPT_ID);
-
-      INSERT INTO CM_PURPOSE (NAME, DESCRIPTION, PURPOSE_GROUP, GROUP_TYPE, TENANT_ID) VALUES ('DEFAULT', 'For core functionalities of the product', 'DEFAULT', 'SP', '-1234');
-
-      INSERT INTO CM_PURPOSE_CATEGORY (NAME, DESCRIPTION, TENANT_ID) VALUES ('DEFAULT','For core functionalities of the product', '-1234');
+      -- IDN_FED_AUTH_SESSION_MAPPING --
+      CREATE INDEX IDX_FEDERATED_AUTH_SESSION_ID ON IDN_FED_AUTH_SESSION_MAPPING (SESSION_ID);
 kind: ConfigMap
 metadata:
   name: mysql-dbscripts
@@ -2520,7 +2183,7 @@ spec:
         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.9.0
+        image: "$image.pull.@.wso2"/wso2is:5.10.0
         livenessProbe:
           exec:
             command:
@@ -2543,7 +2206,7 @@ spec:
             memory: "2Gi"
             cpu: "2000m"
           limits:
-            memory: "2Gi"
+            memory: "4Gi"
             cpu: "4000m"
         lifecycle:
           preStop:
@@ -2601,7 +2264,7 @@ function display_msg(){
 
 function viewLicenseText(){
 
-  echo "PLEASE READ THE BELOW \"WSO2 SOFTWARE LICENSE\" CAREFULLY BEFORE COMPLETING THE INSTALLATION PROCESS AND USING THE SOFTWARE."
+  echo "PLEASE READ THE BELOW \"WSO2 SOFTWARE LICENSE AGREEMENT\" CAREFULLY BEFORE COMPLETING THE INSTALLATION PROCESS AND USING THE SOFTWARE."
 
   sleep 2s
 
@@ -2861,7 +2524,7 @@ function deploy(){
     create_yaml
 
     # replace placeholders
-    sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
+    sed -i.bak 's/"$string.&.secret.auth.data"/'$str_sec'/g' $k8s_obj_file
     sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
 
