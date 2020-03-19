@@ -10,12 +10,19 @@
 ## Prerequisites
 
 * Install [Kubernetes  Client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps
-provided in the following **Quick Start Guide**.
+  provided in the following **Quick Start Guide**.
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).
 
-* In order to use Docker images with WSO2 Updates, you need an active [WSO2 Subscription](https://wso2.com/subscription).
-Otherwise, you can proceed with Docker images available at [DockerHub](https://hub.docker.com/u/wso2/), which are created using GA releases.<br><br>
+* WSO2 product Docker images used for the Kubernetes deployment.
+  
+  WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/) package General Availability (GA)
+  versions of WSO2 products with no [WSO2 Updates](https://wso2.com/updates).
+
+  For a production grade deployment of the desired WSO2 product-version, it is highly recommended to use the relevant
+  Docker image which packages WSO2 Updates, available at [WSO2 Private Docker Registry](https://docker.wso2.com/). In order
+  to use these images, you need an active [WSO2 Subscription](https://wso2.com/subscription).
+  <br><br>
 
 ## Quick Start Guide
 
@@ -31,7 +38,7 @@ Otherwise, you can proceed with Docker images available at [DockerHub](https://h
         ./wso2is-ga.sh --deploy
         ```
     
-    * Deploy WSO2 Identity Server using Docker images from [WSO2 Private Docker Registry](https://docker.wso2.com/).
+    * Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
     
         ```
         ./wso2is-latest.sh --deploy
