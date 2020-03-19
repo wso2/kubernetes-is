@@ -17,7 +17,8 @@ steps provided in the following quick start guide.<br><br>
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
 
-* Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).<br><br>
+* Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/). Please note that Helm resources for WSO2 product
+deployment patterns are compatible with NGINX Ingress Controller Git release [`nginx-0.30.0`](https://github.com/kubernetes/ingress-nginx/releases/tag/nginx-0.22.0).
 
 * Add the WSO2 Helm chart repository
 ```
@@ -128,7 +129,7 @@ wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
 b. Add the above host as an entry in /etc/hosts file as follows:
 
 ```
-<EXTERNAL-IP>	<RELEASE_NAME>
+<EXTERNAL-IP> <RELEASE_NAME>
 ```
 
 c. Try navigating to `https://<RELEASE_NAME>/carbon` from your favorite browser.

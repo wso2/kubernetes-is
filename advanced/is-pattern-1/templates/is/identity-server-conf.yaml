@@ -18,15 +18,7 @@ metadata:
   name: identity-server-conf
   namespace : {{ .Release.Namespace }}
 data:
-  {{- $namespace := .Release.Namespace }}
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/is/repository/conf/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $line := $file.Lines $path }}
-      {{ $line | replace "{{ WSO2_IS_KUBERNETES_NAMESPACE }}" $namespace }}
-    {{- end }}
+  {{- range $index, $content := .Values.wso2.deployment.wso2is.config }}
+    {{ $index }}: |-
+  {{ tpl $content $ | indent 4 }}
   {{- end }}
-

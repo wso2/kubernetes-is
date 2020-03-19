@@ -42,10 +42,10 @@ spec:
           hostnames:
             - "{{ .Release.Name }}"
       initContainers:
-      {{ if .Values.wso2.mysql.enabled }}
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
       - name: init-is-db
         image: busybox:1.31
-        command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z {{ default "wso2is-rdbms-service-mysql" .Values.wso2.mysql.host }} 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
       {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: init-logstash-plugins-install
@@ -118,6 +118,8 @@ spec:
         securityContext:
           runAsUser: 802
         env:
+          - name: KUBERNETES_NAMESPACE
+            value: {{ .Release.Namespace }}
           - name: NODE_IP
             valueFrom:
               fieldRef:
