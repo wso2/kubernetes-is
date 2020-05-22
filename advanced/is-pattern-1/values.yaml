@@ -32,9 +32,6 @@ wso2:
     # Exported location on external NFS Server to be mounted at <IS_HOME>/repository/deployment/server/userstores
     sharedUserstores: ""
 
-  # The host for the ingress and HOST_NAME environment variable
-  host: "localhost"
-
   deployment:
 
     dependencies:
@@ -45,6 +42,8 @@ wso2:
       nfsServerProvisioner: true
 
     wso2is:
+      # The host for the ingress and HOST_NAME environment variable
+      host: "localhost"
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       # dockerRegistry: ""
       imageName: "wso2is"

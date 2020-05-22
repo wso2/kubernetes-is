@@ -125,7 +125,7 @@ spec:
               fieldRef:
                 fieldPath: status.podIP
           - name: HOST_NAME
-            value: {{ .Values.wso2.host }}
+            value: {{ .Values.wso2.deployment.wso2is.host }}
         ports:
         - containerPort: 9763
           protocol: TCP

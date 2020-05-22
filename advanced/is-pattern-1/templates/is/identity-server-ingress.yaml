@@ -27,9 +27,9 @@ metadata:
 spec:
   tls:
   - hosts:
-    - {{ .Values.wso2.host }}
+    - {{ .Values.wso2.deployment.wso2is.host }}
   rules:
-  - host: {{ .Values.wso2.host }}
+  - host: {{ .Values.wso2.deployment.wso2is.host }}
     http:
       paths:
       - path: /
