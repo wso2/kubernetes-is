@@ -41,43 +41,22 @@
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
-helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE>
+helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE> --set wso2.host=<HOST>
 ```
 
 [Option 2] Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
 
 ```
-helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE>  --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE> --set wso2.host=<HOST> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```     
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
+* `HOST` should be the host you'll use to access the deployment, the default is `localhost`.
 
 ##### 2. Access Management Console.
  
-Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
- 
-To access the console in the environment,
- 
- a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
- 
- ```
- kubectl get ing -n <NAMESPACE>
- ```
- Output:
- 
- ```
- NAME                       HOSTS                  ADDRESS        PORTS     AGE
- wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
- ```
- 
- b. Add the above host as an entry in `/etc/hosts` file as follows:
-    
- ```
- <EXTERNAL-IP> <RELEASE_NAME>
- ```
- 
- c. Try navigating to `https://<RELEASE_NAME>/carbon` from your favorite browser.
+Navigate to `https://<HOST>/carbon` from your favorite browser.
  
 
 ### Install Chart From Source
@@ -96,52 +75,32 @@ git clone https://github.com/wso2/kubernetes-is.git
 ##### 2. Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.host=<HOST>
 ```
 
-`NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
+* `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
+* `HOST` should be the host you'll use to access the deployment, the default is `localhost`.
 
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.host=<HOST>
 ```
 
 [Option 2] Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>  --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.host=<HOST> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
+* `HOST` should be the host you'll use to access the deployment, the default is `localhost`.
 
 ##### 3. Access Management Console.
 
-Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
- 
-To access the console in the environment,
- 
- a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
- 
- ```
- kubectl get ing -n <NAMESPACE>
- ```
- Output:
- 
- ```
- NAME                       HOSTS                  ADDRESS        PORTS     AGE
- wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
- ```
- 
- b. Add the above host as an entry in `/etc/hosts` file as follows:
-    
- ```
- <EXTERNAL-IP> <RELEASE_NAME>
- ```
- 
- c. Try navigating to `https://<RELEASE_NAME>/carbon` from your favorite browser.
+Navigate to `https://<HOST>/carbon` from your favorite browser.
 
 
 ## Configuration
@@ -154,6 +113,12 @@ The following tables lists the configurable parameters of the chart and their de
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | ""                          |
 | `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | ""                          |
+
+###### Host
+
+| Parameter                                                                   | Description                                                                               | Default Value               |
+|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.host`                                                                 | The host you'll use to access the deployment                                              | "localhost"                 |
 
 ###### Chart Dependencies
 
