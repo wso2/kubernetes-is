@@ -41,13 +41,13 @@
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
-helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE> --set wso2.host=<HOST>
+helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE> --set wso2.deployment.wso2is.host=<HOST>
 ```
 
 [Option 2] Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
 
 ```
-helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE> --set wso2.host=<HOST> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE> --set wso2.deployment.wso2is.host=<HOST> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```     
 **Note:**
 
@@ -75,7 +75,7 @@ git clone https://github.com/wso2/kubernetes-is.git
 ##### 2. Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.host=<HOST>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.deployment.wso2is.host=<HOST>
 ```
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
@@ -84,13 +84,13 @@ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace
 [Option 1] Deploy using Docker images from DockerHub.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.host=<HOST>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.deployment.wso2is.host=<HOST>
 ```
 
 [Option 2] Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.host=<HOST> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.deployment.wso2is.host=<HOST> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 **Note:**
@@ -118,7 +118,7 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.host`                                                                 | The host you'll use to access the deployment                                              | "localhost"                 |
+| `wso2.deployment.wso2is.host`                                               | The host you'll use to access the deployment                                              | "localhost"                 |
 
 ###### Chart Dependencies
 
