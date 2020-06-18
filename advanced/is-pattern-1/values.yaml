@@ -83,86 +83,10 @@ wso2:
           cpu: "4000m"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
-      config:
-        deployment.toml: |-
-          # Deployment config for identity server deployment
-            [server]
-            hostname = "$env{HOST_NAME}"
-            node_ip = "$env{NODE_IP}"
-            
-            [super_admin]
-            username = "admin"
-            password = "admin"
-            create_admin_account = true
-            
-            [user_store]
-            type = "database_unique_id"
-            
-            [database.user]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.cj.jdbc.Driver"
-            
-            [database.user.pool_options]
-            validationQuery = "SELECT 1"
-            
-            [transport.https.properties]
-            proxyPort="443"
-            
-            [database.identity_db]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.cj.jdbc.Driver"
-            
-            [database.identity_db.pool_options]
-            validationQuery = "SELECT 1"
-            
-            [database.shared_db]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.cj.jdbc.Driver"
-            
-            [database.shared_db.pool_options]
-            validationQuery = "SELECT 1"
-            
-            [database.bps_database]
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.cj.jdbc.Driver"
-            
-            [database.bps_database.pool_options]
-            validationQuery = "SELECT 1"
-            
-            [[datasource]]
-            id = "WSO2ConsentDS"
-            url = "jdbc:mysql://wso2is-rdbms-service-mysql:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false"
-            username = "wso2carbon"
-            password = "wso2carbon"
-            driver = "com.mysql.cj.jdbc.Driver"
-            pool_options.validationQuery="SELECT 1"
-            pool_options.maxActive=50
-            pool_options.maxWait = 60000 # wait in milliseconds
-            pool_options.testOnBorrow = true
-            pool_options.jmxEnabled = false
-            [authentication.consent]
-            data_source="jdbc/WSO2ConsentDS"
-            
-            [keystore.primary]
-            name = "wso2carbon.jks"
-            password = "wso2carbon"
-            
-            [clustering]
-            membership_scheme = "kubernetes"
-            domain = "wso2.carbon.domain"
-            properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
-            properties.KUBERNETES_NAMESPACE = "$env{KUBERNETES_NAMESPACE}"
-            properties.KUBERNETES_SERVICES = "wso2is-pattern-1-service"
-            properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
-            properties.USE_DNS = "false"  
+      config: ""
+#        deployment.toml: |-
+#          # deployment configurations for the WSO2 Identity Server v5.10.0 (<WSO2IS>/repository/conf/deployment.toml)
+
   # Configurations for the logstash container image and elasticsearch authorization credentials
   # Centralized logging is disabled by default. If it is required to enable centralized logging, please follow the instructions
   # provided in the documentation (https://github.com/wso2/kubernetes-is/tree/master/advanced/helm/is-pattern-1#enabling-centralized-logging)

@@ -1,0 +1,221 @@
+# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ template "fullname" . }}-identity-server-statefulset
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      deployment: wso2is
+      monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
+  replicas: {{ .Values.wso2.deployment.wso2is.replicas }}
+  serviceName: {{ template "fullname" . }}-identity-server-service
+  template:
+    metadata:
+      labels:
+        deployment: wso2is
+        monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
+    spec:
+      initContainers:
+        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        - name: init-is-db
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-mysql-db-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        {{ end }}
+        {{ if .Values.wso2.centralizedLogging.enabled }}
+        - name: init-logstash-plugins-install
+          image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
+          command:
+            - /bin/bash
+            - "-c"
+            - |
+              set -e
+              ./bin/logstash-plugin install logstash-codec-multiline logstash-filter-grok
+          volumeMounts:
+            - name: shared-plugins
+              mountPath: /usr/share/logstash/plugins/
+        - name: init-elasticsearch
+          image: busybox:1.31
+          command: ['sh', '-c', 'echo -e "Checking for the availability of ElasticSearch Server deployment"; while ! nc -z {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
+        {{ end }}
+        {{ if .Values.wso2.monitoring.enabled }}
+        - name: init-jmx-exporter
+          image: busybox:1.31
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              wget https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.12.0/jmx_prometheus_javaagent-0.12.0.jar -P /jmx-jar/
+          volumeMounts:
+            - name: shared-prometheus-jmx-jar
+              mountPath: /jmx-jar
+        {{ end }}
+      containers:
+        - name: identity-server
+          {{ if .Values.wso2.deployment.wso2is.dockerRegistry }}
+          image: {{ .Values.wso2.deployment.wso2is.dockerRegistry }}/{{ .Values.wso2.deployment.wso2is.imageName }}
+          {{- $tag := .Values.wso2.deployment.wso2is.imageTag }}
+          {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
+          {{ else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
+          image: wso2/{{ .Values.wso2.deployment.wso2is.imageName }}:{{ .Values.wso2.deployment.wso2is.imageTag }}
+          {{ else }}
+          image: docker.wso2.com/{{ .Values.wso2.deployment.wso2is.imageName }}:{{ .Values.wso2.deployment.wso2is.imageTag }}
+          {{ end }}
+          env:
+            - name: KUBERNETES_NAMESPACE
+              value: {{ .Release.Namespace }}
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2is.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2is.livenessProbe.periodSeconds }}
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.wso2.deployment.wso2is.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.wso2.deployment.wso2is.readinessProbe.periodSeconds }}
+          lifecycle:
+            preStop:
+              exec:
+                command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/wso2server.sh stop']
+          resources:
+            requests:
+              memory: {{ .Values.wso2.deployment.wso2is.resources.requests.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2is.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.wso2.deployment.wso2is.resources.limits.memory }}
+              cpu: {{ .Values.wso2.deployment.wso2is.resources.limits.cpu }}
+          imagePullPolicy: {{ .Values.wso2.deployment.wso2is.imagePullPolicy }}
+          securityContext:
+            runAsUser: 802
+          ports:
+            - containerPort: 9763
+              protocol: TCP
+            - containerPort: 9443
+              protocol: TCP
+            {{ if .Values.wso2.monitoring.enabled }}
+            - containerPort: 2222
+              protocol: TCP
+              name: metrics
+            {{ end }}
+          volumeMounts:
+            - name: identity-server-conf
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment.toml
+            - name: identity-server-volume-claim-tenants
+              mountPath: /home/wso2carbon/wso2is-5.10.0/repository/tenants
+            - name: identity-server-volume-claim-userstore
+              mountPath: /home/wso2carbon/wso2is-5.10.0/repository/deployment/server/userstores
+            {{ if .Values.wso2.monitoring.enabled }}
+            - name: shared-prometheus-jmx-jar
+              mountPath: /home/wso2carbon/prometheus
+            - name: identity-server-prometheus-exporter-conf
+              mountPath: /home/wso2carbon/prometheus/config.yaml
+              subPath: config.yaml
+            - name: identity-server-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/bin
+            {{ end }}
+        {{ if .Values.wso2.centralizedLogging.enabled }}
+            - name: shared-logs
+              mountPath: /home/wso2carbon/wso2is-5.10.0/repository/logs/
+        - name: wso2is-logstash
+          image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
+          volumeMounts:
+            - name: shared-logs
+              mountPath: /usr/share/logstash/wso2-logs/
+            - name: logstash-yml
+              mountPath: /usr/share/logstash/config/logstash.yml
+              subPath: logstash.yml
+            - name: c4-logstash-conf
+              mountPath: /usr/share/logstash/pipeline/logstash.conf
+              subPath: logstash.conf
+            - name: shared-plugins
+              mountPath: /usr/share/logstash/plugins/
+          env:
+            - name: NODE_ID
+              value: {{ .Release.Name }}-is-node
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: ELASTICSEARCH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: logstash-elasticsearch-creds
+                  key: username
+            - name: ELASTICSEARCH_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: logstash-elasticsearch-creds
+                  key: password
+            - name: ELASTICSEARCH_HOST
+              value: {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
+        {{ end }}
+      serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
+      {{- if .Values.wso2.deployment.wso2is.imagePullSecrets }}
+      imagePullSecrets:
+        - name: {{ .Values.wso2.deployment.identityServer.imagePullSecrets }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "fullname" . }}-wso2-private-registry-creds
+      {{ end }}
+      volumes:
+      - name: identity-server-conf
+        configMap:
+          name: identity-server-conf
+      - name: identity-server-volume-claim-tenants
+        persistentVolumeClaim:
+          claimName: identity-server-volume-claim-tenants
+      - name: identity-server-volume-claim-userstore
+        persistentVolumeClaim:
+          claimName: identity-server-volume-claim-userstore
+      {{ if .Values.wso2.centralizedLogging.enabled }}
+      - name: shared-logs
+        emptyDir: {}
+      - name: logstash-yml
+        configMap:
+          name: logstash-yml
+      - name: c4-logstash-conf
+        configMap:
+          name: c4-logstash-conf
+      - name: shared-plugins
+        emptyDir: {}
+      - name: logstash-elasticsearch-creds
+        secret:
+          secretName: logstash-elasticsearch-creds
+      {{ end }}
+      {{ if .Values.wso2.monitoring.enabled }}
+      - name: shared-prometheus-jmx-jar
+        emptyDir: {}
+      - name: identity-server-prometheus-exporter-conf
+        configMap:
+          name: identity-server-prometheus-exporter-conf
+      - name: identity-server-bin
+        configMap:
+          name: identity-server-bin
+      {{ end }}
