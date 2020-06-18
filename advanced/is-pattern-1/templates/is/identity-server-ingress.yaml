@@ -34,5 +34,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}-service
+          serviceName: {{ template "fullname" . }}-identity-service
           servicePort: 9443
