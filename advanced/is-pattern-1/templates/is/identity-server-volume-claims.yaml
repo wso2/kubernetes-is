@@ -23,17 +23,11 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 2Gi
-  {{- if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
-  storageClassName: nfs
-  {{- else if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: wso2is-pattern-1-tenants
-  {{- end }}
+      storage: 500M
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -45,12 +39,5 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 2Gi
-  {{- if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
-  storageClassName: nfs
-  {{- else if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: wso2is-pattern-1-userstore
-  {{- end }}
+      storage: 500M
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
