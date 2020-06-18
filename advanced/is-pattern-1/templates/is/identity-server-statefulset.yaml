@@ -27,8 +27,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum.is.bin: {{ include (print $.Template.BasePath "/is/identity-server-conf-bin.yaml") . | sha256sum }}
-#        checksum.is.bin.monitoring: {{ include (print $.Template.BasePath "/is/wso2-cloud-identity-server-conf-monitoring-bin.yaml") . | sha256sum }}
+        checksum.is.bin: {{ include (print $.Template.BasePath "/is/identity-server-bin.yaml") . | sha256sum }}
         checksum.is.conf: {{ include (print $.Template.BasePath "/is/identity-server-conf.yaml") . | sha256sum }}
       labels:
         deployment: wso2is
@@ -81,8 +80,6 @@ spec:
           image: docker.wso2.com/{{ .Values.wso2.deployment.wso2is.imageName }}:{{ .Values.wso2.deployment.wso2is.imageTag }}
           {{ end }}
           env:
-            - name: KUBERNETES_NAMESPACE
-              value: {{ .Release.Namespace }}
             - name: NODE_IP
               valueFrom:
                 fieldRef:
