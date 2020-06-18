@@ -23,7 +23,7 @@ wso2:
 
     dependencies:
       # MySQL configurations
-      # enabled:          The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+      # enabled: The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
       mysql: true
       # Enable NFS dynamic provisioner for Kubernetes
       nfsServerProvisioner: true
@@ -37,6 +37,9 @@ wso2:
 
     wso2is:
 
+      # Hostname for Identity Server
+      hostname: "identity.wso2.com"
+
       # Container image configurations
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value.
       # dockerRegistry: ""
@@ -45,8 +48,6 @@ wso2:
 
       # Number of deployment replicas
       replicas: 2
-      # Minimum number of seconds for which a newly created pod should be ready without any of its containers crashing, for it to be considered available.
-      minReadySeconds: 30
       strategy:
         rollingUpdate:
           # The maximum number of pods that can be scheduled above the desired number of pods.
@@ -82,7 +83,8 @@ wso2:
       imagePullPolicy: Always
       config: ""
 #        deployment.toml: |-
-#          # deployment configurations for the WSO2 Identity Server v5.10.0 (<WSO2IS>/repository/conf/deployment.toml)
+#          # Deployment configurations for Identity Server deployment
+#          # <replace with deployment configurations for the WSO2 Identity Server (<WSO2IS>/repository/conf/deployment.toml)>
 
   # Configurations for the logstash container image and elasticsearch authorization credentials
   # Centralized logging is disabled by default. If it is required to enable centralized logging, please follow the instructions
@@ -112,4 +114,4 @@ wso2:
 
 kubernetes:
   # Name of Kubernetes service account
-  svcaccount: "wso2svc-account"
+  serviceAccount: "wso2is-pattern-1-svc-account"
