@@ -168,7 +168,7 @@ The following tables lists the configurable parameters of the chart and their de
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | External NFS Server IP                                                                    | -                           |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedTenants`                  | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/tenants` | -            |
-| `wso2.deployment.persistentRuntimeArtifacts.sharedUserstores`               | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/userstores` | -            |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedUserstores`               | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/userstores` | -     |
 
 **Note**: The above mentioned configurations are applicable only when, `wso2.deployment.dependencies.nfsProvisioner.enabled` is set to `false` and `wso2.persistentRuntimeArtifacts.cloudProvider` is set to `external-nfs`.
 
@@ -176,21 +176,21 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.wso2is.imageName`                                          | Image name for IS node                                                                    | wso2is                     |
-| `wso2.deployment.wso2is.imageTag`                                           | Image tag for IS node                                                                     | 5.10.0                       |
+| `wso2.deployment.wso2is.hostname`                                           | External host name for IS service                                                         | identity.wso2.com           |
+| `wso2.deployment.wso2is.imageName`                                          | Image name for IS node                                                                    | wso2is                      |
+| `wso2.deployment.wso2is.imageTag`                                           | Image tag for IS node                                                                     | 5.10.0                      |
 | `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 2                           |
-| `wso2.deployment.wso2is.minReadySeconds`                                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentspec-v1-apps)| 30                        |
-| `wso2.deployment.wso2is.strategy.rollingUpdate.maxSurge`                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentstrategy-v1-apps) | 1                           |
-| `wso2.deployment.wso2is.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentstrategy-v1-apps) | 0                           |
-| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                           |
-| `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                           |
-| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                           |
-| `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                           |
-| `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                       |
-| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                          |
-| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                        |
-| `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                          |
-| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                        |
+| `wso2.deployment.wso2is.strategy.rollingUpdate.maxSurge`                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentstrategy-v1-apps) | 1     |
+| `wso2.deployment.wso2is.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentstrategy-v1-apps) | 0     |
+| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                         |
+| `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                          |
+| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                         |
+| `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                          |
+| `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                      |
+| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
+| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
+| `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
+| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
 
 **Note**: The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/5.10.0/setup/installation-prerequisites/).
 
@@ -198,7 +198,7 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | false                        |                                                                                         |                             |    
+| `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | false                       |  
 | `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | 7.2.0                       |  
 | `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | elastic                     |  
 | `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
@@ -207,7 +207,7 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.monitoring.enabled`                                                   | Enable Prometheus monitoring                                                              | false                       |                                                                                         |                             |    
+| `wso2.monitoring.enabled`                                                   | Enable Prometheus monitoring                                                              | false                       |    
 | `wso2.monitoring.prometheus.jmxJobName`                                     | Prometheus job name                                                                       | jmx                         |  
 | `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | "release: monitoring"       |  
 | `wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace`               | Prometheus blackbox exporter namespace                                                    | <RELEASE_NAMESPACE>         |  
