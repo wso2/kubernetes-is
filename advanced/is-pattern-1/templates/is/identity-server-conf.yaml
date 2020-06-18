@@ -20,19 +20,17 @@ metadata:
   {{ if .Values.wso2.deployment.wso2is.config }}
 
 data:
-
   {{- range $index, $content := .Values.wso2.deployment.wso2is.config }}
   {{ $index }}: |-
   {{ tpl $content $ | indent 4 }}
   {{- end }}
 
   {{ else }}
-
 data:
   deployment.toml: |-
-    # Deployment config for identity server deployment
+    # Deployment config for Identity Server deployment
     [server]
-    hostname = "$env{HOST_NAME}"
+    hostname = "{{ .Values.wso2.deployment.wso2is.hostname }}"
     node_ip = "$env{NODE_IP}"
 
     [super_admin]
@@ -104,7 +102,7 @@ data:
     membership_scheme = "kubernetes"
     domain = "wso2.carbon.domain"
     properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
-    properties.KUBERNETES_NAMESPACE = "$env{KUBERNETES_NAMESPACE}"
+    properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
     properties.KUBERNETES_SERVICES = "{{ template "fullname" . }}-identity-service"
     properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
     properties.USE_DNS = "false"
