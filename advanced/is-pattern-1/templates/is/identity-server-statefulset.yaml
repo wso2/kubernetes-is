@@ -26,6 +26,10 @@ spec:
   serviceName: {{ template "fullname" . }}-identity-server-service
   template:
     metadata:
+      annotations:
+        checksum.is.bin: {{ include (print $.Template.BasePath "/is/identity-server-conf-bin.yaml") . | sha256sum }}
+#        checksum.is.bin.monitoring: {{ include (print $.Template.BasePath "/is/wso2-cloud-identity-server-conf-monitoring-bin.yaml") . | sha256sum }}
+        checksum.is.conf: {{ include (print $.Template.BasePath "/is/identity-server-conf.yaml") . | sha256sum }}
       labels:
         deployment: wso2is
         monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
