@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: identity-server-conf
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf
   namespace : {{ .Release.Namespace }}
   {{ if .Values.wso2.deployment.wso2is.config }}
 
@@ -103,7 +103,7 @@ data:
     domain = "wso2.carbon.domain"
     properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
     properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
-    properties.KUBERNETES_SERVICES = "{{ template "fullname" . }}-identity-service"
+    properties.KUBERNETES_SERVICES = "{{ template "is-pattern-1.resource.prefix" . }}-identity-service"
     properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
     properties.USE_DNS = "false"
   {{- end }}

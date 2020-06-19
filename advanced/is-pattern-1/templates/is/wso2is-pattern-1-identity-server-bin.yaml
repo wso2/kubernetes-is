@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: identity-server-bin
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-bin
   namespace : {{ .Release.Namespace }}
 data:
   wso2server.sh: |-
