@@ -61,5 +61,5 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Common prefix prepended to Kubernetes resources of this chart
 */}}
 {{- define "is-pattern-1.resource.prefix" -}}
-{{- "wso2am-pattern-1" }}
+{{- "wso2is-pattern-1" }}
 {{- end -}}
