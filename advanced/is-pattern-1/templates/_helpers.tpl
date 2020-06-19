@@ -44,6 +44,22 @@ Create chart name and version as used by the chart label.
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" -}}
 {{- end -}}
 
-{{- define "fullname" -}}
-{{- "wso2is-pattern-1" }}
+{{/*
+Common labels
+*/}}
+{{- define "is-pattern-1.labels" -}}
+app.kubernetes.io/name: {{ include "is-pattern-1.name" . }}
+helm.sh/chart: {{ include "is-pattern-1.chart" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end -}}
+
+{{/*
+Common prefix prepended to Kubernetes resources of this chart
+*/}}
+{{- define "is-pattern-1.resource.prefix" -}}
+{{- "wso2am-pattern-1" }}
 {{- end -}}

@@ -15,7 +15,7 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-identity-service
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-service
   namespace : {{ .Release.Namespace }}
   labels:
     deployment: wso2is

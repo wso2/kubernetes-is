@@ -15,7 +15,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}-identity-server-statefulset
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-statefulset
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
@@ -23,12 +23,12 @@ spec:
       deployment: wso2is
       monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
   replicas: {{ .Values.wso2.deployment.wso2is.replicas }}
-  serviceName: {{ template "fullname" . }}-identity-server-service
+  serviceName: {{ template "is-pattern-1.resource.prefix" . }}-identity-service
   template:
     metadata:
       annotations:
-        checksum.is.bin: {{ include (print $.Template.BasePath "/is/identity-server-bin.yaml") . | sha256sum }}
-        checksum.is.conf: {{ include (print $.Template.BasePath "/is/identity-server-conf.yaml") . | sha256sum }}
+        checksum.is.bin: {{ include (print $.Template.BasePath "/is/wso2is-pattern-1-identity-server-bin.yaml") . | sha256sum }}
+        checksum.is.conf: {{ include (print $.Template.BasePath "/is/wso2is-pattern-1-identity-server-conf.yaml") . | sha256sum }}
       labels:
         deployment: wso2is
         monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
@@ -128,9 +128,9 @@ spec:
             - name: identity-server-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
-            - name: identity-server-volume-claim-tenants
+            - name: identity-server-volume-claim-tenants-storage
               mountPath: /home/wso2carbon/wso2is-5.10.0/repository/tenants
-            - name: identity-server-volume-claim-userstore
+            - name: identity-server-volume-claim-userstores-storage
               mountPath: /home/wso2carbon/wso2is-5.10.0/repository/deployment/server/userstores
             {{ if .Values.wso2.monitoring.enabled }}
             - name: shared-prometheus-jmx-jar
@@ -183,18 +183,18 @@ spec:
         - name: {{ .Values.wso2.deployment.identityServer.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
-        - name: {{ template "fullname" . }}-wso2-private-registry-creds
+        - name: {{ template "is-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
       {{ end }}
       volumes:
       - name: identity-server-conf
         configMap:
-          name: identity-server-conf
-      - name: identity-server-volume-claim-tenants
+          name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf
+      - name: identity-server-volume-claim-tenants-storage
         persistentVolumeClaim:
-          claimName: identity-server-volume-claim-tenants
-      - name: identity-server-volume-claim-userstore
+          claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-tenants
+      - name: identity-server-volume-claim-userstores-storage
         persistentVolumeClaim:
-          claimName: identity-server-volume-claim-userstore
+          claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-userstores
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
@@ -218,5 +218,5 @@ spec:
           name: identity-server-prometheus-exporter-conf
       - name: identity-server-bin
         configMap:
-          name: identity-server-bin
+          name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-bin
       {{ end }}

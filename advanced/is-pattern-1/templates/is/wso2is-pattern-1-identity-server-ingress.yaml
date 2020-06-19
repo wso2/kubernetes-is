@@ -16,7 +16,7 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: wso2is-ingress
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-ingress
   namespace : {{ .Release.Namespace }}
   annotations:
     kubernetes.io/ingress.class: "nginx"
@@ -34,5 +34,5 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "fullname" . }}-identity-service
+          serviceName: {{ template "is-pattern-1.resource.prefix" . }}-identity-service
           servicePort: 9443
