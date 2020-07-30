@@ -194,10 +194,10 @@ spec:
       {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
       - name: identity-server-volume-claim-tenants-storage
         persistentVolumeClaim:
-          claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-tenants
+          claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-shared-tenants-volume-claim
       - name: identity-server-volume-claim-userstores-storage
         persistentVolumeClaim:
-          claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-userstores
+          claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-shared-userstores-volume-claim
       {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs

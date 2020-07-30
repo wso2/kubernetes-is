@@ -16,7 +16,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-tenants
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-shared-tenants-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -32,7 +32,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-userstores
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-shared-userstores-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
