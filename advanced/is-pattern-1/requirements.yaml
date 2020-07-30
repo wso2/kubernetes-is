@@ -16,7 +16,3 @@ dependencies:
     version: "5.10.0-2"
     repository: "https://helm.wso2.com"
     condition: wso2.mysql.enabled
-  - name: nfs-server-provisioner
-    version: "1.0.0"
-    repository: "https://kubernetes-charts.storage.googleapis.com"
-    condition: wso2.deployment.dependencies.nfsServerProvisioner

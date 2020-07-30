@@ -79,6 +79,7 @@ spec:
           {{ else }}
           image: docker.wso2.com/{{ .Values.wso2.deployment.wso2is.imageName }}:{{ .Values.wso2.deployment.wso2is.imageTag }}
           {{ end }}
+          imagePullPolicy: {{ .Values.wso2.deployment.wso2is.imagePullPolicy }}
           env:
             - name: NODE_IP
               valueFrom:
@@ -111,7 +112,6 @@ spec:
             limits:
               memory: {{ .Values.wso2.deployment.wso2is.resources.limits.memory }}
               cpu: {{ .Values.wso2.deployment.wso2is.resources.limits.cpu }}
-          imagePullPolicy: {{ .Values.wso2.deployment.wso2is.imagePullPolicy }}
           securityContext:
             runAsUser: 802
           ports:
@@ -128,10 +128,12 @@ spec:
             - name: identity-server-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
+            {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
             - name: identity-server-volume-claim-tenants-storage
               mountPath: /home/wso2carbon/wso2is-5.10.0/repository/tenants
             - name: identity-server-volume-claim-userstores-storage
               mountPath: /home/wso2carbon/wso2is-5.10.0/repository/deployment/server/userstores
+            {{ end }}
             {{ if .Values.wso2.monitoring.enabled }}
             - name: shared-prometheus-jmx-jar
               mountPath: /home/wso2carbon/prometheus
@@ -189,12 +191,14 @@ spec:
       - name: identity-server-conf
         configMap:
           name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf
+      {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
       - name: identity-server-volume-claim-tenants-storage
         persistentVolumeClaim:
           claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-tenants
       - name: identity-server-volume-claim-userstores-storage
         persistentVolumeClaim:
           claimName: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-volume-claim-userstores
+      {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: shared-logs
         emptyDir: {}
