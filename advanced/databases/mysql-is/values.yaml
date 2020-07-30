@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 mysql:
-  imageTag: "5.7"
+  imageTag: "5.7.31"
   mysqlRootPassword: root
   mysqlUser: wso2carbon
   mysqlPassword: wso2carbon
