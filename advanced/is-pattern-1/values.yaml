@@ -31,12 +31,12 @@ wso2:
       # Kubernetes Storage Class to be used to dynamically provision the relevant Persistent Volumes
       # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
       # Mandatory to set if artifact persistence and sharing is enabled (i.e. wso2 -> deployment -> persistentRuntimeArtifacts -> sharedArtifacts -> enabled)
-      storageClass: ""
+      storageClass: &storage_class ""
 
       # Define configurations for persistent runtime artifacts which are shared between instances of the Identity Server profile
       sharedArtifacts:
-        # Enable/Disable persistent runtime artifacts sharing between instances of the Identity Server profile
-        enabled: true
+        # Enable/Disable persistence and sharing of runtime artifacts between instances of the Identity Server profile
+        enabled: false
         # Define capacities for persistent runtime artifacts which are shared between instances of the Identity Server profile
         capacity:
           # For tenant data shared between the Identity Server profile instances
@@ -122,3 +122,9 @@ wso2:
 kubernetes:
   # Name of Kubernetes service account
   serviceAccount: "wso2is-pattern-1-svc-account"
+
+# Override sub chart parameters
+mysql-is:
+  mysql:
+    persistence:
+      storageClass: *storage_class
