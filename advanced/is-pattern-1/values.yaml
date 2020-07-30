@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 wso2:
   # WSO2 Subscription parameters (https://wso2.com/subscription/)
   # If provided, these parameters will be used to obtain official WSO2 product Docker images available at WSO2 Private Docker Registry (https://docker.wso2.com/)
@@ -23,15 +24,25 @@ wso2:
     dependencies:
       # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
       mysql: true
-      # Enable NFS dynamic provisioner for Kubernetes
-      nfsServerProvisioner: true
 
+    # Persisted and shared runtime artifacts for Identity Server
+    # See official documentation (from https://is.docs.wso2.com/en/latest/setup/deployment-guide/#enabling-artifact-synchronization)
     persistentRuntimeArtifacts:
-      # Persistent storage provider expected to be used for sharing persistent runtime artifacts
-      # Must refer to an appropriate Kubernetes Storage Class (https://kubernetes.io/docs/concepts/storage/storage-classes/)
-      # "nfs" (default) - Using the official Kubernetes NFS Server Provisioner (https://github.com/helm/charts/tree/master/stable/nfs-server-provisioner)
-      # This provisioner is installed by default, with this Helm Chart (wso2 -> deployment -> dependencies -> nfsServerProvisioner)
-      storageClass: "nfs"
+      # Kubernetes Storage Class to be used to dynamically provision the relevant Persistent Volumes
+      # Only persistent storage solutions supporting ReadWriteMany access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+      # Mandatory to set if artifact persistence and sharing is enabled (i.e. wso2 -> deployment -> persistentRuntimeArtifacts -> sharedArtifacts -> enabled)
+      storageClass: ""
+
+      # Define configurations for persistent runtime artifacts which are shared between instances of the Identity Server profile
+      sharedArtifacts:
+        # Enable/Disable persistent runtime artifacts sharing between instances of the Identity Server profile
+        enabled: true
+        # Define capacities for persistent runtime artifacts which are shared between instances of the Identity Server profile
+        capacity:
+          # For tenant data shared between the Identity Server profile instances
+          tenants: 100M
+          # For secondary user stores shared between the Identity Server profile instances
+          userstores: 50M
 
     wso2is:
       # Hostname for Identity Server
