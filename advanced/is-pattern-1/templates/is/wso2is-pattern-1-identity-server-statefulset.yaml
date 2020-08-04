@@ -169,12 +169,12 @@ spec:
             - name: ELASTICSEARCH_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: logstash-elasticsearch-creds
+                  name: {{ template "is-pattern-1.resource.prefix" . }}-logstash-elasticsearch-creds
                   key: username
             - name: ELASTICSEARCH_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: logstash-elasticsearch-creds
+                  name: {{ template "is-pattern-1.resource.prefix" . }}-logstash-elasticsearch-creds
                   key: password
             - name: ELASTICSEARCH_HOST
               value: {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
@@ -182,7 +182,7 @@ spec:
       serviceAccountName: {{ .Values.kubernetes.serviceAccount }}
       {{- if .Values.wso2.deployment.wso2is.imagePullSecrets }}
       imagePullSecrets:
-        - name: {{ .Values.wso2.deployment.identityServer.imagePullSecrets }}
+        - name: {{ .Values.wso2.deployment.wso2is.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
         - name: {{ template "is-pattern-1.resource.prefix" . }}-wso2-private-registry-creds
@@ -204,15 +204,12 @@ spec:
         emptyDir: {}
       - name: logstash-yml
         configMap:
-          name: logstash-yml
+          name: {{ template "is-pattern-1.resource.prefix" . }}-logstash-yml-conf
       - name: c4-logstash-conf
         configMap:
-          name: c4-logstash-conf
+          name: {{ template "is-pattern-1.resource.prefix" . }}-c4-logstash-conf
       - name: shared-plugins
         emptyDir: {}
-      - name: logstash-elasticsearch-creds
-        secret:
-          secretName: logstash-elasticsearch-creds
       {{ end }}
       {{ if .Values.wso2.monitoring.enabled }}
       - name: shared-prometheus-jmx-jar

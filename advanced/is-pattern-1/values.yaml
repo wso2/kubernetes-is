@@ -104,6 +104,7 @@ wso2:
         host: wso2-elasticsearch-master
         username: "elastic"
         password: "changeme"
+
   # Configurations for Prometheus monitoring
   monitoring:
     # Enable Prometheus monitoring. This will start Prometheus exporter on port 2222 and deploy Service monitors
