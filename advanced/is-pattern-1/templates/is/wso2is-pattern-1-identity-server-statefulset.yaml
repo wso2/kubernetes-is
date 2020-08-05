@@ -40,17 +40,6 @@ spec:
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-mysql-db-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
         {{ end }}
         {{ if .Values.wso2.centralizedLogging.enabled }}
-        - name: init-logstash-plugins-install
-          image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
-          command:
-            - /bin/bash
-            - "-c"
-            - |
-              set -e
-              ./bin/logstash-plugin install logstash-codec-multiline logstash-filter-grok
-          volumeMounts:
-            - name: shared-plugins
-              mountPath: /usr/share/logstash/plugins/
         - name: init-elasticsearch
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of ElasticSearch Server deployment"; while ! nc -z {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }} 9200; do sleep 1; printf "-"; done; echo -e "  >> Elasticsearch server has started";']
