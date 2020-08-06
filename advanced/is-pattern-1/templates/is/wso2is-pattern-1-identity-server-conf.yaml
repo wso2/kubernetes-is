@@ -106,4 +106,9 @@ data:
     properties.KUBERNETES_SERVICES = "{{ template "is-pattern-1.resource.prefix" . }}-identity-service"
     properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
     properties.USE_DNS = "false"
+
+    {{ if .Values.wso2.monitoring.enabled }}
+    [monitoring.jmx]
+    rmi_server_start = true
+    {{- end }}
   {{- end }}
