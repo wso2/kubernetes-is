@@ -29,6 +29,9 @@ spec:
       annotations:
         checksum.is.bin: {{ include (print $.Template.BasePath "/is/wso2is-pattern-1-identity-server-bin.yaml") . | sha256sum }}
         checksum.is.conf: {{ include (print $.Template.BasePath "/is/wso2is-pattern-1-identity-server-conf.yaml") . | sha256sum }}
+        {{ if .Values.wso2.centralizedLogging.enabled }}
+        checksum.is.log.conf: {{ include (print $.Template.BasePath "/logstash/wso2is-pattern-1-c4-logstash-conf.yaml") . | sha256sum }}
+        {{ end }}
       labels:
         deployment: wso2is
         monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
