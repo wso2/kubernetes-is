@@ -208,7 +208,7 @@ spec:
         emptyDir: {}
       - name: identity-server-prometheus-exporter-conf
         configMap:
-          name: identity-server-prometheus-exporter-conf
+          name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf-prometheus-exporter
       - name: identity-server-bin
         configMap:
           name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-bin
