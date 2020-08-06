@@ -53,7 +53,7 @@ data:
         filter {
             if [type] == "wso2" {
                 grok {
-                    match => [ "message", "TID:%{SPACE}\[%{INT:tenant_id}\]%{SPACE}\[\]%{SPACE}\[%{TIMESTAMP_ISO8601:timestamp}\]%{SPACE}%{LOGLEVEL:level}%{SPACE}{%{JAVACLASS:java_class}}%{SPACE}-%{SPACE}%{JAVALOGMESSAGE:log_message}" ]
+                    match => [ "message", "TID:%{SPACE}\[%{INT:tenant_id}\]%{SPACE}\[.*\]%{SPACE}\[%{TIMESTAMP_ISO8601:timestamp}\]%{SPACE}\[\]%{SPACE}%{SPACE}%{LOGLEVEL:level}%{SPACE}{%{JAVACLASS:java_class}}%{SPACE}-%{SPACE}%{JAVALOGMESSAGE:log_message}" ]
                 }
                 date {
                     match => [ "timestamp", "ISO8601" ]
