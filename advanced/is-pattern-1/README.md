@@ -194,6 +194,7 @@ The following tables lists the configurable parameters of the chart and their de
 
 > In a production grade deployment, it is highly recommended to enable persistence and sharing of runtime artifacts between instances of the Identity Server profile (i.e. set `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled`
 to true).
+
 > It is **mandatory** to set an appropriate Kubernetes StorageClass when you enable this feature.
 > Only persistent storage solutions supporting `ReadWriteMany` access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
 
@@ -217,7 +218,7 @@ to true).
 | `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
 | `wso2.deployment.wso2is.config`                                             | Custom deployment configuration file (`<WSO2IS>/repository/conf/deployment.toml`)         | -                           |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
+> The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
 
 ###### Centralized Logging Configurations
 
