@@ -178,6 +178,11 @@ The following tables lists the configurable parameters of the chart and their de
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.dependencies.mysql.enabled`                                | Enable the deployment and usage of WSO2 IAM MySQL based Helm Chart                        | true                        |
 
+> We recommend you to persist the database data of the Kubernetes based MySQL deployment using an appropriate [Kubernetes StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/).
+> You can achieve this by setting the property `mysql-is.mysql.persistence.storageClass` to the desired StorageClass.
+
+> **Important:** In a production grade deployment, it is highly recommended to host the product databases in an external database server.
+
 ###### Persistent Runtime Artifact Configurations
 
 | Parameter                                                                                   | Description                                                                               | Default Value               |
@@ -187,9 +192,9 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.tenants`               | Capacity for tenant data between Identity Server instances                                | 100M                        |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.userstores`            | Capacity for secondary user stores between Identity Server instances                      | 50M                         |
 
-> In a production ready deployment, it is highly recommended to enable persistence and sharing of runtime artifacts between instances of the Identity Server profile (i.e. set `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled`
+> In a production grade deployment, it is highly recommended to enable persistence and sharing of runtime artifacts between instances of the Identity Server profile (i.e. set `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled`
 to true).
-> It is **mandatory** to set an appropriate [Kubernetes StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) when you enable this feature.
+> It is **mandatory** to set an appropriate Kubernetes StorageClass when you enable this feature.
 > Only persistent storage solutions supporting `ReadWriteMany` access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
 
 ###### Identity Server Configurations
