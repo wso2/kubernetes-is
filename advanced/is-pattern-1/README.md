@@ -1,10 +1,17 @@
-# Helm Chart for a Clustered Deployment of WSO2 Identity Server
+# Helm Chart for a clustered deployment of WSO2 Identity Server
+
+Resources for building a Helm chart for a clustered deployment of WSO2 Identity Server.
+
+![A clustered deployment of WSO2 Identity Server](pattern.png)
+
+For advanced details on the deployment pattern, please refer to the official
+[documentation](https://is.docs.wso2.com/en/latest/setup/deployment-guide/#deployment-patterns).
 
 ## Contents
 
 * [Prerequisites](#prerequisites)
-
 * [Quick Start Guide](#quick-start-guide)
+* [Configuration](#configuration)
 
 ## Prerequisites
 
@@ -31,118 +38,126 @@
     ```
      helm repo add wso2 https://helm.wso2.com && helm repo update
     ```
-  
+
 ## Quick Start Guide
 
-### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
+### 1. Install the Helm Chart
 
-##### 1. Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
+You can install the relevant Helm chart either from [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2) or by source.
 
-[Option 1] Deploy using Docker images from DockerHub.
-
-```
-helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE>
-```
-
-[Option 2] Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
-
-```
-helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-1 --namespace <NAMESPACE>  --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```     
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
 
-##### 2. Access Management Console.
- 
-Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
- 
-To access the console in the environment,
- 
- a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
- 
- ```
- kubectl get ing -n <NAMESPACE>
- ```
- Output:
- 
- ```
- NAME                       HOSTS                  ADDRESS        PORTS     AGE
- wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
- ```
- 
- b. Add the above host as an entry in `/etc/hosts` file as follows:
-    
- ```
- <EXTERNAL-IP> <RELEASE_NAME>
- ```
- 
- c. Try navigating to `https://<RELEASE_NAME>/carbon` from your favorite browser.
- 
+#### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
 
-### Install Chart From Source
+ Helm version 2
+
+ ```
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
+ ```
+
+ Helm version 3
+
+ - Create the Kubernetes Namespace.
+ 
+    ```
+    kubectl create ns <NAMESPACE>
+    ```
+
+ - Deploy the Kubernetes resources using the Helm Chart
+ 
+    ```
+    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
+    ```
+
+The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
+
+If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
+please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+
+Please see the following example.
+
+```
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+```
+
+#### Install Chart From Source
 
 >In the context of this document, <br>
 >* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
 Git repository. <br>
->* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced/`. <br>
+>* `HELM_HOME` will refer to `<KUBERNETES_HOME>/advanced`. <br>
 
-##### 1. Clone the Kubernetes Resources for WSO2 Identity Server Git repository.
+##### Clone the Helm Resources for WSO2 Identity Server Git repository.
 
 ```
 git clone https://github.com/wso2/kubernetes-is.git
 ```
 
-##### 2. Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
+##### Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
+
+ Helm version 2
+
+ ```
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
+ ```
+
+ Helm version 3
+
+ - Create the Kubernetes Namespace to which you desire to deploy the Kubernetes resources.
+ 
+    ```
+    kubectl create ns <NAMESPACE>
+    ```
+
+ - Deploy the Kubernetes resources using the Helm Chart
+ 
+    ```
+    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --dependency-update
+    ```
+
+The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
+
+If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
+please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+
+Please see the following example.
 
 ```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
-`NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed
+### 2. Obtain the external IP
 
-[Option 1] Deploy using Docker images from DockerHub.
+Obtain the external IP (`EXTERNAL-IP`) of the Identity Server Ingress resource, by listing down the Kubernetes Ingresses.
 
-```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
-```
-
-[Option 2] Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
-
-```
-helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>  --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+```  
+kubectl get ing -n <NAMESPACE>
 ```
 
-**Note:**
+The output under the relevant column stands for the following.
 
-* `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
+- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2is-pattern-1-identity-server-ingress`)
+- HOSTS: Hostname of the WSO2 Identity service (`<wso2.deployment.wso2is.hostname>`)
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the Identity service to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports of the Identity service
 
-##### 3. Access Management Console.
+### 3. Add a DNS record mapping the hostname and the external IP
 
-Default deployment will expose `<RELEASE_NAME>` host (to expose Administrative services and Management Console).
- 
-To access the console in the environment,
- 
- a. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
- 
- ```
- kubectl get ing -n <NAMESPACE>
- ```
- Output:
- 
- ```
- NAME                       HOSTS                  ADDRESS        PORTS     AGE
- wso2is-ingress             <RELEASE_NAME>         <EXTERNAL-IP>  80, 443   3m
- ```
- 
- b. Add the above host as an entry in `/etc/hosts` file as follows:
-    
- ```
- <EXTERNAL-IP> <RELEASE_NAME>
- ```
- 
- c. Try navigating to `https://<RELEASE_NAME>/carbon` from your favorite browser.
+If the defined hostname (in the previous step) is backed by a DNS service, add a DNS record mapping the hostname and
+the external IP (`EXTERNAL-IP`) in the relevant DNS service.
 
+If the defined hostname is not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
+hostname and the external IP in the `/etc/hosts` file at the client-side.
+
+```
+<EXTERNAL-IP> <wso2.deployment.wso2is.hostname>
+```
+
+### 4. Access Management Console
+
+- Identity Server's Carbon Management Console: `https://<wso2.deployment.wso2is.hostname>/carbon`
 
 ## Configuration
 
@@ -152,65 +167,70 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | ""                          |
-| `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | ""                          |
+| `wso2.subscription.username`                                                | Your WSO2 Subscription username                                                           | -                           |
+| `wso2.subscription.password`                                                | Your WSO2 Subscription password                                                           | -                           |
+
+> If you do not have an active WSO2 subscription, **do not change** the parameters `wso2.subscription.username` and `wso2.subscription.password`. 
 
 ###### Chart Dependencies
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.dependencies.mysql.enabled`                                | Enable MySQL chart as a dependency                                                        | true                        |
-| `wso2.deployment.dependencies.nfsServerProvisioner.enabled`                 | Enable NFS Server Provisioner chart as a dependency                                       | true                        |
+| `wso2.deployment.dependencies.mysql.enabled`                                | Enable the deployment and usage of WSO2 IAM MySQL based Helm Chart                        | true                        |
 
 ###### Persistent Runtime Artifact Configurations
 
-| Parameter                                                                   | Description                                                                               | Default Value               |
-|-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.persistentRuntimeArtifacts.nfsServerIP`                    | External NFS Server IP                                                                    | -                           |
-| `wso2.deployment.persistentRuntimeArtifacts.sharedTenants`                  | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/tenants` | -            |
-| `wso2.deployment.persistentRuntimeArtifacts.sharedUserstores`               | Exported location on external NFS Server to be mounted at `<APIM_HOME>/repository/deployment/server/userstores` | -     |
+| Parameter                                                                                   | Description                                                                               | Default Value               |
+|---------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
+| `wso2.deployment.persistentRuntimeArtifacts.storageClass`                                   | Appropriate Kubernetes Storage Class                                                      | -                           |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled`                        | Enable persistence/sharing of runtime artifacts between instances of the Identity Server profile        | false         |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.tenants`               | Capacity for tenant data between Identity Server instances                                | 100M                        |
+| `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.userstores`            | Capacity for secondary user stores between Identity Server instances                      | 50M                         |
 
-**Note**: The above mentioned configurations are applicable only when, `wso2.deployment.dependencies.nfsProvisioner.enabled` is set to `false` and `wso2.persistentRuntimeArtifacts.cloudProvider` is set to `external-nfs`.
+> In a production ready deployment, it is highly recommended to enable persistence and sharing of runtime artifacts between instances of the Identity Server profile (i.e. set `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled`
+to true).
+> It is **mandatory** to set an appropriate [Kubernetes StorageClass](https://kubernetes.io/docs/concepts/storage/storage-classes/) when you enable this feature.
+> Only persistent storage solutions supporting `ReadWriteMany` access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
 
 ###### Identity Server Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.wso2is.hostname`                                           | External host name for IS service                                                         | identity.wso2.com           |
-| `wso2.deployment.wso2is.imageName`                                          | Image name for IS node                                                                    | wso2is                      |
-| `wso2.deployment.wso2is.imageTag`                                           | Image tag for IS node                                                                     | 5.10.0                      |
+| `wso2.deployment.wso2is.hostname`                                           | Hostname for for IS service                                                               | `identity.wso2.com`         |
+| `wso2.deployment.wso2is.dockerRegistry`                                     | Registry location of the Docker image to be used to create Identity Server instances      | -                           |
+| `wso2.deployment.wso2is.imageName`                                          | Name of the Docker image to be used to create Identity Server instances                   | `wso2is`                    |
+| `wso2.deployment.wso2is.imageTag`                                           | Tag of the image used to create Identity Server instances                                 | `5.10.0`                    |
+| `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 2                           |
-| `wso2.deployment.wso2is.strategy.rollingUpdate.maxSurge`                    | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentstrategy-v1-apps) | 1     |
-| `wso2.deployment.wso2is.strategy.rollingUpdate.maxUnavailable`              | Refer to [doc](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.12/#deploymentstrategy-v1-apps) | 0     |
 | `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                         |
 | `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                          |
 | `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                         |
 | `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                          |
-| `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | Always                      |
 | `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
 | `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
 | `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
 | `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
+| `wso2.deployment.wso2is.config`                                             | Custom deployment configuration file (`<WSO2IS>/repository/conf/deployment.toml`)         | -                           |
 
-**Note**: The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/5.10.0/setup/installation-prerequisites/).
+**Note**: The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
 
 ###### Centralized Logging Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.centralizedLogging.enabled`                                           | Enable Centralized logging for WSO2 components                                            | false                       |  
-| `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | 7.2.0                       |  
-| `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | elastic                     |  
-| `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | changeme                    |  
+| `wso2.centralizedLogging.logstash.imageTag`                                 | Logstash Sidecar container image tag                                                      | `7.8.1`                     |  
+| `wso2.centralizedLogging.logstash.elasticsearch.username`                   | Elasticsearch username                                                                    | `elastic`                   |  
+| `wso2.centralizedLogging.logstash.elasticsearch.password`                   | Elasticsearch password                                                                    | `changeme`                  |  
 
 ###### Monitoring Configurations
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.monitoring.enabled`                                                   | Enable Prometheus monitoring                                                              | false                       |    
-| `wso2.monitoring.prometheus.jmxJobName`                                     | Prometheus job name                                                                       | jmx                         |  
-| `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | "release: monitoring"       |  
-| `wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace`               | Prometheus blackbox exporter namespace                                                    | <RELEASE_NAMESPACE>         |  
+| `wso2.monitoring.prometheus.jmxJobName`                                     | Prometheus job name                                                                       | `jmx`                       |  
+| `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | `release: monitoring`       |  
+| `wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace`               | Prometheus blackbox exporter namespace                                                    | <NAMESPACE>                 |  
 
 ## Enabling Centralized Logging
 
@@ -230,11 +250,11 @@ the following steps should be followed.
     ```
     dependencies:
       - name: kibana
-        version: "7.2.1-0"
+        version: "7.8.1"
         repository: "https://helm.elastic.co"
         condition: wso2.centralizedLogging.enabled
       - name: elasticsearch
-        version: "7.2.1-0"
+        version: "7.8.1"
         repository: "https://helm.elastic.co"
         condition: wso2.centralizedLogging.enabled
     
