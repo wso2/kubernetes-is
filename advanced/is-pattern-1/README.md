@@ -2,9 +2,9 @@
 
 Resources for building a Helm chart for a clustered deployment of WSO2 Identity Server.
 
-![A clustered deployment of WSO2 Identity Server](pattern.png)
+![A clustered deployment of WSO2 Identity Server](https://is.docs.wso2.com/en/latest/assets/img/setup/component-diagram.png)
 
-For advanced details on the deployment pattern, please refer to the official
+For advanced details on the deployment pattern, please refer the official
 [documentation](https://is.docs.wso2.com/en/latest/setup/deployment-guide/#deployment-patterns).
 
 ## Contents
@@ -51,13 +51,13 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
 
 #### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
 
- Helm version 2
+ **Helm version 2**
 
  ```
  helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
  ```
 
- Helm version 3
+ **Helm version 3**
 
  - Create the Kubernetes Namespace.
  
@@ -74,9 +74,9 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
 
 If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 
 
-Please see the following example.
+Refer the following example.
 
 ```
  helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
@@ -97,13 +97,13 @@ git clone https://github.com/wso2/kubernetes-is.git
 
 ##### Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
 
- Helm version 2
+ **Helm version 2**
 
  ```
  helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
  ```
 
- Helm version 3
+ **Helm version 3**
 
  - Create the Kubernetes Namespace to which you desire to deploy the Kubernetes resources.
  
@@ -120,9 +120,9 @@ git clone https://github.com/wso2/kubernetes-is.git
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
 
 If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription credentials via input values (using `--set` argument). 
+please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 
 
-Please see the following example.
+Refer the following example.
 
 ```
  helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
