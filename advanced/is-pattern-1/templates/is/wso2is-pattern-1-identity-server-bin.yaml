@@ -350,7 +350,8 @@ data:
         -Dorg.apache.xml.security.ignoreLineBreaks=false \
         -Dnashorn.args="$NASHRON_ARGS" \
         -Dcarbon.new.config.dir.path="$CARBON_HOME/repository/resources/conf" \
-        {{ if .Values.wso2.monitoring.enabled }} -Djdk.tls.client.protocols=TLSv1.2 -javaagent:/home/wso2carbon/prometheus/jmx_prometheus_javaagent-0.12.0.jar=2222:/home/wso2carbon/prometheus/config.yaml \{{- else }}-Djdk.tls.client.protocols=TLSv1.2 \{{ end }}
+        -Djdk.tls.client.protocols=TLSv1.2 \
+        {{- if .Values.wso2.monitoring.enabled }}-javaagent:/home/wso2carbon/prometheus/jmx_prometheus_javaagent-0.12.0.jar=2222:/home/wso2carbon/prometheus/config.yaml \{{- end }}
         org.wso2.carbon.bootstrap.Bootstrap $*
         status=$?
     done
