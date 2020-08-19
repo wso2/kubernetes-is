@@ -212,13 +212,17 @@ to true).
 | `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                          |
 | `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                         |
 | `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                          |
-| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
-| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 2000m                       |
+| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 3Gi                         |
+| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 3000m                       |
 | `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
 | `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
+| `wso2.deployment.wso2is.resources.jvm.heap.memory.xms`                      | The initial memory allocation for JVM Heap                                                | 2048m                       |
+| `wso2.deployment.wso2is.resources.jvm.heap.memory.xmx`                      | The maximum memory allocation for JVM Heap                                                | 2048m                       |
 | `wso2.deployment.wso2is.config`                                             | Custom deployment configuration file (`<WSO2IS>/repository/conf/deployment.toml`)         | -                           |
 
-> The above mentioned default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
+> The above referenced default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
+
+> The above referenced JVM settings are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/performance-tuning-recommendations/#jvm-settings).
 
 ###### Centralized Logging Configurations
 
