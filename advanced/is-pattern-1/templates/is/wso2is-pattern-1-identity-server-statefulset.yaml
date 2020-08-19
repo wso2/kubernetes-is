@@ -122,6 +122,8 @@ spec:
             - name: identity-server-conf
               mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
               subPath: deployment.toml
+            - name: identity-server-bin
+              mountPath: /home/wso2carbon/wso2-config-volume/bin
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
             - name: identity-server-volume-claim-tenants-storage
               mountPath: /home/wso2carbon/wso2is-5.10.0/repository/tenants
@@ -134,8 +136,6 @@ spec:
             - name: identity-server-prometheus-exporter-conf
               mountPath: /home/wso2carbon/prometheus/config.yaml
               subPath: config.yaml
-            - name: identity-server-bin
-              mountPath: /home/wso2carbon/wso2-config-volume/bin
             {{ end }}
         {{ if .Values.wso2.centralizedLogging.enabled }}
             - name: shared-logs
@@ -185,6 +185,9 @@ spec:
       - name: identity-server-conf
         configMap:
           name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf
+      - name: identity-server-bin
+        configMap:
+          name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-bin
       {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
       - name: identity-server-volume-claim-tenants-storage
         persistentVolumeClaim:
@@ -211,7 +214,4 @@ spec:
       - name: identity-server-prometheus-exporter-conf
         configMap:
           name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf-prometheus-exporter
-      - name: identity-server-bin
-        configMap:
-          name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-bin
       {{ end }}
