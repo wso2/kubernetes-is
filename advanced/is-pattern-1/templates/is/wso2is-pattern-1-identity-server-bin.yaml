@@ -1,4 +1,3 @@
-  {{ if .Values.wso2.monitoring.enabled }}
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -351,8 +350,7 @@ data:
         -Dorg.apache.xml.security.ignoreLineBreaks=false \
         -Dnashorn.args="$NASHRON_ARGS" \
         -Dcarbon.new.config.dir.path="$CARBON_HOME/repository/resources/conf" \
-        -javaagent:/home/wso2carbon/prometheus/jmx_prometheus_javaagent-0.12.0.jar=2222:/home/wso2carbon/prometheus/config.yaml \
+        {{ if .Values.wso2.monitoring.enabled }} -Djdk.tls.client.protocols=TLSv1.2 -javaagent:/home/wso2carbon/prometheus/jmx_prometheus_javaagent-0.12.0.jar=2222:/home/wso2carbon/prometheus/config.yaml \{{- else }}-Djdk.tls.client.protocols=TLSv1.2 \{{ end }}
         org.wso2.carbon.bootstrap.Bootstrap $*
         status=$?
     done
-  {{ end }}
