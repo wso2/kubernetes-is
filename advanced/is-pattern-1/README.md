@@ -193,11 +193,7 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.tenants`               | Capacity for tenant data between Identity Server instances                                | 100M                        |
 | `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.userstores`            | Capacity for secondary user stores between Identity Server instances                      | 50M                         |
 
-> In a production grade deployment, it is highly recommended to enable persistence and sharing of runtime artifacts between instances of the Identity Server profile (i.e. set `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled`
-to true).
-
-> It is **mandatory** to set an appropriate Kubernetes StorageClass when you enable this feature.
-> Only persistent storage solutions supporting `ReadWriteMany` access mode are applicable (https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes) for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
+> Please refer to the section [Runtime Artifact Persistence and Sharing](#runtime-artifact-persistence-and-sharing) for details.
 
 ###### Identity Server Configurations
 
@@ -243,15 +239,32 @@ to true).
 | `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | `release: monitoring`       |  
 | `wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace`               | Prometheus blackbox exporter namespace                                                    | <NAMESPACE>                 |  
 
+## Runtime Artifact Persistence and Sharing
+
+* In a production grade deployment, it is highly recommended to enable persistence and sharing of runtime artifacts such as, user stores and tenant data
+  between instances of the Identity Server profile (i.e. set `wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled` to true).
+
+* It is **mandatory** to set an appropriate Kubernetes StorageClass when you enable this feature. Only persistent storage solutions supporting
+  `ReadWriteMany` [access mode](https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes)
+  are applicable for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
+  
+* Please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/store/Persisting_And_Sharing.md#recommended-storage-options-for-wso2-products)
+  for advanced details with regards to WSO2 recommended, storage options.
+
+## Managing Java Keystores and Truststores
+
+For advanced details with regards to managing Java keystores and truststores in a container based WSO2 product deployment
+please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/deploy/Managing_Keystores_And_Truststores.md).
+
 ## Centralized Logging
 
-Centralized logging with Logstash and Elasticsearch is disabled, by default.
+* Centralized logging with Logstash and Elasticsearch is disabled, by default.
 
-However, if it is required to be enabled, the following steps should be followed.
+* However, if it is required to be enabled, the following steps should be adopted.
 
 1. Set `wso2.centralizedLogging.enabled` to `true` in the [values.yaml](values.yaml) file.
 
-2. Add elasticsearch Helm repository to download sub-charts required for centralized logging.
+2. Add Elasticsearch Helm repository to download sub-charts required for centralized logging.
 
     ```
     helm repo add elasticsearch https://helm.elastic.co
