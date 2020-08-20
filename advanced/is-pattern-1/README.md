@@ -12,6 +12,8 @@ For advanced details on the deployment pattern, please refer the official
 * [Prerequisites](#prerequisites)
 * [Quick Start Guide](#quick-start-guide)
 * [Configuration](#configuration)
+* [Runtime Artifact Persistence and Sharing](#runtime-artifact-persistence-and-sharing)
+* [Managing Java Keystores and Truststores](#managing-java-keystores-and-truststores)
 * [Centralized Logging](#centralized-logging)
 
 ## Prerequisites
