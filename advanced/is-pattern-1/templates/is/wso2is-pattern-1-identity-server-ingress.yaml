@@ -18,18 +18,16 @@ kind: Ingress
 metadata:
   name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-ingress
   namespace : {{ .Release.Namespace }}
+{{- if .Values.wso2.deployment.wso2is.ingress.identity.annotations }}
   annotations:
-    kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-    nginx.ingress.kubernetes.io/affinity: "cookie"
-    nginx.ingress.kubernetes.io/session-cookie-name: "route"
-    nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
+{{ toYaml .Values.wso2.deployment.wso2is.ingress.identity.annotations | indent 4 }}
+{{- end }}
 spec:
   tls:
   - hosts:
-    - {{ .Values.wso2.deployment.wso2is.hostname }}
+    - {{ .Values.wso2.deployment.wso2is.ingress.identity.hostname }}
   rules:
-  - host: {{ .Values.wso2.deployment.wso2is.hostname }}
+  - host: {{ .Values.wso2.deployment.wso2is.ingress.identity.hostname }}
     http:
       paths:
       - path: /
