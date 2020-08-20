@@ -30,7 +30,7 @@ data:
   deployment.toml: |-
     # Deployment config for Identity Server deployment
     [server]
-    hostname = "{{ .Values.wso2.deployment.wso2is.hostname }}"
+    hostname = "{{ .Values.wso2.deployment.wso2is.ingress.identity.hostname }}"
     node_ip = "$env{NODE_IP}"
 
     [super_admin]
