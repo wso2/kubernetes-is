@@ -142,7 +142,7 @@ kubectl get ing -n <NAMESPACE>
 The output under the relevant column stands for the following.
 
 - NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2is-pattern-1-identity-server-ingress`)
-- HOSTS: Hostname of the WSO2 Identity service (`<wso2.deployment.wso2is.hostname>`)
+- HOSTS: Hostname of the WSO2 Identity service (`<wso2.deployment.wso2is.ingress.identity.hostname>`)
 - ADDRESS: External IP (`EXTERNAL-IP`) exposing the Identity service to outside of the Kubernetes environment
 - PORTS: Externally exposed service ports of the Identity service
 
@@ -155,12 +155,12 @@ If the defined hostname is not backed by a DNS service, for the purpose of evalu
 hostname and the external IP in the `/etc/hosts` file at the client-side.
 
 ```
-<EXTERNAL-IP> <wso2.deployment.wso2is.hostname>
+<EXTERNAL-IP> <wso2.deployment.wso2is.ingress.identity.hostname>
 ```
 
 ### 4. Access Management Console
 
-- Identity Server's Carbon Management Console: `https://<wso2.deployment.wso2is.hostname>/carbon`
+- Identity Server's Carbon Management Console: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/carbon`
 
 ## Configuration
 
@@ -201,7 +201,6 @@ The following tables lists the configurable parameters of the chart and their de
 
 | Parameter                                                                   | Description                                                                               | Default Value               |
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
-| `wso2.deployment.wso2is.hostname`                                           | Hostname for for IS service                                                               | `identity.wso2.com`         |
 | `wso2.deployment.wso2is.dockerRegistry`                                     | Registry location of the Docker image to be used to create Identity Server instances      | -                           |
 | `wso2.deployment.wso2is.imageName`                                          | Name of the Docker image to be used to create Identity Server instances                   | `wso2is`                    |
 | `wso2.deployment.wso2is.imageTag`                                           | Tag of the image used to create Identity Server instances                                 | `5.10.0`                    |
@@ -218,6 +217,8 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.deployment.wso2is.resources.jvm.heap.memory.xms`                      | The initial memory allocation for JVM Heap                                                | 2048m                       |
 | `wso2.deployment.wso2is.resources.jvm.heap.memory.xmx`                      | The maximum memory allocation for JVM Heap                                                | 2048m                       |
 | `wso2.deployment.wso2is.config`                                             | Custom deployment configuration file (`<WSO2IS>/repository/conf/deployment.toml`)         | -                           |
+| `wso2.deployment.wso2is.ingress.identity.hostname`                          | Hostname for for Identity service                                                         | `identity.wso2.com`         |
+| `wso2.deployment.wso2is.ingress.identity.annotations`                       | Ingress resource annotations for Identity service                                         | Community NGINX Ingress controller annotations         |
 
 > The above referenced default, minimum resource amounts for running WSO2 Identity Server profiles are based on its [official documentation](https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/).
 
