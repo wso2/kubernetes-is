@@ -12,6 +12,7 @@ For advanced details on the deployment pattern, please refer the official
 * [Prerequisites](#prerequisites)
 * [Quick Start Guide](#quick-start-guide)
 * [Configuration](#configuration)
+* [Centralized Logging](#centralized-logging)
 
 ## Prerequisites
 
@@ -242,10 +243,11 @@ to true).
 | `wso2.monitoring.prometheus.serviceMonitor.labels`                          | Prometheus labels for identifying Service Monitor                                         | `release: monitoring`       |  
 | `wso2.monitoring.prometheus.serviceMonitor.blackBoxNamespace`               | Prometheus blackbox exporter namespace                                                    | <NAMESPACE>                 |  
 
-## Enabling Centralized Logging
+## Centralized Logging
 
-Centralized logging with Logstash and Elasticsearch is disabled, by default. However, if it is required to be enabled, 
-the following steps should be followed.
+Centralized logging with Logstash and Elasticsearch is disabled, by default.
+
+However, if it is required to be enabled, the following steps should be followed.
 
 1. Set `wso2.centralizedLogging.enabled` to `true` in the [values.yaml](values.yaml) file.
 
