@@ -1,3 +1,4 @@
+    {{ if .Values.wso2.centralizedLogging.enabled }}
 # Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,18 +12,14 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-{{ if .Values.wso2.monitoring.enabled }}
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
-    name: identity-server-prometheus-exporter-conf
+    name: {{ template "is-pattern-1.resource.prefix" . }}-logstash-yml-conf
     namespace : {{ .Release.Namespace }}
 data:
-    config.yaml: |
-        startDelaySeconds: 0
-        jmxurl: service:jmx:rmi://localhost:11111/jndi/rmi://localhost:9999/jmxrmi
-        ssl: false
-        rules:
-            - pattern: ".*"
-
-{{ end }}
+    logstash.yml: |-
+        http.host: "0.0.0.0"
+        path.config: /usr/share/logstash/pipeline
+    {{ end }}

@@ -12,11 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 mysql:
-  imageTag: "5.7"
+  imageTag: "5.7.31"
   mysqlRootPassword: root
   mysqlUser: wso2carbon
   mysqlPassword: wso2carbon
-  fullnameOverride: "wso2is-rdbms-service-mysql"
+  fullnameOverride: "wso2is-mysql-db-service"
+  livenessProbe:
+    initialDelaySeconds: 120
+  readinessProbe:
+    initialDelaySeconds: 120
   configurationFiles:
     mysql.cnf: |-
       [mysqld]

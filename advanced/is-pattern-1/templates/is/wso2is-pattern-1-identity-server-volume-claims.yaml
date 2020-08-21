@@ -1,3 +1,4 @@
+  {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
 # Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,7 +16,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: identity-server-volume-claim-tenants
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-shared-tenants-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -23,21 +24,15 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 2Gi
-  {{- if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
-  storageClassName: nfs
-  {{- else if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: wso2is-pattern-1-tenants
-  {{- end }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.tenants }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
 
 ---
+
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: identity-server-volume-claim-userstore
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-shared-userstores-volume-claim
   namespace : {{ .Release.Namespace }}
 spec:
   accessModes:
@@ -45,12 +40,6 @@ spec:
   volumeMode: Filesystem
   resources:
     requests:
-      storage: 2Gi
-  {{- if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "internal-nfs") }}
-  storageClassName: nfs
-  {{- else if and (.Values.wso2.persistentRuntimeArtifacts.cloudProvider) (eq .Values.wso2.persistentRuntimeArtifacts.cloudProvider "external-nfs") }}
-  storageClassName: ""
-  selector:
-    matchLabels:
-      purpose: wso2is-pattern-1-userstore
-  {{- end }}
+      storage: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.capacity.userstores }}
+  storageClassName: {{ .Values.wso2.deployment.persistentRuntimeArtifacts.storageClass }}
+  {{ end }}

@@ -1,4 +1,4 @@
-# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2017, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,18 +13,28 @@
 # limitations under the License.
 
 apiVersion: v1
-kind: ConfigMap
+kind: Service
 metadata:
-  name: identity-server-bin
+  name: {{ template "is-pattern-1.resource.prefix" . }}-identity-service
   namespace : {{ .Release.Namespace }}
-data:
-  {{- $file := .Files }}
-  {{- range $path, $byte := .Files.Glob "confs/bin/*" }}
-  {{- $list := $path | splitList "/"}}
-  {{- $length := len $list }}
-  {{- $last := add $length -1 }}
-  {{ index $list $last }}: |-
-    {{- range $file.Lines $path }}
-      {{ . }}
-    {{- end }}
-  {{- end }}
+  labels:
+    deployment: wso2is
+    monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
+spec:
+  selector:
+    deployment: wso2is
+  ports:
+  - name: servlet-http
+    port: 9763
+    targetPort: 9763
+    protocol: TCP
+  - name: servlet-https
+    port: 9443
+    targetPort: 9443
+    protocol: TCP
+  {{ if .Values.wso2.monitoring.enabled }}
+  - name: metrics
+    port: 2222
+    targetPort: 2222
+    protocol: TCP
+  {{ end }}

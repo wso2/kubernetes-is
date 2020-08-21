@@ -16,7 +16,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   namespace: {{ .Release.Namespace }}
-  name: endpoints-reader-role
+  name: {{ template "is-pattern-1.resource.prefix" . }}-endpoints-reader-role
 rules:
 - apiGroups: [""]
   verbs: ["get", "list"]
@@ -27,13 +27,13 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: RoleBinding
 metadata:
-  name: endpoints-reader-role-wso2-binding
+  name: {{ template "is-pattern-1.resource.prefix" . }}-endpoints-reader-role-wso2-binding
   namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: endpoints-reader-role
+  name: {{ template "is-pattern-1.resource.prefix" . }}-endpoints-reader-role
 subjects:
   - kind: ServiceAccount
-    name: {{ .Values.kubernetes.svcaccount }}
+    name: {{ .Values.kubernetes.serviceAccount }}
     namespace: {{ .Release.Namespace }}

@@ -1,4 +1,5 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+    {{ if .Values.wso2.centralizedLogging.enabled }}
+# Copyright (c) 2019, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,24 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Patterns to ignore when building packages.
-# This supports shell glob matching, relative path matching, and
-# negation (prefixed with !). Only one pattern per line.
-.DS_Store
-# Common VCS dirs
-.git/
-.gitignore
-.bzr/
-.bzrignore
-.hg/
-.hgignore
-.svn/
-# Common backup files
-*.swp
-*.bak
-*.tmp
-*~
-# Various IDEs
-.project
-.idea/
-*.tmproj
+apiVersion: v1
+kind: Secret
+metadata:
+    name: {{ template "is-pattern-1.resource.prefix" . }}-logstash-elasticsearch-creds
+    namespace : {{ .Release.Namespace }}
+type: Opaque
+data:
+    username: {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.username | b64enc }}
+    password: {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.password | b64enc }}
+    {{ end }}
