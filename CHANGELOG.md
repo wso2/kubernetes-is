@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project 5.10.x per each release will be documented in this file.
+All notable changes to Kubernetes and Helm resources for WSO2 IAM version `5.10.x` in each resource release, will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 ### Environments
 
 - Successful evaluation of IAM Helm chart in AWS Elastic Kubernetes Service (EKS) (refer to [issue](https://github.com/wso2/kubernetes-is/issues/250))
-- Successful evaluation of Google Cloud Filestore as a Persistent Storage Solution (refer to [issue](https://github.com/wso2/kubernetes-is/issues/227))
+- Successful evaluation of Google Cloud Filestore as a Persistent Storage Solution for deployments in Google Kubernetes Engine (GKE) (refer to [issue](https://github.com/wso2/kubernetes-is/issues/227))
 - Successful evaluation of Ceph File System (CephFS) as a Persistent Storage Solution (refer to [issue](https://github.com/wso2/kubernetes-is/issues/240))
 
 ### Added
