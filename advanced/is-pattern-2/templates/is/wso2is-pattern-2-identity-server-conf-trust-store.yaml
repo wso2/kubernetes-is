@@ -18,5 +18,5 @@ metadata:
   name: {{ template "is-pattern-2.resource.prefix" . }}-identity-server-conf-trust-store
   namespace : {{ .Release.Namespace }}
 binaryData:
-  trustore.jks: |-
+  client-truststore.jks: |-
     {{ .Files.Get "config/is/repository/resource/security/client-truststore.jks" | b64enc }}
