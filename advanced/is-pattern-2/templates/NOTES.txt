@@ -4,7 +4,7 @@ Please follow these steps to access the Management Console.
 
 1. Obtain the external IP (`EXTERNAL-IP`) of the Ingress resources by listing down the Kubernetes Ingresses.
 
-  kubectl get ing -n {{Namespace }}
+  kubectl get ing -n <Namespace>
 
     NAME                                 HOSTS                  ADDRESS        PORTS     AGE
     wso2is-pattern-2-dashboard-ingress   <DASHBOARD_HOST_NAME>   <EXTERNAL-IP>  80, 443   3m
