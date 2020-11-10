@@ -2,8 +2,6 @@
 
 Resources for building a Helm chart for a clustered deployment of WSO2 Identity Server.
 
-![A clustered deployment of WSO2 Identity Server](https://is.docs.wso2.com/en/latest/assets/img/setup/component-diagram.png)
-
 For advanced details on the deployment pattern, please refer the official
 [documentation](https://is.docs.wso2.com/en/latest/setup/deployment-guide/#deployment-patterns).
 
@@ -28,7 +26,7 @@ For advanced details on the deployment pattern, please refer the official
   to use these images, you need an active [WSO2 Subscription](https://wso2.com/subscription).
   <br><br>
 
-* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm](https://helm.sh/docs/intro/install/)
+* Install [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git), [Helm 3](https://helm.sh/docs/intro/install/)
   and [Kubernetes client](https://kubernetes.io/docs/tasks/tools/install-kubectl/) in order to run the steps provided in the
   following quick start guide.<br><br>
 
@@ -52,39 +50,6 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
 
-#### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
-
- **Helm version 2**
-
- ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
- ```
-
- **Helm version 3**
-
- - Create the Kubernetes Namespace.
- 
-    ```
-    kubectl create ns <NAMESPACE>
-    ```
-
- - Deploy the Kubernetes resources using the Helm Chart
- 
-    ```
-    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
-    ```
-
-The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
-
-If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 
-
-Refer the following example.
-
-```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```
-
 #### Install Chart From Source
 
 >In the context of this document, <br>
@@ -99,12 +64,6 @@ git clone https://github.com/wso2/kubernetes-is.git
 ```
 
 ##### Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
-
- **Helm version 2**
-
- ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
- ```
 
  **Helm version 3**
 
@@ -258,42 +217,3 @@ The following tables lists the configurable parameters of the chart and their de
 
 For advanced details with regards to managing Java keystores and truststores in a container based WSO2 product deployment
 please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/deploy/Managing_Keystores_And_Truststores.md).
-
-## Centralized Logging
-
-* Centralized logging with Logstash and Elasticsearch is disabled, by default.
-
-* However, if it is required to be enabled, the following steps should be adopted.
-
-1. Set `wso2.centralizedLogging.enabled` to `true` in the [values.yaml](values.yaml) file.
-
-2. Add Elasticsearch Helm repository to download sub-charts required for centralized logging.
-
-    ```
-    helm repo add elasticsearch https://helm.elastic.co
-    ```
-
-3. Add the following dependencies in the [requirements.yaml](requirements.yaml) file.
-
-    ```
-    dependencies:
-      - name: kibana
-        version: "7.8.1"
-        repository: "https://helm.elastic.co"
-        condition: wso2.centralizedLogging.enabled
-      - name: elasticsearch
-        version: "7.8.1"
-        repository: "https://helm.elastic.co"
-        condition: wso2.centralizedLogging.enabled
-    
-    ```
-
-4. Add override configurations for Elasticsearch in the [values.yaml](values.yaml) file.
-
-    ```
-    wso2:
-      ( ... )
-      
-    elasticsearch:
-      clusterName: wso2-elasticsearch
-    ```
