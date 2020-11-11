@@ -85,9 +85,9 @@ wso2:
           cpu: "2000m"
         limits:
           # The maximum amount of memory that should be allocated for a Pod
-          memory: "2Gi"
+          memory: "3Gi"
           # The maximum amount of CPU that should be allocated for a Pod
-          cpu: "2000m"
+          cpu: "4000m"
         # JVM settings
         # These are the resource allocation configurations associated with the JVM
         # Refer to the official documentation for advanced details (https://is.docs.wso2.com/en/latest/setup/performance-tuning-recommendations/#jvm-settings)
