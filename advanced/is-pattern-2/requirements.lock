@@ -1,6 +1,0 @@
-dependencies:
-- name: mysql-is
-  repository: file://../databases/mysql-is/
-  version: 5.10.0-2
-digest: sha256:be3400ae58b5438ade6af6086f53e53780829dcbc52acdff0ad903df3aade13b
-generated: "2020-11-09T02:01:13.532269223Z"
