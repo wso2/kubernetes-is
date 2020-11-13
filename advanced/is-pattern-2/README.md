@@ -76,7 +76,7 @@ git clone https://github.com/wso2/kubernetes-is.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --dependency-update
+    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-2 --version 5.10.0-3 --namespace <NAMESPACE> --dependency-update
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -87,7 +87,7 @@ please provide your WSO2 Subscription Credentials via input values (using `--set
 Refer the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-2 --version 5.10.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 ### 2. Obtain the external IP
@@ -97,13 +97,17 @@ Obtain the external IP (`EXTERNAL-IP`) of the Identity Server Ingress resource, 
 ```  
 kubectl get ing -n <NAMESPACE>
 ```
+```
+            NAME                            HOSTS                  ADDRESS       PORTS     AGE
+    wso2is-pattern-2-dashboard-ingress   <DASHBOARD_HOST_NAME>   <EXTERNAL-IP>  80, 443   3m
+    wso2is-pattern-2-is-ingress          <IS_HOST_NAME>          <EXTERNAL-IP>  80, 443   3m
+```
 
 The output under the relevant column stands for the following.
-
-- NAME: Metadata name of the Kubernetes Ingress resource (defaults to `wso2is-pattern-1-identity-server-ingress`)
-- HOSTS: Hostname of the WSO2 Identity service (`<wso2.deployment.wso2is.ingress.identity.hostname>`)
-- ADDRESS: External IP (`EXTERNAL-IP`) exposing the Identity service to outside of the Kubernetes environment
-- PORTS: Externally exposed service ports of the Identity service
+- NAME: Metadata name of the Kubernetes Ingress resource
+- HOSTS: Hostname of the WSO2 Identity service
+- ADDRESS: External IP (`EXTERNAL-IP`) exposing the services to outside of the Kubernetes environment
+- PORTS: Externally exposed service ports 
 
 ### 3. Add a DNS record mapping the hostname and the external IP
 
