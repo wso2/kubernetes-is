@@ -1,4 +1,4 @@
-# Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+# Copyright (c) 2020, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,15 +19,9 @@ metadata:
   namespace : {{ .Release.Namespace }}
 spec:
   replicas: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker1.replicas }}
-  # strategy:
-  #   rollingUpdate:
-  #     maxSurge: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker1.strategy.rollingUpdate.maxSurge }}
-  #     maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2isAnalyticsWorker1.strategy.rollingUpdate.maxUnavailable }}
-  #   type: RollingUpdate
   selector:
     matchLabels:
       deployment: {{ template "fullname" . }}-analytics-worker
-      # app: is-pattern-2
       monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
   serviceName: {{ template "fullname" . }}-analytics-worker-1-service
   template:
