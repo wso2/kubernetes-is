@@ -15,15 +15,15 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ template "fullname" . }}-analytics-worker-1-statefulset
+  name: {{ template "fullname" . }}-analytics-worker-statefulset
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker1.replicas }}
+  replicas: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsWorker.replicas }}
   selector:
     matchLabels:
       deployment: {{ template "fullname" . }}-analytics-worker
       monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
-  serviceName: {{ template "fullname" . }}-analytics-worker-1-service
+  serviceName: {{ template "fullname" . }}-analytics-worker-service
   template:
     metadata:
       labels:
@@ -69,14 +69,14 @@ spec:
       {{ end }}
       containers:
       - name: {{ template "fullname" . }}-analytics-worker
-        {{- if .Values.wso2.deployment.wso2isAnalyticsWorker1.dockerRegistry }}
-        image: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.dockerRegistry }}/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker1.imageName }}
+        {{- if .Values.wso2.deployment.wso2isAnalyticsWorker.dockerRegistry }}
+        image: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.dockerRegistry }}/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker.imageName }}
         {{- $tag := .Values.wso2.deployment.wso2isAnalyticsWorker1.imageTag }}
         {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
         {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-        image: wso2/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker1.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker1.imageTag }}
+        image: wso2/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker.imageTag }}
         {{- else }}
-        image: docker.wso2.com/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker1.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker1.imageTag }}
+        image: docker.wso2.com/{{ default "wso2is-analytics-worker" .Values.wso2.deployment.wso2isAnalyticsWorker.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsWorker.imageTag }}
         {{- end }}
         env:
         -
@@ -90,32 +90,32 @@ spec:
               fieldPath: status.podIP
         resources:
           requests:
-            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.resources.requests.memory }}
-            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.resources.requests.cpu }}
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.requests.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.requests.cpu }}
           limits:
-            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.resources.limits.memory }}
-            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.resources.limits.cpu }}
+            memory: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.limits.memory }}
+            cpu: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.resources.limits.cpu }}
         livenessProbe:
           exec:
             command:
             - /bin/sh
             - -c
             - nc -z localhost 9091
-          initialDelaySeconds: {{ default 200 .Values.wso2.deployment.wso2isAnalyticsWorker1.livenessProbe.initialDelaySeconds }}
-          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2isAnalyticsWorker1.livenessProbe.periodSeconds }}
+          initialDelaySeconds: {{ default 200 .Values.wso2.deployment.wso2isAnalyticsWorker.livenessProbe.initialDelaySeconds }}
+          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2isAnalyticsWorker.livenessProbe.periodSeconds }}
         readinessProbe:
           exec:
             command:
               - /bin/sh
               - -c
               - nc -z localhost 9091
-          initialDelaySeconds: {{ default 200 .Values.wso2.deployment.wso2isAnalyticsWorker1.readinessProbe.initialDelaySeconds }}
-          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2isAnalyticsWorker1.readinessProbe.periodSeconds }}
+          initialDelaySeconds: {{ default 200 .Values.wso2.deployment.wso2isAnalyticsWorker.readinessProbe.initialDelaySeconds }}
+          periodSeconds: {{ default 10 .Values.wso2.deployment.wso2isAnalyticsWorker.readinessProbe.periodSeconds }}
         lifecycle:
           preStop:
             exec:
               command:  ['sh', '-c', '${WSO2_SERVER_HOME}/bin/worker.sh stop']
-        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsWorker1.imagePullPolicy }}
+        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsWorker.imagePullPolicy }}
         securityContext:
           runAsUser: 802
         ports:
@@ -200,9 +200,9 @@ spec:
             value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
-      {{- if .Values.wso2.deployment.wso2isAnalyticsWorker1.imagePullSecrets }}
+      {{- if .Values.wso2.deployment.wso2isAnalyticsWorker.imagePullSecrets }}
       imagePullSecrets:
-      - name: {{ .Values.wso2.deployment.wso2isAnalyticsWorker1.imagePullSecrets }}
+      - name: {{ .Values.wso2.deployment.wso2isAnalyticsWorker.imagePullSecrets }}
       {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
       imagePullSecrets:
       - name: {{ template "is-pattern-2.resource.prefix" . }}-wso2-private-registry-creds
