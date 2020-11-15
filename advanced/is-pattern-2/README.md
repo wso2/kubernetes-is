@@ -1,6 +1,6 @@
-# Helm Chart for a clustered deployment of WSO2 Identity Server
+# Helm Chart for a clustered deployment of WSO2 Identity Server with Analytics support
 
-Resources for building a Helm chart for a clustered deployment of WSO2 Identity Server.
+Resources for building a Helm chart for a clustered deployment of WSO2 Identity Server with Analytics Support.
 
 For advanced details on the deployment pattern, please refer the official
 [documentation](https://is.docs.wso2.com/en/latest/setup/deployment-guide/#deployment-patterns).
