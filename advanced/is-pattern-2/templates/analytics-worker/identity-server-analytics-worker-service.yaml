@@ -15,16 +15,16 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ template "fullname" . }}-analytics-worker-2-service
+  name: {{ template "fullname" . }}-analytics-worker-service
   namespace : {{ .Release.Namespace }}
   labels:
     app: is-pattern-2
     monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
-    node: node-2
+    node: node-1
 spec:
   selector:
     deployment: {{ template "fullname" . }}-analytics-worker
-    node: node-2
+    node: node-1
   ports:
   - name: servlet-https
     port: 9091

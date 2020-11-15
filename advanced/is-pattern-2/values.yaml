@@ -161,11 +161,11 @@ wso2:
             nginx.ingress.kubernetes.io/session-cookie-name: "route"
             nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
 
-    wso2isAnalyticsWorker1:
+    wso2isAnalyticsWorker:
       imageName: "wso2is-analytics-worker"
       imageTag: "5.8.0"
       # Number of deployment replicas
-      replicas: 1
+      replicas: 2
       strategy:
         rollingUpdate:
           # The maximum number of pods that can be scheduled above the desired number of pods.
@@ -201,53 +201,6 @@ wso2:
           # The maximum amount of CPU that should be allocated for a Pod
           cpu: "2000m"
       imagePullPolicy: Always
-    wso2isAnalyticsWorker2:
-      mysql:
-        host: wso2is-mysql-db-service
-        username: wso2carbon
-        password: wso2carbon
-        driverClass: com.mysql.jdbc.Driver
-        validationQuery: "SELECT 1"
-      imageName: "wso2is-analytics-worker"
-      imageTag: "5.8.0"
-      # Number of deployment replicas
-      replicas: 1
-      strategy:
-        rollingUpdate:
-          # The maximum number of pods that can be scheduled above the desired number of pods.
-          maxSurge: 1
-          # The maximum number of pods that can be unavailable during the update.
-          maxUnavailable: 0
-      # Indicates whether the container is running.
-      livenessProbe:
-        # Number of seconds after the container has started before liveness probes are initiated.
-        initialDelaySeconds: 200
-        # How often (in seconds) to perform the probe.
-        periodSeconds: 10
-      # Indicates whether the container is ready to service requests.
-      readinessProbe:
-        # Number of seconds after the container has started before readiness probes are initiated.
-        initialDelaySeconds: 200
-        # How often (in seconds) to perform the probe.
-        periodSeconds: 10
-      resources:
-        # These are the minimum resource recommendations for running WSO2 Stream Processing based server profiles
-        # as per official documentation (https://docs.wso2.com/display/SP440/Installation+Prerequisites).
-        requests:
-          # The minimum amount of memory that should be allocated for a Pod
-          memory: "4Gi"
-          # The minimum amount of CPU that should be allocated for a Pod
-          cpu: "2000m"
-        # Please see the official documentation on WSO2 Stream Processing based Performance Analysis and Resource recommendations
-        # (https://docs.wso2.com/display/SP440/Performance+Analysis+Results) and tune the limits according to your needs
-        # where necessary.
-        limits:
-          # The maximum amount of memory that should be allocated for a Pod
-          memory: "4Gi"
-          # The maximum amount of CPU that should be allocated for a Pod
-          cpu: "2000m"
-      imagePullPolicy: Always  
-
 
   # Configurations for the logstash container image and elasticsearch authorization credentials
   # Centralized logging is disabled by default. If it is required to enable centralized logging, please follow the instructions
