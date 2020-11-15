@@ -19,11 +19,8 @@ metadata:
   namespace : {{ .Release.Namespace }}
 spec:
   replicas: {{ default 2 .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
-  # strategy:
-  #   rollingUpdate:
-  #     maxSurge: {{ default 1 .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxSurge }}
-  #     maxUnavailable: {{ default 0 .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable }}
-  #   type: RollingUpdate
+  updateStrategy:
+    type: RollingUpdate
   selector:
     matchLabels:
       deployment: {{ template "fullname" . }}-analytics-dashboard
