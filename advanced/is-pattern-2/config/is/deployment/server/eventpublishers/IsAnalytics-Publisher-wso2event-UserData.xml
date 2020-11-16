@@ -24,7 +24,7 @@
     <property name="protocol">thrift</property>
     <property name="publishingMode">non-blocking</property>
     <property name="publishTimeout">0</property>
-    <property name="receiverURL">tcp://wso2is-pattern-2-analytics-worker-service:7612</property>
+    <property name="receiverURL">tcp://wso2is-pattern-2-analytics-worker-statefulset-0.wso2is-pattern-2-analytics-worker-service:7612|tcp://wso2is-pattern-2-analytics-worker-statefulset-1.wso2is-pattern-2-analytics-worker-service:7612</property>
     <property encrypted="false" name="password">admin</property>
   </to>
 </eventPublisher>
