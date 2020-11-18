@@ -19,7 +19,7 @@ metadata:
   namespace : {{ .Release.Namespace }}
   labels:
     app: is-pattern-2
-    monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
+    monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
     node: node-1
 spec:
   clusterIP: None
