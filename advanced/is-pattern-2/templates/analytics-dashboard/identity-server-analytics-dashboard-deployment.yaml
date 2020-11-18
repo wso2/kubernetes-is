@@ -13,26 +13,28 @@
 # limitations under the License.
 
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
-  name: {{ template "fullname" . }}-analytics-dashboard-statefulset
+  name: {{ template "fullname" . }}-analytics-dashboard-deployment
   namespace : {{ .Release.Namespace }}
 spec:
-  replicas: {{ default 2 .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
-  updateStrategy:
+  replicas: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.strategy.rollingUpdate.maxUnavailable }}
     type: RollingUpdate
   selector:
     matchLabels:
       deployment: {{ template "fullname" . }}-analytics-dashboard
-   #   app: is-pattern-2
-      monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
-  serviceName: {{ template "fullname" . }}-analytics-dashboard-service
+      app: is-pattern-2
+      monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
   template:
     metadata:
       labels:
         deployment: {{ template "fullname" . }}-analytics-dashboard
         app: is-pattern-2
-        monitoring: {{ default "jmx" .Values.wso2.monitoring.prometheus.jmxJobName }}
+        monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
     spec:
       initContainers:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
@@ -42,7 +44,7 @@ spec:
       {{ end }}
       {{ if .Values.wso2.centralizedLogging.enabled }}
       - name: init-logstash-plugins-install
-        image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
+        image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
         command:
           - /bin/bash
           - "-c"
@@ -72,15 +74,15 @@ spec:
       containers:
       - name: analytics-dashboard
         {{- if .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}
-        image: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}
+        image: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.dockerRegistry }}/{{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}
         {{- $tag := .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
         {{- if not (eq $tag "") }}{{- printf ":%s" $tag -}}{{- end }}
         {{- else if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") }}
-        image: wso2/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
+        image: wso2/{{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
         {{- else }}
-        image: docker.wso2.com/{{ default "wso2is-analytics-dashboard" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ default "5.8.0" .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
+        image: docker.wso2.com/{{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imageName }}:{{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imageTag }}
         {{- end }}
-        imagePullPolicy: {{ default "Always" .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullPolicy }}
+        imagePullPolicy: {{ .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullPolicy }}
         ports:
         -
           containerPort: 9643
@@ -119,7 +121,7 @@ spec:
         - name: shared-logs
           mountPath: /home/wso2carbon/wso2is-analytics-5.8.0/wso2/dashboard/logs
       - name: {{ template "fullname" . }}-analytics-dashboard-logstash
-        image: docker.elastic.co/logstash/logstash:{{ default "7.2.0" .Values.wso2.centralizedLogging.logstash.imageTag }}
+        image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
         volumeMounts:
           - name: shared-logs
             mountPath: /usr/share/logstash/wso2-logs/
@@ -149,7 +151,7 @@ spec:
                 name: logstash-elasticsearch-creds
                 key: password
           - name: ELASTICSEARCH_HOST
-            value: {{ default "wso2-elasticsearch-master" .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
+            value: {{ .Values.wso2.centralizedLogging.logstash.elasticsearch.host }}
       {{ end }}
       serviceAccountName: {{ .Values.kubernetes.svcaccount }}
       {{- if .Values.wso2.deployment.wso2isAnalyticsDashboard.imagePullSecrets }}
