@@ -30,7 +30,6 @@ spec:
         deployment: {{ template "fullname" . }}-analytics-worker
         app: is-pattern-2
         monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
-        node: node-1
     spec:
       initContainers:
       {{ if .Values.wso2.deployment.dependencies.mysql }}
