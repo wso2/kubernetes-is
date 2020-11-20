@@ -25,7 +25,6 @@ spec:
   clusterIP: None
   selector:
     deployment: {{ template "fullname" . }}-analytics-worker
-    node: node-1
   ports:
   - name: servlet-https
     port: 9091
