@@ -35,17 +35,24 @@
     * Deploy WSO2 Identity Server using Docker images from DockerHub.
     
         ```
-        ./wso2is-ga.sh --deploy
+        ./wso2is-5.11.0-ga.sh --deploy
         ```
     
     * Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
     
         ```
-        ./wso2is-latest.sh --deploy
+        ./wso2is-5.11.0-latest.sh --deploy
         ```
       **Note**: When using images from WSO2 Private Docker Registry, you will be prompted for your WSO2 Subscription credentials.
 
-4. Try navigating to `https://<NODE-IP>:30443/carbon/` your favourite browser using credentials `admin`/`admin`.
-Your `<NODE-IP>` will be provided at the end of the deployment.
+4. Try navigating to Management Console, Console and My Account URLs from your favourite browser using credentials `admin`/`admin`.
+`https://<NODE-IP>:30443/carbon/` your favourite browser using credentials `admin`/`admin`.
 
-5. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/5.10.0/)**.
+
+  * Management Console: `https://<NODE-IP>:30443/carbon/`
+  * Console: `https://<NODE-IP>:30443/console/`
+  * My Account: `https://<NODE-IP>:30443/myaccount/`
+  
+  Your `<NODE-IP>` will be provided at the end of the deployment.
+
+5. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/5.11.0/get-started/quick-start-guide/)**.

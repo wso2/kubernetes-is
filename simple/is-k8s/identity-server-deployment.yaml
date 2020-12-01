@@ -34,9 +34,21 @@ spec:
       - name: init-is-db
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      - name: init-mysql-connector-download
+        image: busybox:1.32
+        command:
+          - /bin/sh
+          - "-c"
+          - |
+            set -e
+            connector_version=8.0.17
+            wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+        volumeMounts:
+          - name: mysql-connector-jar
+            mountPath: /mysql-connector-jar
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.10.0
+        image: "$image.pull.@.wso2"/wso2is:5.11.0
         livenessProbe:
           exec:
             command:
@@ -83,6 +95,8 @@ spec:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
+        - name: mysql-connector-jar
+          mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
         - name: wso2is-deployment-creds
@@ -90,4 +104,6 @@ spec:
       - name: identity-server-conf
         configMap:
           name: identity-server-conf
+      - name: mysql-connector-jar
+        emptyDir: {}
 ---
