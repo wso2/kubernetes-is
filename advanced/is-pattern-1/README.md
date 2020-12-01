@@ -57,7 +57,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  **Helm version 2**
 
  ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-1 --namespace <NAMESPACE>
  ```
 
  **Helm version 3**
@@ -71,7 +71,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
+    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-1 --namespace <NAMESPACE>
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -82,7 +82,7 @@ please provide your WSO2 Subscription Credentials via input values (using `--set
 Refer the following example.
 
 ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source
@@ -103,7 +103,7 @@ git clone https://github.com/wso2/kubernetes-is.git
  **Helm version 2**
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE>
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.11.0-1 --namespace <NAMESPACE>
  ```
 
  **Helm version 3**
@@ -117,7 +117,7 @@ git clone https://github.com/wso2/kubernetes-is.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --dependency-update
+    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.11.0-1 --namespace <NAMESPACE> --dependency-update
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -128,7 +128,7 @@ please provide your WSO2 Subscription Credentials via input values (using `--set
 Refer the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.10.0-2 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.11.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 ### 2. Obtain the external IP
@@ -203,7 +203,7 @@ The following tables lists the configurable parameters of the chart and their de
 |-----------------------------------------------------------------------------|-------------------------------------------------------------------------------------------|-----------------------------|
 | `wso2.deployment.wso2is.dockerRegistry`                                     | Registry location of the Docker image to be used to create Identity Server instances      | -                           |
 | `wso2.deployment.wso2is.imageName`                                          | Name of the Docker image to be used to create Identity Server instances                   | `wso2is`                    |
-| `wso2.deployment.wso2is.imageTag`                                           | Tag of the image used to create Identity Server instances                                 | `5.10.0`                    |
+| `wso2.deployment.wso2is.imageTag`                                           | Tag of the image used to create Identity Server instances                                 | `5.11.0`                    |
 | `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 2                           |
 | `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                         |
