@@ -1,5 +1,5 @@
 #!/bin/bash
-IS_OPEN_SOURCE=true
+IS_OPEN_SOURCE=false
 
 if $IS_OPEN_SOURCE; then
     SCRIPT="deployment-scripts/wso2is-ga.sh"
