@@ -140,7 +140,7 @@ data:
 
       CREATE TABLE IF NOT EXISTS REG_PATH(
                    REG_PATH_ID INTEGER NOT NULL AUTO_INCREMENT,
-                   REG_PATH_VALUE VARCHAR(750) NOT NULL,
+                   REG_PATH_VALUE VARCHAR(750) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
                    REG_PATH_PARENT_ID INTEGER,
                    REG_TENANT_ID INTEGER DEFAULT 0,
                    CONSTRAINT PK_REG_PATH PRIMARY KEY(REG_PATH_ID, REG_TENANT_ID),
@@ -345,13 +345,15 @@ data:
 
       CREATE TABLE UM_TENANT (
       			UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+      			UM_TENANT_UUID VARCHAR(36) NOT NULL,
       	        UM_DOMAIN_NAME VARCHAR(255) NOT NULL,
                   UM_EMAIL VARCHAR(255),
                   UM_ACTIVE BOOLEAN DEFAULT FALSE,
       	        UM_CREATED_DATE TIMESTAMP NOT NULL,
       	        UM_USER_CONFIG LONGBLOB,
       			PRIMARY KEY (UM_ID),
-      			UNIQUE(UM_DOMAIN_NAME)
+      			UNIQUE(UM_DOMAIN_NAME),
+      			UNIQUE(UM_TENANT_UUID)
       )ENGINE INNODB;
 
       CREATE TABLE UM_DOMAIN(
@@ -497,6 +499,8 @@ data:
 
       CREATE INDEX UM_USER_ID_INDEX ON UM_USER_ATTRIBUTE(UM_USER_ID);
 
+      CREATE INDEX UM_ATTR_NAME_VALUE_INDEX ON UM_USER_ATTRIBUTE(UM_ATTR_NAME, UM_ATTR_VALUE);
+
       CREATE TABLE UM_DIALECT(
                   UM_ID INTEGER NOT NULL AUTO_INCREMENT,
                   UM_DIALECT_URI VARCHAR(255) NOT NULL,
@@ -565,6 +569,18 @@ data:
                   UNIQUE (UM_USER_NAME, UM_ROLE_ID, UM_TENANT_ID, UM_DOMAIN_ID),
                   FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_HYBRID_ROLE(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
       	    FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
+                  PRIMARY KEY (UM_ID, UM_TENANT_ID)
+      )ENGINE INNODB;
+
+      CREATE TABLE UM_HYBRID_GROUP_ROLE(
+                  UM_ID INTEGER NOT NULL AUTO_INCREMENT,
+                  UM_GROUP_NAME VARCHAR(255),
+                  UM_ROLE_ID INTEGER NOT NULL,
+                  UM_TENANT_ID INTEGER DEFAULT 0,
+                  UM_DOMAIN_ID INTEGER,
+                  UNIQUE (UM_GROUP_NAME, UM_ROLE_ID, UM_TENANT_ID, UM_DOMAIN_ID),
+                  FOREIGN KEY (UM_ROLE_ID, UM_TENANT_ID) REFERENCES UM_HYBRID_ROLE(UM_ID, UM_TENANT_ID) ON DELETE CASCADE,
+                  FOREIGN KEY (UM_DOMAIN_ID, UM_TENANT_ID) REFERENCES UM_DOMAIN(UM_DOMAIN_ID, UM_TENANT_ID) ON DELETE CASCADE,
                   PRIMARY KEY (UM_ID, UM_TENANT_ID)
       )ENGINE INNODB;
 
@@ -1617,6 +1633,128 @@ data:
       	PRIMARY KEY (IDP_SESSION_ID)
       )ENGINE INNODB;
 
+      CREATE TABLE IF NOT EXISTS IDN_CONFIG_TYPE (
+          ID VARCHAR(255) NOT NULL,
+          NAME VARCHAR(255) NOT NULL,
+          DESCRIPTION VARCHAR(1023) NULL,
+          PRIMARY KEY (ID),
+          CONSTRAINT TYPE_NAME_CONSTRAINT UNIQUE (NAME)
+      )ENGINE INNODB;
+
+      INSERT INTO IDN_CONFIG_TYPE (ID, NAME, DESCRIPTION) VALUES
+      ('9ab0ef95-13e9-4ed5-afaf-d29bed62f7bd', 'IDP_TEMPLATE', 'Template type to uniquely identify IDP templates'),
+      ('3c4ac3d0-5903-4e3d-aaca-38df65b33bfd', 'APPLICATION_TEMPLATE', 'Template type to uniquely identify Application templates'),
+      ('8ec6dbf1-218a-49bf-bc34-0d2db52d151c', 'CORS_CONFIGURATION', 'A resource type to keep the tenant CORS configurations');
+
+      CREATE TABLE IF NOT EXISTS IDN_CONFIG_RESOURCE (
+          ID VARCHAR(255) NOT NULL,
+          TENANT_ID INT NOT NULL,
+          NAME VARCHAR(255) NOT NULL,
+          CREATED_TIME TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          LAST_MODIFIED TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+          HAS_FILE tinyint(1) NOT NULL,
+          HAS_ATTRIBUTE tinyint(1) NOT NULL,
+          TYPE_ID VARCHAR(255) NOT NULL,
+          PRIMARY KEY (ID),
+          CONSTRAINT NAME_TENANT_TYPE_CONSTRAINT UNIQUE (NAME, TENANT_ID, TYPE_ID)
+      )ENGINE INNODB;
+      ALTER TABLE IDN_CONFIG_RESOURCE ADD CONSTRAINT TYPE_ID_FOREIGN_CONSTRAINT FOREIGN KEY (TYPE_ID) REFERENCES
+      IDN_CONFIG_TYPE (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+      CREATE TABLE IF NOT EXISTS IDN_CONFIG_ATTRIBUTE (
+          ID VARCHAR(255) NOT NULL,
+          RESOURCE_ID VARCHAR(255) NOT NULL,
+          ATTR_KEY VARCHAR(255) NOT NULL,
+          ATTR_VALUE VARCHAR(1023) NULL,
+          PRIMARY KEY (ID),
+          CONSTRAINT RESOURCE_KEY_VAL_CONSTRAINT UNIQUE (RESOURCE_ID(64), ATTR_KEY(255))
+      )ENGINE INNODB;
+      ALTER TABLE IDN_CONFIG_ATTRIBUTE ADD CONSTRAINT RESOURCE_ID_ATTRIBUTE_FOREIGN_CONSTRAINT FOREIGN KEY (RESOURCE_ID)
+      REFERENCES IDN_CONFIG_RESOURCE (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+      CREATE TABLE IF NOT EXISTS IDN_CONFIG_FILE (
+          ID VARCHAR(255) NOT NULL,
+          VALUE BLOB NULL,
+          RESOURCE_ID VARCHAR(255) NOT NULL,
+          NAME VARCHAR(255) NULL,
+          PRIMARY KEY (ID)
+      )ENGINE INNODB;
+      ALTER TABLE IDN_CONFIG_FILE ADD CONSTRAINT RESOURCE_ID_FILE_FOREIGN_CONSTRAINT FOREIGN KEY (RESOURCE_ID) REFERENCES
+      IDN_CONFIG_RESOURCE (ID) ON DELETE CASCADE ON UPDATE CASCADE;
+
+      CREATE TABLE IDN_REMOTE_FETCH_CONFIG (
+      	ID VARCHAR(255) NOT NULL,
+      	TENANT_ID INT NOT NULL,
+      	IS_ENABLED CHAR(1) NOT NULL,
+      	REPO_MANAGER_TYPE VARCHAR(255) NOT NULL,
+      	ACTION_LISTENER_TYPE VARCHAR(255) NOT NULL,
+      	CONFIG_DEPLOYER_TYPE VARCHAR(255) NOT NULL,
+      	REMOTE_FETCH_NAME VARCHAR(255),
+      	REMOTE_RESOURCE_URI VARCHAR(255) NOT NULL,
+      	ATTRIBUTES_JSON MEDIUMTEXT NOT NULL,
+      	PRIMARY KEY (ID),
+      	CONSTRAINT UC_REMOTE_RESOURCE_TYPE UNIQUE (TENANT_ID, CONFIG_DEPLOYER_TYPE)
+      )ENGINE INNODB;
+
+      CREATE TABLE IDN_REMOTE_FETCH_REVISIONS (
+          ID VARCHAR(255) NOT NULL,
+          CONFIG_ID VARCHAR(255) NOT NULL,
+      	FILE_PATH VARCHAR(255) NOT NULL,
+      	FILE_HASH VARCHAR(255),
+      	DEPLOYED_DATE TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      	LAST_SYNC_TIME TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      	DEPLOYMENT_STATUS VARCHAR(255),
+      	ITEM_NAME VARCHAR(255),
+      	DEPLOY_ERR_LOG MEDIUMTEXT,
+      	PRIMARY KEY (ID),
+      	FOREIGN KEY (CONFIG_ID) REFERENCES IDN_REMOTE_FETCH_CONFIG(ID) ON DELETE CASCADE,
+      	CONSTRAINT UC_REVISIONS UNIQUE (CONFIG_ID, ITEM_NAME)
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_USER_FUNCTIONALITY_MAPPING (
+      	ID VARCHAR(255) NOT NULL,
+      	USER_ID VARCHAR(255) NOT NULL,
+      	TENANT_ID INTEGER NOT NULL,
+      	FUNCTIONALITY_ID VARCHAR(255) NOT NULL,
+      	IS_FUNCTIONALITY_LOCKED BOOLEAN NOT NULL,
+      	FUNCTIONALITY_UNLOCK_TIME BIGINT NOT NULL,
+      	FUNCTIONALITY_LOCK_REASON VARCHAR(1023),
+      	FUNCTIONALITY_LOCK_REASON_CODE VARCHAR(255),
+      	PRIMARY KEY (ID),
+      	CONSTRAINT IDN_USER_FUNCTIONALITY_MAPPING_CONSTRAINT UNIQUE (USER_ID, TENANT_ID, FUNCTIONALITY_ID)
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_USER_FUNCTIONALITY_PROPERTY (
+      	ID VARCHAR(255) NOT NULL,
+      	USER_ID VARCHAR(255) NOT NULL,
+      	TENANT_ID INTEGER NOT NULL,
+      	FUNCTIONALITY_ID VARCHAR(255) NOT NULL,
+      	PROPERTY_NAME VARCHAR(255),
+      	PROPERTY_VALUE VARCHAR(255),
+      	PRIMARY KEY (ID),
+      	CONSTRAINT IDN_USER_FUNCTIONALITY_PROPERTY_CONSTRAINT UNIQUE (USER_ID, TENANT_ID, FUNCTIONALITY_ID, PROPERTY_NAME)
+      )ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_CORS_ORIGIN (
+          ID                INT           NOT NULL AUTO_INCREMENT,
+          TENANT_ID         INT           NOT NULL,
+          ORIGIN            VARCHAR(2048) NOT NULL,
+          UUID              CHAR(36)      NOT NULL,
+
+          PRIMARY KEY (ID),
+          UNIQUE (TENANT_ID, ORIGIN),
+          UNIQUE (UUID)
+      ) ENGINE INNODB;
+
+      CREATE TABLE IF NOT EXISTS IDN_CORS_ASSOCIATION (
+          IDN_CORS_ORIGIN_ID  INT NOT NULL,
+          SP_APP_ID           INT NOT NULL,
+
+          PRIMARY KEY (IDN_CORS_ORIGIN_ID, SP_APP_ID),
+          FOREIGN KEY (IDN_CORS_ORIGIN_ID) REFERENCES IDN_CORS_ORIGIN (ID) ON DELETE CASCADE,
+          FOREIGN KEY (SP_APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE
+      ) ENGINE INNODB;
+
       -- --------------------------- INDEX CREATION -----------------------------
       -- IDN_OAUTH2_ACCESS_TOKEN --
       CREATE INDEX IDX_TC ON IDN_OAUTH2_ACCESS_TOKEN(TIME_CREATED);
@@ -1693,6 +1831,15 @@ data:
 
       -- IDN_FED_AUTH_SESSION_MAPPING --
       CREATE INDEX IDX_FEDERATED_AUTH_SESSION_ID ON IDN_FED_AUTH_SESSION_MAPPING (SESSION_ID);
+
+      -- IDN_REMOTE_FETCH_REVISIONS --
+      CREATE INDEX IDX_REMOTE_FETCH_REVISION_CONFIG_ID ON IDN_REMOTE_FETCH_REVISIONS (CONFIG_ID);
+
+      -- IDN_CORS_ASSOCIATION --
+      CREATE INDEX IDX_CORS_SP_APP_ID ON IDN_CORS_ASSOCIATION (SP_APP_ID);
+
+      -- IDN_CORS_ASSOCIATION --
+      CREATE INDEX IDX_CORS_ORIGIN_ID ON IDN_CORS_ASSOCIATION (IDN_CORS_ORIGIN_ID);
 kind: ConfigMap
 metadata:
   name: mysql-dbscripts
@@ -1837,9 +1984,21 @@ spec:
       - name: init-is-db
         image: busybox:1.31
         command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-rdbms-service-mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+      - name: init-mysql-connector-download
+        image: busybox:1.32
+        command:
+          - /bin/sh
+          - "-c"
+          - |
+            set -e
+            connector_version=8.0.17
+            wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+        volumeMounts:
+          - name: mysql-connector-jar
+            mountPath: /mysql-connector-jar
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.10.0
+        image: "$image.pull.@.wso2"/wso2is:5.11.0
         livenessProbe:
           exec:
             command:
@@ -1886,6 +2045,8 @@ spec:
         - name: identity-server-conf
           mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
           subPath: deployment.toml
+        - name: mysql-connector-jar
+          mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
       serviceAccountName: "wso2svc-account"
       imagePullSecrets:
         - name: wso2is-deployment-creds
@@ -1893,6 +2054,8 @@ spec:
       - name: identity-server-conf
         configMap:
           name: identity-server-conf
+      - name: mysql-connector-jar
+        emptyDir: {}
 ---
 EOF
 }
@@ -2125,10 +2288,16 @@ function deploy(){
 
     echoBold "Successfully deployed WSO2 Identity Server.\n\n"
 
-    echoBold "1. Try navigating to https://$NODE_IP:30443/carbon/ from your favourite browser using \n"
+    echoBold "1. Try navigating to Management Console, Console and My Account URLs from your favourite browser using credentials \n"
+    echoBold "\tMgt Console URL  : https://$NODE_IP:30443/carbon/\n"
+    echoBold "\tConsole URL : https://$NODE_IP:30443/console\n"
+    echoBold "\tMy Account URL : https://$NODE_IP:30443/myaccount\n"
+
+    echoBold "\Credentials\n"
     echoBold "\tusername: admin\n"
     echoBold "\tpassword: admin\n"
-    echoBold "2. Follow \"https://is.docs.wso2.com/en/5.10.0/\" to start using WSO2 Identity Server.\n\n "
+
+    echoBold "3. Follow \"https://is.docs.wso2.com/en/5.11.0/\" to start using WSO2 Identity Server.\n\n"
 }
 arg=$1
 if [[ -z $arg ]]
