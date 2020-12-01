@@ -41,6 +41,18 @@ spec:
         - name: init-is-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-mysql-db-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
+        - name: init-mysql-connector-download
+          image: busybox:1.32
+          command:
+            - /bin/sh
+            - "-c"
+            - |
+              set -e
+              connector_version=8.0.17
+              wget https://repo1.maven.org/maven2/mysql/mysql-connector-java/${connector_version}/mysql-connector-java-${connector_version}.jar -P /mysql-connector-jar/
+          volumeMounts:
+            - name: mysql-connector-jar
+              mountPath: /mysql-connector-jar
         {{ end }}
         {{ if .Values.wso2.centralizedLogging.enabled }}
         - name: init-elasticsearch
@@ -124,11 +136,15 @@ spec:
               subPath: deployment.toml
             - name: identity-server-bin
               mountPath: /home/wso2carbon/wso2-config-volume/bin
+            {{ if .Values.wso2.deployment.dependencies.mysql }}
+            - name: mysql-connector-jar
+              mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
+            {{ end }}
             {{ if .Values.wso2.deployment.persistentRuntimeArtifacts.sharedArtifacts.enabled }}
             - name: identity-server-volume-claim-tenants-storage
-              mountPath: /home/wso2carbon/wso2is-5.10.0/repository/tenants
+              mountPath: /home/wso2carbon/wso2is-5.11.0/repository/tenants
             - name: identity-server-volume-claim-userstores-storage
-              mountPath: /home/wso2carbon/wso2is-5.10.0/repository/deployment/server/userstores
+              mountPath: /home/wso2carbon/wso2is-5.11.0/repository/deployment/server/userstores
             {{ end }}
             {{ if .Values.wso2.monitoring.enabled }}
             - name: shared-prometheus-jmx-jar
@@ -139,7 +155,7 @@ spec:
             {{ end }}
         {{ if .Values.wso2.centralizedLogging.enabled }}
             - name: shared-logs
-              mountPath: /home/wso2carbon/wso2is-5.10.0/repository/logs/
+              mountPath: /home/wso2carbon/wso2is-5.11.0/repository/logs/
         - name: wso2is-logstash
           image: docker.elastic.co/logstash/logstash:{{ .Values.wso2.centralizedLogging.logstash.imageTag }}
           volumeMounts:
@@ -214,4 +230,8 @@ spec:
       - name: identity-server-prometheus-exporter-conf
         configMap:
           name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf-prometheus-exporter
+      {{ end }}
+      {{ if .Values.wso2.deployment.dependencies.mysql }}
+      - name: mysql-connector-jar
+        emptyDir: {}
       {{ end }}

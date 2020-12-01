@@ -49,7 +49,7 @@ wso2:
       # If a custom image must be used, uncomment 'dockerRegistry' and provide its value
       # dockerRegistry: ""
       imageName: "wso2is"
-      imageTag: "5.10.0"
+      imageTag: "5.11.0"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
@@ -94,7 +94,7 @@ wso2:
               # Maximum Heap size
               xmx: "2048m"
 
-      # If the deployment configurations for the WSO2 Identity Server v5.10.0 (<WSO2IS>/repository/conf/deployment.toml),
+      # If the deployment configurations for the WSO2 Identity Server v5.11.0 (<WSO2IS>/repository/conf/deployment.toml),
       # add the customized configuration file under (wso2 -> deployment -> wso2is -> config -> deployment.toml)
 #      config: ""
 #        deployment.toml: |-
