@@ -35,13 +35,13 @@
     * Deploy WSO2 Identity Server using Docker images from DockerHub.
     
         ```
-        ./wso2is-5.11.0-ga.sh --deploy
+        ./wso2is-ga.sh --deploy
         ```
     
     * Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
     
         ```
-        ./wso2is-5.11.0-latest.sh --deploy
+        ./wso2is-latest.sh --deploy
         ```
       **Note**: When using images from WSO2 Private Docker Registry, you will be prompted for your WSO2 Subscription credentials.
 
