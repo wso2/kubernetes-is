@@ -158,9 +158,11 @@ hostname and the external IP in the `/etc/hosts` file at the client-side.
 <EXTERNAL-IP> <wso2.deployment.wso2is.ingress.identity.hostname>
 ```
 
-### 4. Access Management Console
+### 4. Access Management Console, Console and My Account
 
 - Identity Server's Carbon Management Console: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/carbon`
+- Identity Server's Console: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/console`
+- Identity Server's Carbon Management Console: `https://<wso2.deployment.wso2is.ingress.identity.hostname>/myaccount`
 
 ## Configuration
 
