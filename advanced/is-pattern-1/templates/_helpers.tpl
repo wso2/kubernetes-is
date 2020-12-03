@@ -64,18 +64,18 @@ Common prefix prepended to Kubernetes resources of this chart
 {{- "wso2is-pattern-1" }}
 {{- end -}}
 
-{{- define "image" }}
-{{- $dockerRegistry := .deployment.dockerRegistry | default "wso2" }}
 {{- $imageName := .deployment.imageName }}
-{{- $imageTag := .deployment.imageTag }}
-{{ if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") -}}
+{{- $imageTag := .deployment.imageTag | default "" }}
+{{- if or (eq .Values.wso2.subscription.username "") (eq .Values.wso2.subscription.password "") -}}
+{{- $dockerRegistry := .deployment.dockerRegistry | default "wso2" }}
 image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}{{- printf ":%s" $imageTag -}}{{- end }}
-{{- else -}}
-{{ $parts := len (split "." $imageTag) -}}
-{{ if eq $parts 3 -}}
-image: docker.wso2.com/{{ $imageName }}:{{ $imageTag }}.0
-{{- else -}}
-image: docker.wso2.com/{{ $imageName }}:{{ $imageTag }}
+{{- else }}
+{{- $dockerRegistry := .deployment.dockerRegistry | default "docker.wso2.com" }}
+{{- $parts := len (split "." $imageTag) }}
+{{- if eq $parts 3 }}
+image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}:{{ $imageTag }}.0{{- end }}
+{{- else }}
+image: {{ $dockerRegistry }}/{{ $imageName }}{{- if not (eq $imageTag "") }}:{{ $imageTag }}{{- end }}
 {{- end -}}
 {{- end -}}
 {{- end -}}
