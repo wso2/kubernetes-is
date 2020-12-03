@@ -4,7 +4,7 @@ All notable changes to Kubernetes and Helm resources for WSO2 IAM version `5.11.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [v5.11.0.1] - TBD
+## [v5.11.0.1] - 2020.12.03
 
 ### Added
 
