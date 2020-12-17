@@ -22,4 +22,4 @@ given below:
 
 ## Changelog
 
-**Change log** from previous v5.10.0.2 release: [View Here](CHANGELOG.md)
+**Change log** from previous release: [View Here](CHANGELOG.md)
