@@ -64,7 +64,6 @@ Common prefix prepended to Kubernetes resources of this chart
 {{- "wso2is-pattern-1" }}
 {{- end -}}
 
-
 {{- define "image" -}}
 {{- $imageName := .deployment.imageName }}
 {{- $imageTag := .deployment.imageTag | default "" }}
