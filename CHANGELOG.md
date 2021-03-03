@@ -29,3 +29,4 @@ For detailed information on the tasks carried out during this release, please se
 [v5.11.0.1]: https://github.com/wso2/kubernetes-is/compare/v5.10.0.2...v5.11.0.1
 [v5.11.0.2]: https://github.com/wso2/kubernetes-is/compare/v5.11.0.1...v5.11.0.2
 [v5.11.0.3]: https://github.com/wso2/kubernetes-is/compare/v5.11.0.2...v5.11.0.3
+

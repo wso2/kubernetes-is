@@ -58,6 +58,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
 
  ```
  helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE>
+
  ```
 
  **Helm version 3**

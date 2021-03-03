@@ -15,5 +15,9 @@ apiVersion: v1
 appVersion: "5.7"
 description: A Helm chart for MySQL based deployment of WSO2 Identity And Access Management Datasources
 name: mysql-is
+<<<<<<< HEAD
 version: 5.11.0-3
+=======
+version: 5.11.0-2
+>>>>>>> c52b5bdef29a2f87e9dec73546eb894a41edf7ca
 icon: https://wso2.cachefly.net/wso2/sites/all/images/wso2logo.svg
