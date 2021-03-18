@@ -2687,11 +2687,11 @@ function deploy(){
     create_yaml
 
     # replace placeholders
-    sed -i.bak 's/"$string.&.secret.auth.data"/'$str_sec'/g' $k8s_obj_file
-    sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
+    sed -i.bak 's|"$string.&.secret.auth.data"|'$str_sec'|g' $k8s_obj_file
+    sed -i.bak 's|"$nodeport.k8s.&.1.wso2is"|'$NP_1'|g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
 
-    rm deployment.yaml.bak
+    rm "$k8s_obj_file.bak"
 
     echoBold "\nDeploying WSO2 Identity Server...\n"
 
