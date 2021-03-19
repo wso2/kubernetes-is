@@ -26,6 +26,7 @@ spec:
   tls:
   - hosts:
     - {{ .Values.wso2.deployment.wso2is.ingress.identity.hostname }}
+    secretName: {{ template "is-pattern-1.resource.prefix" . }}-tls
   rules:
   - host: {{ .Values.wso2.deployment.wso2is.ingress.identity.hostname }}
     http:
