@@ -24,6 +24,7 @@ license_text="LICENSE.txt"
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
 IMG_DEST="docker.wso2.com"
+IMG_TAG="5.11.0.19-alpine"
 
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
@@ -384,16 +385,6 @@ kind: ServiceAccount
 metadata:
   name: wso2svc-account
   namespace : wso2
----
-
-apiVersion: v1
-data:
-    .dockerconfigjson: "$string.&.secret.auth.data"
-kind: Secret
-metadata:
-  name: wso2is-deployment-creds
-  namespace: wso2
-type: kubernetes.io/dockerconfigjson
 ---
 
 apiVersion: v1
@@ -2342,7 +2333,7 @@ spec:
             mountPath: /mysql-connector-jar
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.11.0
+        image: "$image.pull.@.wso2"/wso2is:"$image.tag.wso2is"
         livenessProbe:
           exec:
             command:
@@ -2669,28 +2660,17 @@ function deploy(){
     # getting cluster node ip
     get_node_ip
 
-    # create and encode username/password pair
-    auth="$WSO2_SUBSCRIPTION_USERNAME:$WSO2_SUBSCRIPTION_PASSWORD"
-    authb64=`echo -n $auth | base64`
-
-    # create authorisation code
-    authstring='{"auths":{"docker.wso2.com": {"username":"'${WSO2_SUBSCRIPTION_USERNAME}'","password":"'${WSO2_SUBSCRIPTION_PASSWORD}'","email":"'${WSO2_SUBSCRIPTION_USERNAME}'","auth":"'${authb64}'"}}}'
-
-    # encode in base64
-    secdata=`echo -n $authstring | base64`
-
-    for i in $secdata; do
-      str_sec=$str_sec$i
-    done
+    # create and encode username/password secret
+    kubectl delete secret wso2is-deployment-creds --ignore-not-found=true
+    kubectl create secret docker-registry wso2is-deployment-creds --docker-server="docker.wso2.com" --docker-username="$WSO2_SUBSCRIPTION_USERNAME" --docker-password="$WSO2_SUBSCRIPTION_PASSWORD" --docker-email="$WSO2_SUBSCRIPTION_USERNAME"
 
     #create kubernetes object yaml
     create_yaml
 
     # replace placeholders
-    sed -i.bak 's|"$string.&.secret.auth.data"|'$str_sec'|g' $k8s_obj_file
     sed -i.bak 's|"$nodeport.k8s.&.1.wso2is"|'$NP_1'|g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
-
+    sed -i.bak 's|"$image.tag.wso2is"|'$IMG_TAG'|g' $k8s_obj_file
     rm "$k8s_obj_file.bak"
 
     echoBold "\nDeploying WSO2 Identity Server...\n"

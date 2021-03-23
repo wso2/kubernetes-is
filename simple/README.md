@@ -14,6 +14,8 @@
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).
 
+* Ensure K8s host has enough resources
+
 * WSO2 product Docker images used for the Kubernetes deployment.
   
   WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/) package General Availability (GA)

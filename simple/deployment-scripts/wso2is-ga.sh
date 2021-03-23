@@ -24,6 +24,7 @@ license_text="LICENSE.txt"
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
 IMG_DEST="wso2"
+IMG_TAG="5.11.0"
 
 # wso2 subscription variables
 WUMUsername=''; WUMPassword=''
@@ -1998,7 +1999,7 @@ spec:
             mountPath: /mysql-connector-jar
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.11.0
+        image: "$image.pull.@.wso2"/wso2is:"$image.tag.wso2is"
         livenessProbe:
           exec:
             command:
@@ -2272,11 +2273,10 @@ function deploy(){
     create_yaml
 
     # replace placeholders
-    sed -i.bak 's/"$string.&.secret.auth.data"/'$secdata'/g' $k8s_obj_file
-    sed -i.bak 's/"$nodeport.k8s.&.1.wso2is"/'$NP_1'/g' $k8s_obj_file
+    sed -i.bak 's|"$nodeport.k8s.&.1.wso2is"|'$NP_1'|g' $k8s_obj_file
     sed -i.bak 's|"$image.pull.@.wso2"|'$IMG_DEST'|g' $k8s_obj_file
-
-    rm deployment.yaml.bak
+    sed -i.bak 's|"$image.tag.wso2is"|'$IMG_TAG'|g' $k8s_obj_file
+    rm "$k8s_obj_file.bak"
 
     echoBold "\nDeploying WSO2 Identity Server...\n"
 
