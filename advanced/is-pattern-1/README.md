@@ -34,6 +34,8 @@ For advanced details on the deployment pattern, please refer the official
 
 * An already setup [Kubernetes cluster](https://kubernetes.io/docs/setup).<br><br>
 
+* Ensure Kubernetes cluster has enough resources
+
 * Install [NGINX Ingress Controller](https://kubernetes.github.io/ingress-nginx/deploy/).<br><br>
 
 * Add the WSO2 Helm chart repository.
@@ -46,13 +48,13 @@ For advanced details on the deployment pattern, please refer the official
 
 ### 1. Install the Helm Chart
 
-You can install the relevant Helm chart either from [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2) or by source.
+You can install the relevant Helm chart either from [WSO2 Helm Chart Repository](https://artifacthub.io/packages/search?page=1&repo=wso2) or by source.
 
 **Note:**
 
 * `NAMESPACE` should be the Kubernetes Namespace in which the resources are deployed.
 
-#### Install Chart From [WSO2 Helm Chart Repository](https://hub.helm.sh/charts/wso2)
+#### Install Chart From [WSO2 Helm Chart Repository](https://artifacthub.io/packages/search?page=1&repo=wso2)
 
  **Helm version 2**
 
@@ -82,8 +84,16 @@ please provide your WSO2 Subscription Credentials via input values (using `--set
 
 Refer the following example.
 
+ **Helm version 2**
+
 ```
  helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+```
+
+ **Helm version 3**
+
+```
+ helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source

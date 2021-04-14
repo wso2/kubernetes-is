@@ -48,7 +48,7 @@ spec:
             mountPath: /mysql-connector-jar
       containers:
       - name: wso2is
-        image: "$image.pull.@.wso2"/wso2is:5.11.0
+        image: "$image.pull.@.wso2"/wso2is:"$image.tag.wso2is"
         livenessProbe:
           exec:
             command:

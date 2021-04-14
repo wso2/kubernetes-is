@@ -34,20 +34,19 @@ cat >> $SCRIPT << "EOF"
 k8s_obj_file="deployment.yaml"; NODE_IP=''; str_sec=""
 license_text="LICENSE.txt"
 
-# wso2 subscription variables
-WUMUsername=''; WUMPassword=''
+# wso2 image variables
 EOF
 
 if $IS_OPEN_SOURCE; then
   echo 'IMG_DEST="wso2"' >> $SCRIPT
+  echo 'IMG_TAG="5.11.0"' >> $SCRIPT
 else
   echo 'IMG_DEST="docker.wso2.com"' >> $SCRIPT
+  echo 'IMG_TAG="5.11.0.0"' >> $SCRIPT
 fi
 
 cat >> $SCRIPT << "EOF"
 
-# wso2 subscription variables
-WUMUsername=''; WUMPassword=''
 
 : ${NP_1:=30443};
 
