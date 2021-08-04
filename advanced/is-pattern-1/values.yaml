@@ -74,14 +74,14 @@ wso2:
         # as per official documentation (https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/)
         requests:
           # The minimum amount of memory that should be allocated for a Pod
-          memory: "3Gi"
+          memory: "2Gi"
           # The minimum amount of CPU that should be allocated for a Pod
-          cpu: "3000m"
+          cpu: "1000m"
         limits:
           # The maximum amount of memory that should be allocated for a Pod
           memory: "4Gi"
           # The maximum amount of CPU that should be allocated for a Pod
-          cpu: "4000m"
+          cpu: "2000m"
         # JVM settings
         # These are the resource allocation configurations associated with the JVM
         # Refer to the official documentation for advanced details (https://is.docs.wso2.com/en/latest/setup/performance-tuning-recommendations/#jvm-settings)
@@ -90,7 +90,7 @@ wso2:
           heap:
             memory:
               # Initial and minimum Heap size
-              xms: "2048m"
+              xms: "1024m"
               # Maximum Heap size
               xmx: "2048m"
 
