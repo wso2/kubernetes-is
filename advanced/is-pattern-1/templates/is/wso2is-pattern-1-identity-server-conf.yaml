@@ -32,7 +32,7 @@ data:
     [server]
     hostname = "{{ .Values.wso2.deployment.wso2is.ingress.identity.hostname }}"
     node_ip = "$env{NODE_IP}"
-    base_path = "https://$ref{server.hostname}:${carbon.management.port}"
+    base_path = "https://$ref{server.hostname}"
 
     [super_admin]
     username = "admin"
