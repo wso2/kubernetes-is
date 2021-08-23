@@ -22,8 +22,9 @@ wso2:
 
   deployment:
     dependencies:
-      # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
-      mysql: true
+      mysql:
+        # The configuration should be set to be 'true' if a MySQL database should be spawned as a pod within the cluster
+        enabled: true
 
     # Persisted and shared runtime artifacts for Identity Server
     # See official documentation (from https://is.docs.wso2.com/en/latest/setup/deployment-guide/#enabling-artifact-synchronization)
