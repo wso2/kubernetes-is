@@ -1,4 +1,3 @@
-
 # Contributing to kubernetes-is
 
 Kubernetes and Helm resources for WSO2 Identity And Access Management are open source, and we encourage contributions  from our community.
