@@ -111,6 +111,7 @@ wso2:
 
       # Configure Ingresses
       ingress:
+        className: ""
         identity:
           # Hostname for Identity Server
           hostname: "identity.wso2.com"
