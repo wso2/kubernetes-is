@@ -59,8 +59,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  **Helm version 2**
 
  ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE>
-
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE>
  ```
 
  **Helm version 3**
@@ -74,7 +73,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE>
+    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE>
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -87,13 +86,13 @@ Refer the following example.
  **Helm version 2**
 
 ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
  **Helm version 3**
 
 ```
- helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 #### Install Chart From Source
@@ -114,7 +113,7 @@ git clone https://github.com/wso2/kubernetes-is.git
  **Helm version 2**
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE>
+ helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
  ```
 
  **Helm version 3**
@@ -128,7 +127,7 @@ git clone https://github.com/wso2/kubernetes-is.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE> --dependency-update
+    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --dependency-update
     ```
 
 The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
@@ -139,7 +138,7 @@ please provide your WSO2 Subscription Credentials via input values (using `--set
 Refer the following example.
 
 ```
- helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --version 5.11.0-3 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
 ```
 
 ### 2. Obtain the external IP
@@ -219,17 +218,20 @@ The following tables lists the configurable parameters of the chart and their de
 | `wso2.deployment.wso2is.imageTag`                                           | Tag of the image used to create Identity Server instances                                 | `5.11.0`                    |
 | `wso2.deployment.wso2is.imagePullPolicy`                                    | Refer to [doc](https://kubernetes.io/docs/concepts/containers/images#updating-images)     | `Always`                    |
 | `wso2.deployment.wso2is.replicas`                                           | Number of replicas for IS node                                                            | 2                           |
-| `wso2.deployment.wso2is.livenessProbe.initialDelaySeconds`                  | Initial delay for the live-ness probe for IS node                                         | 120                         |
+| `wso2.deployment.wso2is.startupProbe.initialDelaySeconds`                   | Initial delay for the startup probe for IS node                                           | 60                          |
+| `wso2.deployment.wso2is.startupProbe.periodSeconds`                         | Period of the startup probe for IS node                                                   | 5                           |
+| `wso2.deployment.wso2is.startupProbe.failureThreshold`                      | Failed attempt count threshold of startup probe for IS node                               | 30                          |
 | `wso2.deployment.wso2is.livenessProbe.periodSeconds`                        | Period of the live-ness probe for IS node                                                 | 10                          |
-| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 120                         |
+| `wso2.deployment.wso2is.readinessProbe.initialDelaySeconds`                 | Initial delay for the readiness probe for IS node                                         | 60                          |
 | `wso2.deployment.wso2is.readinessProbe.periodSeconds`                       | Period of the readiness probe for IS node                                                 | 10                          |
-| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 3Gi                         |
-| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 3000m                       |
+| `wso2.deployment.wso2is.resources.requests.memory`                          | The minimum amount of memory that should be allocated for a Pod                           | 2Gi                         |
+| `wso2.deployment.wso2is.resources.requests.cpu`                             | The minimum amount of CPU that should be allocated for a Pod                              | 1000m                       |
 | `wso2.deployment.wso2is.resources.limits.memory`                            | The maximum amount of memory that should be allocated for a Pod                           | 4Gi                         |
-| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 4000m                       |
-| `wso2.deployment.wso2is.resources.jvm.heap.memory.xms`                      | The initial memory allocation for JVM Heap                                                | 2048m                       |
+| `wso2.deployment.wso2is.resources.limits.cpu`                               | The maximum amount of CPU that should be allocated for a Pod                              | 2000m                       |
+| `wso2.deployment.wso2is.resources.jvm.heap.memory.xms`                      | The initial memory allocation for JVM Heap                                                | 1024m                       |
 | `wso2.deployment.wso2is.resources.jvm.heap.memory.xmx`                      | The maximum memory allocation for JVM Heap                                                | 2048m                       |
 | `wso2.deployment.wso2is.config`                                             | Custom deployment configuration file (`<WSO2IS>/repository/conf/deployment.toml`)         | -                           |
+| `wso2.deployment.wso2is.ingress.className`                                  | Name of the Kubernetes IngressClass resource to use                                       | -                           |
 | `wso2.deployment.wso2is.ingress.identity.hostname`                          | Hostname for for Identity service                                                         | `identity.wso2.com`         |
 | `wso2.deployment.wso2is.ingress.identity.annotations`                       | Ingress resource annotations for Identity service                                         | Community NGINX Ingress controller annotations         |
 
@@ -265,11 +267,11 @@ The following tables lists the configurable parameters of the chart and their de
   are applicable for `wso2.deployment.persistentRuntimeArtifacts.storageClass`.
   
 * Please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/store/Persisting_And_Sharing.md#recommended-storage-options-for-wso2-products)
-  for advanced details with regards to WSO2 recommended, storage options.
+  for advanced details with regard to WSO2 recommended, storage options.
 
 ## Managing Java Keystores and Truststores
 
-For advanced details with regards to managing Java keystores and truststores in a container based WSO2 product deployment
+For advanced details with regard to managing Java keystores and truststores in a container based WSO2 product deployment
 please refer to the [official WSO2 container guide](https://github.com/wso2/container-guide/blob/master/deploy/Managing_Keystores_And_Truststores.md).
 
 ## Centralized Logging
