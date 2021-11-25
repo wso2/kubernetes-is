@@ -4,7 +4,7 @@ All notable changes to Kubernetes and Helm resources for WSO2 IAM version `5.11.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
-## [v5.11.0.1] - 2021.11.24
+## [v5.11.0.5] - 2021.11.25
 
 ### Added
 
@@ -50,3 +50,5 @@ For detailed information on the tasks carried out during this release, please se
 [v5.11.0.1]: https://github.com/wso2/kubernetes-is/compare/v5.10.0.2...v5.11.0.1
 [v5.11.0.2]: https://github.com/wso2/kubernetes-is/compare/v5.11.0.1...v5.11.0.2
 [v5.11.0.3]: https://github.com/wso2/kubernetes-is/compare/v5.11.0.2...v5.11.0.3
+[v5.11.0.4]: https://github.com/wso2/kubernetes-is/compare/v5.11.0.3...v5.11.0.4
+[v5.11.0.5]: https://github.com/wso2/kubernetes-is/compare/v5.11.0.4...v5.11.0.5
