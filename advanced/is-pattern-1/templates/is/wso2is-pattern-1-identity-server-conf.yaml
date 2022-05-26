@@ -113,11 +113,8 @@ data:
     [clustering]
     membership_scheme = "kubernetes"
     domain = "wso2.carbon.domain"
-    properties.membershipSchemeClassName = "org.wso2.carbon.membership.scheme.kubernetes.KubernetesMembershipScheme"
     properties.KUBERNETES_NAMESPACE = "{{ .Release.Namespace }}"
     properties.KUBERNETES_SERVICES = "{{ template "is-pattern-1.resource.prefix" . }}-identity-service"
-    properties.KUBERNETES_MASTER_SKIP_SSL_VERIFICATION = "true"
-    properties.USE_DNS = "false"
 
     [carbon_health_check]
     enable= true
