@@ -17,9 +17,6 @@
 * Ensure Kubernetes cluster has enough resources
 
 * WSO2 product Docker images used for the Kubernetes deployment.
-  
-  WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/) package General Availability (GA)
-  versions of WSO2 products with no [WSO2 Updates](https://wso2.com/updates).
 
   For a production grade deployment of the desired WSO2 product-version, it is highly recommended to use the relevant
   Docker image which packages WSO2 Updates, available at [WSO2 Private Docker Registry](https://docker.wso2.com/). In order
