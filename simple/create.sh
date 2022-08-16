@@ -1,11 +1,5 @@
 #!/bin/bash
-IS_OPEN_SOURCE=true
-
-if $IS_OPEN_SOURCE; then
-    SCRIPT="deployment-scripts/wso2is-ga.sh"
-else
-    SCRIPT="deployment-scripts/wso2is-latest.sh"
-fi
+SCRIPT="deployment-scripts/wso2is-latest.sh"
 
 cat > $SCRIPT << "EOF"
 #!/bin/bash
@@ -37,13 +31,8 @@ license_text="LICENSE.txt"
 # wso2 image variables
 EOF
 
-if $IS_OPEN_SOURCE; then
-  echo 'IMG_DEST="wso2"' >> $SCRIPT
-  echo 'IMG_TAG="5.11.0"' >> $SCRIPT
-else
-  echo 'IMG_DEST="docker.wso2.com"' >> $SCRIPT
-  echo 'IMG_TAG="5.11.0.0"' >> $SCRIPT
-fi
+echo 'IMG_DEST="docker.wso2.com"' >> $SCRIPT
+echo 'IMG_TAG="6.0.0.0"' >> $SCRIPT
 
 cat >> $SCRIPT << "EOF"
 
@@ -52,13 +41,11 @@ cat >> $SCRIPT << "EOF"
 
 EOF
 
-if ! $IS_OPEN_SOURCE ; then
-  echo "function createLicenseText(){" >> $SCRIPT
-  echo 'cat > ${license_text} << "EOF"' >> $SCRIPT
-  cat eulatxt >> $SCRIPT
-  echo "EOF" >> $SCRIPT; echo "" >> $SCRIPT
-  echo "viewLicenseText" >> $SCRIPT; echo "}" >> $SCRIPT
-fi
+echo "function createLicenseText(){" >> $SCRIPT
+echo 'cat > ${license_text} << "EOF"' >> $SCRIPT
+cat eulatxt >> $SCRIPT
+echo "EOF" >> $SCRIPT; echo "" >> $SCRIPT
+echo "viewLicenseText" >> $SCRIPT; echo "}" >> $SCRIPT
 
 echo "function create_yaml(){" >> $SCRIPT
 echo "" >> $SCRIPT
@@ -68,9 +55,7 @@ echo -e "EOF">> $SCRIPT
 
 echo 'cat >> $k8s_obj_file << "EOF"' >> $SCRIPT
 cat ./basic-k8s/svcaccount.yaml >> $SCRIPT
-if ! $IS_OPEN_SOURCE ; then
-  cat ./basic-k8s/secret.yaml >> $SCRIPT
-fi
+cat ./basic-k8s/secret.yaml >> $SCRIPT
 cat ./is-k8s/identity-server-conf.yaml >> $SCRIPT
 #cat ./is-k8s/identity-server-conf-entrypoint.yaml >> $SCRIPT
 cat ./mysql-k8s/mysql-conf-db.yaml >> $SCRIPT
@@ -82,11 +67,7 @@ cat ./is-k8s/identity-server-deployment.yaml >> $SCRIPT
 echo 'EOF' >> $SCRIPT
 echo "}" >> $SCRIPT
 
-if $IS_OPEN_SOURCE; then
-    cat funcs4opensource >> $SCRIPT
-else
-    cat funcs >> $SCRIPT
-fi
+cat funcs >> $SCRIPT
 
 cat >> $SCRIPT << "EOF"
 arg=$1

@@ -235,5 +235,5 @@ function deploy(){
     echoBold "\tusername: admin\n"
     echoBold "\tpassword: admin\n"
 
-    echoBold "3. Follow \"https://is.docs.wso2.com/en/5.11.0/\" to start using WSO2 Identity Server.\n\n"
+    echoBold "3. Follow \"https://is.docs.wso2.com/en/6.0.0/\" to start using WSO2 Identity Server.\n\n"
 }
