@@ -17,9 +17,6 @@
 * Ensure Kubernetes cluster has enough resources
 
 * WSO2 product Docker images used for the Kubernetes deployment.
-  
-  WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/) package General Availability (GA)
-  versions of WSO2 products with no [WSO2 Updates](https://wso2.com/updates).
 
   For a production grade deployment of the desired WSO2 product-version, it is highly recommended to use the relevant
   Docker image which packages WSO2 Updates, available at [WSO2 Private Docker Registry](https://docker.wso2.com/). In order
@@ -33,12 +30,6 @@
 2. Move into the directory, where you have downloaded the aforementioned resources in step 1.
 
 3. Deploy WSO2 Identity Server in your Kubernetes cluster.
-
-    * Deploy WSO2 Identity Server using Docker images from DockerHub.
-    
-        ```
-        ./wso2is-ga.sh --deploy
-        ```
     
     * Deploy WSO2 Identity Server using Docker images from WSO2 Private Docker Registry.
     
@@ -57,4 +48,4 @@
   
   Your `<NODE-IP>` will be provided at the end of the deployment.
 
-5. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/5.11.0/get-started/quick-start-guide/)**.
+5. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/6.0.0/get-started/quick-start-guide/)**.
