@@ -20,8 +20,7 @@ For advanced details on the deployment pattern, please refer the official
 
 * WSO2 product Docker images used for the Kubernetes deployment.
   
-  WSO2 product Docker images available at [DockerHub](https://hub.docker.com/u/wso2/) package General Availability (GA)
-  versions of WSO2 products with no [WSO2 Updates](https://wso2.com/updates).
+  From Identity Server 6.0.0 onwards, WSO2 product Docker images are no longer available at [DockerHub](https://hub.docker.com/u/wso2/). 
 
   For a production grade deployment of the desired WSO2 product-version, it is highly recommended to use the relevant
   Docker image which packages WSO2 Updates, available at [WSO2 Private Docker Registry](https://docker.wso2.com/). In order
@@ -59,7 +58,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  **Helm version 2**
 
  ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 6.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
  ```
 
  **Helm version 3**
@@ -73,27 +72,10 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE>
+    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 6.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
     ```
 
-The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
-
-If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 
-
-Refer the following example.
-
- **Helm version 2**
-
-```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```
-
- **Helm version 3**
-
-```
- helm install <RELEASE_NAME> wso2/is-pattern-1 --version 5.11.0-5 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```
+Please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 
 
 #### Install Chart From Source
 
@@ -108,12 +90,22 @@ Git repository. <br>
 git clone https://github.com/wso2/kubernetes-is.git
 ```
 
+##### Update dependencies of mysql-is chart
+```
+helm dependency update <HELM_HOME>/databases/mysql-is
+```
+
+##### Update dependencies of is-pattern-1 chart
+```
+helm dependency update <HELM_HOME>/is-pattern-1
+```
+
 ##### Deploy Helm chart for a clustered deployment of WSO2 Identity Server.
 
  **Helm version 2**
 
  ```
- helm install --dep-up --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE>
+ helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
  ```
 
  **Helm version 3**
@@ -127,19 +119,8 @@ git clone https://github.com/wso2/kubernetes-is.git
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --dependency-update
+    helm install <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD> 
     ```
-
-The above steps will deploy the deployment pattern using WSO2 product Docker images available at DockerHub.
-
-If you are using WSO2 product Docker images available from WSO2 Private Docker Registry,
-please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 
-
-Refer the following example.
-
-```
- helm install --name <RELEASE_NAME> <HELM_HOME>/is-pattern-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
-```
 
 ### 2. Obtain the external IP
 
