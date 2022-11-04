@@ -37,7 +37,7 @@ spec:
         monitoring: {{ .Values.wso2.monitoring.prometheus.jmxJobName }}
     spec:
       initContainers:
-        {{ if .Values.wso2.deployment.dependencies.mysql }}
+        {{ if .Values.wso2.deployment.dependencies.mysql.enabled }}
         - name: init-is-db
           image: busybox:1.31
           command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z wso2is-mysql-db-service 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL Server has started";']
@@ -134,7 +134,7 @@ spec:
               subPath: deployment.toml
             - name: identity-server-bin
               mountPath: /home/wso2carbon/wso2-config-volume/bin
-            {{ if .Values.wso2.deployment.dependencies.mysql }}
+            {{ if .Values.wso2.deployment.dependencies.mysql.enabled }}
             - name: mysql-connector-jar
               mountPath: /home/wso2carbon/wso2-artifact-volume/repository/components/dropins
             {{ end }}
@@ -229,7 +229,7 @@ spec:
         configMap:
           name: {{ template "is-pattern-1.resource.prefix" . }}-identity-server-conf-prometheus-exporter
       {{ end }}
-      {{ if .Values.wso2.deployment.dependencies.mysql }}
+      {{ if .Values.wso2.deployment.dependencies.mysql.enabled }}
       - name: mysql-connector-jar
         emptyDir: {}
       {{ end }}
