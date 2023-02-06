@@ -32,7 +32,7 @@ license_text="LICENSE.txt"
 EOF
 
 echo 'IMG_DEST="docker.wso2.com"' >> $SCRIPT
-echo 'IMG_TAG="6.0.0.0"' >> $SCRIPT
+echo 'IMG_TAG="6.1.0.0"' >> $SCRIPT
 
 cat >> $SCRIPT << "EOF"
 
