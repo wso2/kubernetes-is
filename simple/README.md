@@ -48,4 +48,4 @@
   
   Your `<NODE-IP>` will be provided at the end of the deployment.
 
-5. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/6.0.0/get-started/quick-start-guide/)**.
+5. Try out WSO2 Identity Server by following **[WSO2 Identity Server - Quick Start Guide](https://is.docs.wso2.com/en/6.1.0/get-started/quick-start-guide/)**.
