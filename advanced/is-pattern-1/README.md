@@ -58,7 +58,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  **Helm version 2**
 
  ```
- helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 6.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+ helm install --name <RELEASE_NAME> wso2/is-pattern-1 --version 6.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
  ```
 
  **Helm version 3**
@@ -72,7 +72,7 @@ You can install the relevant Helm chart either from [WSO2 Helm Chart Repository]
  - Deploy the Kubernetes resources using the Helm Chart
  
     ```
-    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 6.0.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
+    helm install <RELEASE_NAME> wso2/is-pattern-1 --version 6.1.0-1 --namespace <NAMESPACE> --set wso2.subscription.username=<SUBSCRIPTION_USERNAME> --set wso2.subscription.password=<SUBSCRIPTION_PASSWORD>
     ```
 
 Please provide your WSO2 Subscription Credentials via input values (using `--set` argument). 

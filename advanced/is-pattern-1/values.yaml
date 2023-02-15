@@ -50,7 +50,7 @@ wso2:
       # If a custom image must be used, provide its value
       dockerRegistry: "docker.wso2.com"
       imageName: "wso2is"
-      imageTag: "6.0.0.0"
+      imageTag: "6.1.0.0"
       # Refer to the Kubernetes documentation on updating images (https://kubernetes.io/docs/concepts/containers/images/#updating-images)
       imagePullPolicy: Always
 
