@@ -42,32 +42,26 @@ data:
     [user_store]
     type = "database_unique_id"
 
-    [database.user]
-    url = "jdbc:mysql://wso2is-mysql-db-service:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.cj.jdbc.Driver"
-
-    [database.user.pool_options]
-    validationQuery = "SELECT 1"
-
-    [transport.https.properties]
-    proxyPort="443"
-
     [database.identity_db]
+    type = "mysql"
     url = "jdbc:mysql://wso2is-mysql-db-service:3306/WSO2IS_IDENTITY_DB?autoReconnect=true&amp;useSSL=false"
     username = "wso2carbon"
     password = "wso2carbon"
     driver = "com.mysql.cj.jdbc.Driver"
-
     [database.identity_db.pool_options]
     validationQuery = "SELECT 1"
 
     [database.shared_db]
+    type = "mysql"
     url = "jdbc:mysql://wso2is-mysql-db-service:3306/WSO2IS_SHARED_DB?autoReconnect=true&amp;useSSL=false"
     username = "wso2carbon"
     password = "wso2carbon"
     driver = "com.mysql.cj.jdbc.Driver"
+    [database.shared_db.pool_options]
+    validationQuery = "SELECT 1"
+
+    [transport.https.properties]
+    proxyPort="443"
 
     [truststore]
     file_name="client-truststore.jks"
@@ -79,32 +73,6 @@ data:
 
     [identity.auth_framework.endpoint]
     app_password= "dashboard"
-
-    [database.shared_db.pool_options]
-    validationQuery = "SELECT 1"
-
-    [database.bps_database]
-    url = "jdbc:mysql://wso2is-mysql-db-service:3306/WSO2IS_BPS_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.cj.jdbc.Driver"
-
-    [database.bps_database.pool_options]
-    validationQuery = "SELECT 1"
-
-    [[datasource]]
-    id = "WSO2ConsentDS"
-    url = "jdbc:mysql://wso2is-mysql-db-service:3306/WSO2IS_CONSENT_DB?autoReconnect=true&amp;useSSL=false"
-    username = "wso2carbon"
-    password = "wso2carbon"
-    driver = "com.mysql.cj.jdbc.Driver"
-    pool_options.validationQuery="SELECT 1"
-    pool_options.maxActive=50
-    pool_options.maxWait = 60000 # wait in milliseconds
-    pool_options.testOnBorrow = true
-    pool_options.jmxEnabled = false
-    [authentication.consent]
-    data_source="jdbc/WSO2ConsentDS"
 
     [keystore.primary]
     name = "wso2carbon.jks"
