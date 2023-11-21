@@ -1,0 +1,5 @@
+WSO2 Identity server {{ .Chart.AppVersion }}
+
+Console: https://{{ .Values.deployment.ingress.hostName }}/console
+My account: https://{{ .Values.deployment.ingress.hostName }}/myaccount
+Carbon console: https://{{ .Values.deployment.ingress.hostName }}/carbon
