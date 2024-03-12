@@ -1,0 +1,43 @@
+{{- if .Values.deployment.persistence.enabled }}
+# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+#
+# WSO2 LLC. licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+{{- if .Values.deployment.persistence.azure.enabled }}
+apiVersion: {{ .Values.k8sKindAPIVersions.persistentVolume }}
+kind: PersistentVolume
+metadata:
+  name: {{ template "..fullname" . }}
+  labels:
+    purpose: {{ template "..fullname" . }}-identity-server-persistence
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: {{ .Values.deployment.persistence.capacity }}
+  persistentVolumeReclaimPolicy: Retain
+  volumeMode: Filesystem
+  azureFile:
+    secretName: {{ .Values.deployment.persistence.azure.secretName }}
+    secretNamespace: {{ .Release.Namespace }}
+    shareName: {{ .Values.deployment.persistence.azure.fileShare }}
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid={{ .Values.deployment.securityContext.runAsUser }}
+    - gid={{ .Values.deployment.securityContext.runAsUser }}
+    - cache=strict
+{{- end }}
+{{- end }}

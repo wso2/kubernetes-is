@@ -1,0 +1,235 @@
+# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+#
+# WSO2 LLC. licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+apiVersion: {{ .Values.k8sKindAPIVersions.deployment }}
+kind: Deployment
+metadata:
+  name: {{ template "..fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  progressDeadlineSeconds: {{ .Values.deployment.progressDeadlineSeconds }}
+  replicas: {{ .Values.deployment.replicas }}
+  strategy:
+    rollingUpdate:
+      maxSurge: {{ .Values.deployment.strategy.rollingUpdate.maxSurge }}
+      maxUnavailable: {{ .Values.deployment.strategy.rollingUpdate.maxUnavailable }}
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      {{- include "..selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "..selectorLabels" . | nindent 8 }}
+      annotations:
+        checksum.deployment.toml: {{ include (print $.Template.BasePath "/cm-deployment-toml.yaml") . | sha256sum }}
+        {{- if .Values.deployment.secretStore.enabled  }}
+        checksum.secret.properties: {{ include (print $.Template.BasePath "/cm-secret-config-properties.yaml") . | sha256sum }}
+        {{- end }}
+        checksum.log4j.properties: {{ include (print $.Template.BasePath "/cm-log4j2-properties.yaml") . | sha256sum }}
+        checksum.entrypoint.sh: {{ include (print $.Template.BasePath "/cm-entrypoint.yaml") . | sha256sum }}
+        checksum.thrift-authentication.xml: {{ include (print $.Template.BasePath "/cm-thrift-authentication-xml.yaml") . | sha256sum }}
+        container.apparmor.security.beta.kubernetes.io/wso2is: {{ .Values.deployment.apparmor.profile }}
+    spec:
+      securityContext:
+        runAsUser: {{ .Values.deployment.securityContext.runAsUser }}
+        seccompProfile:
+          type: {{ .Values.deployment.securityContext.seccompProfile.type }}
+      terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - {{ include "..name" . }}
+                    - key: app.kubernetes.io/instance
+                      operator: In
+                      values:
+                        - {{ .Release.Name }}
+                topologyKey: topology.kubernetes.io/zone
+      containers:
+        - name: wso2is
+          {{- if .Values.deployment.image.digest }}
+          image: {{ .Values.deployment.image.registry }}/{{ .Values.deployment.image.repository }}@{{ .Values.deployment.image.digest }}
+          {{- else }}
+          image: {{ .Values.deployment.image.registry }}/{{ .Values.deployment.image.repository }}:{{ default "latest" .Values.deployment.image.tag }}
+          {{- end }}
+          {{- if .Values.deployment.enableCorrelationLogs }}
+          args:
+            - "-DenableCorrelationLogs=true"
+          {{- end }}
+          startupProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - nc -z localhost 9443
+            initialDelaySeconds: {{ .Values.deployment.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployment.startupProbe.periodSeconds }}
+            failureThreshold: {{ .Values.deployment.startupProbe.failureThreshold }}
+          livenessProbe:
+            httpGet:
+              path: /oauth2/token/.well-known/openid-configuration
+              port: 9443
+              scheme: HTTPS
+            periodSeconds: {{ .Values.deployment.livenessProbe.periodSeconds }}
+          readinessProbe:
+            httpGet:
+              path: /api/health-check/v1.0/health
+              port: 9443
+              scheme: HTTPS
+            initialDelaySeconds: {{ .Values.deployment.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.deployment.readinessProbe.periodSeconds }}
+          imagePullPolicy: {{ .Values.deployment.image.pullPolicy }}
+          resources:
+            requests:
+              memory: {{ .Values.deployment.resources.requests.memory }}
+              cpu: {{ .Values.deployment.resources.requests.cpu }}
+            limits:
+              memory: {{ .Values.deployment.resources.limits.memory }}
+              cpu: {{ .Values.deployment.resources.limits.cpu }}
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - "sh"
+                  - "-c"
+                  - >
+                    echo "Pre stop hook triggered";
+                    sleep {{ .Values.deployment.preStopHookWaitSeconds }};
+                    echo "Shutdown server";
+                    ${WSO2_SERVER_HOME}/bin/wso2server.sh stop
+          securityContext:
+            allowPrivilegeEscalation: false
+            # File system should be read write to cater runtime writes to the configs, DB files, etc...
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+          env:
+            - name: NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JVM_MEM_OPTS
+              value: {{ .Values.deployment.resources.jvm.memOpts }}
+            - name: JAVA_OPTS
+              value: {{ .Values.deployment.resources.jvm.javaOpts }}
+          ports:
+            - containerPort: 9443
+              protocol: TCP
+          volumeMounts:
+            - name: {{ template "..fullname" . }}-deployment-toml
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/deployment.toml
+              subPath: deployment.toml
+            - name: {{ template "..fullname" . }}-thrift-authentication-xml
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/identity/thrift-authentication.xml
+              subPath: thrift-authentication.xml
+            {{- if .Values.deployment.externalJKS.enabled }}
+            - name: keystores
+              mountPath: /home/wso2carbon/{{ .Values.deployment.productPackName }}-{{ .Values.deployment.buildVersion }}/repository/resources/security/{{ .Values.deploymentToml.truststore.fileName }}
+              subPath: {{ .Values.deploymentToml.truststore.fileName }}
+            - name: keystores
+              mountPath: /home/wso2carbon/{{ .Values.deployment.productPackName }}-{{ .Values.deployment.buildVersion }}/repository/resources/security/{{ .Values.deploymentToml.keystore.internal.fileName }}
+              subPath: {{ .Values.deploymentToml.keystore.internal.fileName }}
+            - name: keystores
+              mountPath: /home/wso2carbon/{{ .Values.deployment.productPackName }}-{{ .Values.deployment.buildVersion }}/repository/resources/security/{{ .Values.deploymentToml.keystore.tls.fileName }}
+              subPath: {{ .Values.deploymentToml.keystore.tls.fileName }}
+            - name: keystores
+              mountPath: /home/wso2carbon/{{ .Values.deployment.productPackName }}-{{ .Values.deployment.buildVersion }}/repository/resources/security/{{ .Values.deploymentToml.keystore.primary.fileName }}
+              subPath: {{ .Values.deploymentToml.keystore.primary.fileName }}
+            {{- end }}
+            - name: {{ template "..fullname" . }}-log4j2-properties
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/log4j2.properties
+              subPath: log4j2.properties
+            {{- if .Values.deployment.secretStore.enabled  }}
+            - name: {{ template "..fullname" . }}-secret-config-properties
+              mountPath: /home/wso2carbon/wso2-config-volume/repository/conf/security/secret-conf.properties
+              subPath: secret-conf.properties
+            - name: secrets-volume
+              mountPath: /mnt/secrets-store
+              readOnly: true
+            {{- end }}
+            - name: {{ template "..fullname" . }}-entrypoint
+              mountPath: /home/wso2carbon/docker-entrypoint.sh
+              subPath: docker-entrypoint.sh
+            {{- if .Values.deployment.persistence.enabled }}
+            - name: runtime-persistent-data-storage
+              mountPath: /home/wso2carbon/{{ .Values.deployment.productPackName }}-{{ .Values.deployment.buildVersion }}/repository/tenants
+              subPath: {{ .Values.deployment.persistence.subPaths.tenants }}
+            - name: runtime-persistent-data-storage
+              mountPath: /home/wso2carbon/{{ .Values.deployment.productPackName }}-{{ .Values.deployment.buildVersion }}/repository/deployment/server/userstores
+              subPath: {{ .Values.deployment.persistence.subPaths.userstores }}
+            {{- end }}
+        {{- if .Values.deployment.extraVolumeMounts }}
+          {{- toYaml .Values.deployment.extraVolumeMounts | nindent 12 }}
+        {{- end }}
+      serviceAccountName: {{ template "..fullname" . }}
+      {{- if .Values.deployment.image.imagePullSecret }}
+      imagePullSecrets:
+        - name: { { .Values.wso2.deployment.image.imagePullSecret }}
+      {{- else if and (not (eq .Values.wso2.subscription.username "")) (not (eq .Values.wso2.subscription.password "")) }}
+      imagePullSecrets:
+        - name: {{ template "..fullname" . }}-wso2-private-registry-creds
+      {{- end }}
+      volumes:
+        {{- if .Values.deployment.extraVolumes }}
+          {{ toYaml .Values.deployment.extraVolumes | nindent 8 }}
+        {{- end }}
+        - name: {{ template "..fullname" . }}-deployment-toml
+          configMap:
+            name: {{ template "..fullname" . }}-deployment-toml
+        - name: {{ template "..fullname" . }}-thrift-authentication-xml
+          configMap:
+            name: {{ template "..fullname" . }}-thrift-authentication-xml
+        - name: {{ template "..fullname" . }}-log4j2-properties
+          configMap:
+            name: {{ template "..fullname" . }}-log4j2-properties
+        {{- if .Values.deployment.externalJKS.enabled }}
+        - name: keystores
+          secret:
+            secretName: {{ .Values.deployment.externalJKS.secretName }}
+        {{- end }}
+        {{- if .Values.deployment.secretStore.enabled  }}
+        - name: {{ template "..fullname" . }}-secret-config-properties
+          configMap:
+            name: {{ template "..fullname" . }}-secret-config-properties
+        - name: secrets-volume
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: {{ template "..fullname" . }}
+            {{- if .Values.deployment.secretStore.azure.enabled  }}
+            nodePublishSecretRef:
+              name: {{ .Values.deployment.secretStore.azure.nodePublishSecretRef }}
+            {{- end }}
+        {{- end }}
+        - name: {{ template "..fullname" . }}-entrypoint
+          configMap:
+            name: {{ template "..fullname" . }}-entrypoint
+            defaultMode: 0407
+        {{- if .Values.deployment.persistence.enabled }}
+        - name: runtime-persistent-data-storage
+          persistentVolumeClaim:
+            claimName: {{ template "..fullname" . }}
+        {{- end }}
