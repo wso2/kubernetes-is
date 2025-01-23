@@ -34,6 +34,7 @@ User or service principle who installs the Helm chart, needs to possess actions 
 ### Prerequisites
 * Kubernetes ingress controller. Default integration is [Kubernetes Nginx ingress controller](https://github.com/kubernetes/ingress-nginx).
 * An active [WSO2 Subscription](https://wso2.com/subscription).
+* AppArmor Security Module
 ---
 
 1. Add the WSO2 Helm chart repository.
@@ -62,6 +63,8 @@ kubectl get namespace ${NAMESPACE} || kubectl create namespace ${NAMESPACE}
  --set wso2.subscription.username="$WSO2_USERNAME" \
  --set wso2.subscription.password="$WSO2_PASSWORD"
 ```
+
+**Note:** To disable AppArmor, set `--set deployment.apparmor.enabled="false"` (default: true)  
 
 #### Install Chart From Source
 
