@@ -23,6 +23,8 @@ wso2:
 
 deployment:
   apparmor:
+    # -- Flag to enable Apparmor
+    enabled: true
     # -- Apparmor profile
     profile: "runtime/default"
   ingress:
