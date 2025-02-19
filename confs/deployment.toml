@@ -21,7 +21,7 @@ base_path = "https://$ref{server.hostname}:${carbon.management.port}"
 offset = {{ .Values.deploymentToml.server.offset | quote }}
 
 [transport.https.properties]
-proxyPort = 443
+proxyPort = {{ .Values.deploymentToml.transport.https.properties.proxyPort }}
 server = {{ .Values.deploymentToml.transport.https.properties.server | quote }}
 
 [transport.https.sslHostConfig.properties]
