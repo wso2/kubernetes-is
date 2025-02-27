@@ -23,6 +23,8 @@ wso2:
 
 deployment:
   apparmor:
+    # -- Flag to enable Apparmor
+    enabled: true
     # -- Apparmor profile
     profile: "runtime/default"
   ingress:
@@ -365,6 +367,7 @@ deploymentToml:
       properties:
         # -- Server name in HTTP response headers. Ref: https://is.docs.wso2.com/en/latest/deploy/security/configure-transport-level-security/#change-the-server-name-in-http-response-headers
         server: "WSO2 Carbon Server"
+        proxyPort: 443
       sslHostConfig:
         properties:
           # -- Enabling SSL protocols in the HTTPS transport. Ref: https://is.docs.wso2.com/en/latest/deploy/security/configure-transport-level-security/#enabling-ssl-protocols-in-the-wso2-is
