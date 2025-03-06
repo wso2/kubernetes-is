@@ -26,7 +26,7 @@ deployment:
     # -- Flag to enable Apparmor
     enabled: true
     # -- Apparmor profile
-    profile: "runtime/default"
+    profile: "RuntimeDefault"
   ingress:
     # -- Host name of the Identity server as Key Manager
     hostName: "wso2is.com"
