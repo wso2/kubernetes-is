@@ -1,7 +1,7 @@
 # WSO2 Identity Server
 
 A Helm chart for WSO2 Identity server. This Helm chart can be used to deploy highly available and scalable WSO2 identity server deployment.
-___
+
 From this Helm chart, WSO2 Identity server pods are deployed and exposed through Kubernetes ingress resource. Also in advanced setup, you can configure, Kubernetes persistence volume for sharing runtime artifacts, Kubernetes secret provider class for securing secrets, Kubernetes horizontal pod autoscaling(HPA) and Kubernetes pod disruption budget(PDB). Additionally, pod affinity is configured to increase the high availability. 
 
 ![](images/architecture.png)
@@ -25,20 +25,20 @@ User or service principle who installs the Helm chart, needs to possess actions 
 | Service                 | v1                               |
 | ServiceAccount          | v1                               |
 | Secret                  | v1                               |
+___
 
+# Quick Start Guide
 
-## Quick Start Guide
+## Prerequisites
 
-### Prerequisites
-
-#### Infrastructure
+### Infrastructure
 - Running Kubernetes cluster ([minikube](https://kubernetes.io/docs/tasks/tools/#minikube) or an alternative cluster)
 - Kubernetes ingress controller ([NGINX Ingress](https://github.com/kubernetes/ingress-nginx) recommended)
 
-#### Security
+### Security
 - AppArmor Security Module enabled
 
-#### Tools
+### Tools
 | Tool          | Installation Guide | Version Check Command |
 |---------------|--------------------|-----------------------|
 | Git           | [Install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) | `git --version` |
@@ -216,7 +216,6 @@ Congratulations! You have successfully deployed WSO2 Identity Server on Kubernet
 
 ## Install Helm chart on Azure Kubernetes service(AKS)
 
----
 ### Prerequisites
 * [Azure Kubernetes Service(AKS) with ACR integration](https://learn.microsoft.com/en-us/azure/aks/cluster-container-registry-integration?tabs=azure-cli).
 * Kubernetes ingress controller. Default integration is [Kubernetes Nginx ingress controller](https://github.com/kubernetes/ingress-nginx).
@@ -297,13 +296,13 @@ kubectl create secret generic keystores \
 ## 5. Create Azure storage account secret
 
 Create [Azure storage account secret](https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#create-a-kubernetes-secret) for persistence volume.
-   
-Replace `<AZURE_STORAGE_NAME>` with Azure storage account name and `<AZURE_STORAGE_KEY>` with Azure storage account access key.
-  
+     
 ```shell
 export AZURE_STORAGE_NAME='<AZURE_STORAGE_NAME>'
 export AZURE_STORAGE_KEY='<AZURE_STORAGE_KEY>'
 ```
+
+Replace `<AZURE_STORAGE_NAME>` with Azure storage account name and `<AZURE_STORAGE_KEY>` with Azure storage account access key.
 
 ```shell
 kubectl create secret generic azure-storage-csi \
@@ -316,16 +315,17 @@ kubectl create secret generic azure-storage-csi \
 ## 6. Configure Azure key vault 
  
 - Add `internal.p12` keystore password as the secret with the name `INTERNAL-KEYSTORE-PASSWORD-DECRYPTED`. 
-- Replace: 
-    - `<AZURE_KEY_VAULT_NAME>` with Azure Key vault name 
-    - `<AZURE_SUBSCRIPTION_ID>` with Azure subscription ID 
-    - `<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>` with internal keystore (`internal.p12`) password.
 
     ```shell
     export AZURE_KEY_VAULT_NAME='<AZURE_KEY_VAULT_NAME>'
     export AZURE_SUBSCRIPTION_ID='<AZURE_SUBSCRIPTION_ID>'
     export INTERNAL_KEYSTORE_PASSWORD_DECRYPTED='<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>'
     ```
+
+- Replace: 
+    - `<AZURE_KEY_VAULT_NAME>` with Azure Key vault name 
+    - `<AZURE_SUBSCRIPTION_ID>` with Azure subscription ID 
+    - `<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>` with internal keystore (`internal.p12`) password.
 
 ```shell
 az login
@@ -335,14 +335,14 @@ az keyvault secret set --vault-name "${AZURE_KEY_VAULT_NAME}" --name "INTERNAL-K
 
 - Create a Kubernetes secret to hold service principal credentials to access keyvault for [secrets-store-csi-driver-provider-azure](https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/). 
 
-- Replace: 
-    - `<AZURE_KEY_VAULT_SP_APP_ID>` with Azure active directory service principle application ID 
-    - `<AZURE_KEY_VAULT_SP_APP_SECRET>` with Azure active directory service principle application secret
-
     ```shell
     export AZURE_KEY_VAULT_SP_APP_ID='<AZURE_KEY_VAULT_SP_APP_ID>'
     export AZURE_KEY_VAULT_SP_APP_SECRET='<AZURE_KEY_VAULT_SP_APP_SECRET>'
     ```
+- Replace: 
+    - `<AZURE_KEY_VAULT_SP_APP_ID>` with Azure active directory service principle application ID 
+    - `<AZURE_KEY_VAULT_SP_APP_SECRET>` with Azure active directory service principle application secret
+
 
 ```shell
 kubectl create secret generic azure-kv-secret-store-sp \
