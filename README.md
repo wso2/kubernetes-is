@@ -316,16 +316,16 @@ kubectl create secret generic azure-storage-csi \
  
 - Add `internal.p12` keystore password as the secret with the name `INTERNAL-KEYSTORE-PASSWORD-DECRYPTED`. 
 
+- Replace: 
+    - `<AZURE_KEY_VAULT_NAME>` with Azure Key vault name 
+    - `<AZURE_SUBSCRIPTION_ID>` with Azure subscription ID 
+    - `<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>` with internal keystore (`internal.p12`) password.
+    
     ```shell
     export AZURE_KEY_VAULT_NAME='<AZURE_KEY_VAULT_NAME>'
     export AZURE_SUBSCRIPTION_ID='<AZURE_SUBSCRIPTION_ID>'
     export INTERNAL_KEYSTORE_PASSWORD_DECRYPTED='<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>'
     ```
-
-- Replace: 
-    - `<AZURE_KEY_VAULT_NAME>` with Azure Key vault name 
-    - `<AZURE_SUBSCRIPTION_ID>` with Azure subscription ID 
-    - `<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>` with internal keystore (`internal.p12`) password.
 
 ```shell
 az login
@@ -335,14 +335,14 @@ az keyvault secret set --vault-name "${AZURE_KEY_VAULT_NAME}" --name "INTERNAL-K
 
 - Create a Kubernetes secret to hold service principal credentials to access keyvault for [secrets-store-csi-driver-provider-azure](https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/). 
 
+- Replace: 
+    - `<AZURE_KEY_VAULT_SP_APP_ID>` with Azure active directory service principle application ID 
+    - `<AZURE_KEY_VAULT_SP_APP_SECRET>` with Azure active directory service principle application secret
+    
     ```shell
     export AZURE_KEY_VAULT_SP_APP_ID='<AZURE_KEY_VAULT_SP_APP_ID>'
     export AZURE_KEY_VAULT_SP_APP_SECRET='<AZURE_KEY_VAULT_SP_APP_SECRET>'
     ```
-- Replace: 
-    - `<AZURE_KEY_VAULT_SP_APP_ID>` with Azure active directory service principle application ID 
-    - `<AZURE_KEY_VAULT_SP_APP_SECRET>` with Azure active directory service principle application secret
-
 
 ```shell
 kubectl create secret generic azure-kv-secret-store-sp \
