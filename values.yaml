@@ -59,7 +59,7 @@ deployment:
     # -- Container image digest
     digest: ""
     # -- Container image tag. Either "tag" or "digest" should defined
-    tag: "7.0.0"
+    tag: "7.1.0"
     # -- Refer to the Kubernetes documentation on updating images (Ref: https://kubernetes.io/docs/concepts/containers/images/#updating-images)
     pullPolicy: "Always"
     # -- image pull secret name
@@ -149,14 +149,14 @@ deployment:
         -Dhttpclient.hostnameVerifier=Strict -Djdk.tls.client.protocols=TLSv1.2
         -Djava.util.prefs.systemRoot=/home/wso2carbon/.java -Djava.util.prefs.userRoot=/home/wso2carbon/.java/.userPrefs
   # -- Product version
-  buildVersion: "7.0.0"
+  buildVersion: "7.1.0"
   # -- Product pack name
   productPackName: "wso2is"
   # -- Enable correlation logs
   enableCorrelationLogs: false
   externalJKS:
     # -- Mount external  keystore and trustores
-    enabled: false
+    enabled: true
     # -- K8s secret name which contains JKS files
     secretName: "keystores"
   persistence:
@@ -317,26 +317,26 @@ deploymentToml:
 #        defaultAutoCommit: false
   keystore:
     tls:
-      fileName: "wso2carbon.jks"
-      type: "JKS"
+      fileName: "tls.p12"
+      type: "PKCS12"
       password: "wso2carbon"
       alias: "wso2carbon"
       keyPassword: "wso2carbon"
     primary:
-      fileName: "wso2carbon.jks"
-      type: "JKS"
+      fileName: "primary.p12"
+      type: "PKCS12"
       password: "wso2carbon"
       alias: "wso2carbon"
       keyPassword: "wso2carbon"
     internal:
-      fileName: "wso2carbon.jks"
-      type: "JKS"
+      fileName: "internal.p12"
+      type: "PKCS12"
       password: "wso2carbon"
       alias: "wso2carbon"
       keyPassword: "wso2carbon"
   truststore:
-    fileName: "client-truststore.jks"
-    type: "JKS"
+    fileName: "client-truststore.p12"
+    type: "PKCS12"
     password: "wso2carbon"
   recaptcha:
     # -- Enable reCAPTCHA. Ref: https://is.docs.wso2.com/en/latest/deploy/configure-recaptcha/
