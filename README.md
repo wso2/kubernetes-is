@@ -104,10 +104,10 @@ kubectl create secret generic keystores \
 ```
 
 **Note:**
+- Make sure to import the public key certificates of all three keystores into the truststore (client-truststore.p12).
+- Ensure that the tls.p12 used here matches the one used for creating the **is-tls** TLS kubernetes secret above.
 - To create these keystores and truststores, refer to the official guide:  
 👉 [How to Create New Keystores](https://is.docs.wso2.com/en/latest/deploy/security/keystores/create-new-keystores/)
-
-- Make sure to import the public key certificate into the truststore (client-truststore.p12).
 
 
 ## 5. Install the Helm chart
@@ -160,19 +160,19 @@ If you prefer to build the chart from the source, follow the steps below:
         --set deployment.image.digest=<digest> 
         ```
 
-    ### (Optional) Override Keystore Passwords
+### (Optional) Override Keystore Passwords
 
-    If you used a custom password for keystores (instead of `wso2carbon`), provide it using these flags:
+If you used a custom password for keystores (instead of `wso2carbon`), provide it using these flags:
 
-    ```bash
-    --set deploymentToml.keystore.internal.password="<value>" \
-    --set deploymentToml.keystore.internal.keyPassword="<value>" \
-    --set deploymentToml.keystore.primary.password="<value>" \
-    --set deploymentToml.keystore.primary.keyPassword="<value>" \
-    --set deploymentToml.keystore.tls.password="<value>" \
-    --set deploymentToml.keystore.tls.keyPassword="<value>" \
-    --set deploymentToml.truststore.password="<value>"
-    ```
+```bash
+--set deploymentToml.keystore.internal.password="<value>" \
+--set deploymentToml.keystore.internal.keyPassword="<value>" \
+--set deploymentToml.keystore.primary.password="<value>" \
+--set deploymentToml.keystore.primary.keyPassword="<value>" \
+--set deploymentToml.keystore.tls.password="<value>" \
+--set deploymentToml.keystore.tls.keyPassword="<value>" \
+--set deploymentToml.truststore.password="<value>"
+```
 
 ## 6. Obtain the External IP
 
