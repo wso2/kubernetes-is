@@ -1,9 +1,8 @@
-# identity-server
+# WSO2 Identity Server
 
 A Helm chart for WSO2 Identity server. This Helm chart can be used to deploy highly available and scalable WSO2 identity server deployment.
 ___
-From this Helm chart, WSO2 Identity server pods are deployed and exposed through Kubernetes ingress resource. Also in advanced setup, you can configure, Kubernetes persistence volume for sharing runtime artifacts, Kubernetes secret provider class for securing secrets,
-Kubernetes horizontal pod autoscaling(HPA) and Kubernetes pod disruption budget(PDB). Additionally, pod affinity is configured to increase the high availability. 
+From this Helm chart, WSO2 Identity server pods are deployed and exposed through Kubernetes ingress resource. Also in advanced setup, you can configure, Kubernetes persistence volume for sharing runtime artifacts, Kubernetes secret provider class for securing secrets, Kubernetes horizontal pod autoscaling(HPA) and Kubernetes pod disruption budget(PDB). Additionally, pod affinity is configured to increase the high availability. 
 
 ![](images/architecture.png)
 ___
@@ -28,95 +27,189 @@ User or service principle who installs the Helm chart, needs to possess actions 
 | Secret                  | v1                               |
 
 
-# Quick Start Guide
+## Quick Start Guide
 
----
 ### Prerequisites
-* Kubernetes ingress controller. Default integration is [Kubernetes Nginx ingress controller](https://github.com/kubernetes/ingress-nginx).
-* An active [WSO2 Subscription](https://wso2.com/subscription).
-* AppArmor Security Module
----
 
-1. Add the WSO2 Helm chart repository.
+#### Infrastructure
+- Running Kubernetes cluster ([minikube](https://kubernetes.io/docs/tasks/tools/#minikube) or an alternative cluster)
+- Kubernetes ingress controller ([NGINX Ingress](https://github.com/kubernetes/ingress-nginx) recommended)
 
-```shell
-helm repo add wso2 https://helm.wso2.com && helm repo update
-```
+#### Security
+- AppArmor Security Module enabled
 
-2. Set up environment variables 
+#### Tools
+| Tool          | Installation Guide | Version Check Command |
+|---------------|--------------------|-----------------------|
+| Git           | [Install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) | `git --version` |
+| Helm          | [Install Helm](https://helm.sh/docs/intro/install/) | `helm version` |
+| Docker        | [Install Docker](https://docs.docker.com/engine/install/) | `docker --version` |
+| kubectl       | [Install kubectl](https://kubernetes.io/docs/tasks/tools/#kubectl) | `kubectl version` |
 
-```shell
-export NAMESPACE=<Kubernetes Namespace to which you desire to deploy the Kubernetes resources>
-export RELEASE_NAME=<Helm relase name for the deployment>
-export WSO2_USERNAME=<WSO2 subscription account username>
-export WSO2_PASSWORD=<WSO2 subscription account password>
-```
-3. Create Kubernetes namespace
 
-```shell
-kubectl get namespace ${NAMESPACE} || kubectl create namespace ${NAMESPACE}
-```
-4. Install Helm chart from Helm repository
+## 1. Set up environment variables
+
+Define environment variables for the Kubernetes namespace, and Helm release name.
 
 ```shell
- helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1 -n "${NAMESPACE}" \
- --set wso2.subscription.username="$WSO2_USERNAME" \
- --set wso2.subscription.password="$WSO2_PASSWORD"
+export NAMESPACE=<Kubernetes Namespace to deploy the identity server resources>
+export RELEASE_NAME=<Helm release name of the identity server deployment>
 ```
 
-**Note:** To disable AppArmor, set `--set deployment.apparmor.enabled="false"` (default: true)  
 
-#### Install Chart From Source
+## 2. Create a Kubernetes namespace
 
->In the context of this document, <br>
->* `KUBERNETES_HOME` will refer to a local copy of the [`wso2/kubernetes-is`](https://github.com/wso2/kubernetes-is/)
-   Git repository. <br>
-
-##### Clone the Helm Resources for WSO2 Identity Server Git repository.
-
-```
-git clone https://github.com/wso2/kubernetes-is.git
-```
+Ensure that the specified namespace exists or create a new one using the following command.
 
 ```shell
- helm install "$RELEASE_NAME" -n "${NAMESPACE}" . \
- --set wso2.subscription.username="$WSO2_USERNAME" \
- --set wso2.subscription.password="$WSO2_PASSWORD"
+kubectl get namespace $NAMESPACE || kubectl create namespace $NAMESPACE
 ```
 
 
-5. Obtain the external IP
+## 3. Create a Kubernetes TLS secret 
 
-Obtain the external IP (`EXTERNAL-IP`) of the Identity Server Ingress resource, by listing down the Kubernetes Ingresses.
+For this you need possess the SSL certificate and the key.
 
-```  
-kubectl get ing -n "$NAMESPACE"
+```shell
+kubectl create secret tls is-tls \
+--cert=path/to/cert/file \
+--key=path/to/key/file \
+-n $NAMESPACE
 ```
 
-The output under the relevant column stands for the following.
+**Note:**
+- Ensure the certificate includes `localhost` as a Subject Alternative Name (SAN).
+- Use the default password `wso2carbon` when generating keystores.
 
-- NAME: Metadata name of the Kubernetes Ingress resource
-- HOSTS: Hostname of the WSO2 Identity service
-- ADDRESS: External IP (`EXTERNAL-IP`) exposing the Identity service to outside of the Kubernetes environment
-- PORTS: Externally exposed service ports of the Identity service
 
-6. Add a DNS record mapping the hostname and the external IP
+## 4. Create Kubernetes Secret for Java Keystore Files
 
-If the defined hostname (in the previous step) is backed by a DNS service, add a DNS record mapping the hostname and
-the external IP (`EXTERNAL-IP`) in the relevant DNS service.
+The deployment requires the following Java keystore files:
 
-If the defined hostname is not backed by a DNS service, for the purpose of evaluation you may add an entry mapping the
-hostname and the external IP in the `/etc/hosts` file at the client-side.
+| File                   | Purpose                                                                 |
+|------------------------|-------------------------------------------------------------------------|
+| `internal.p12`         | Used for internal data encryption/decryption                           |
+| `primary.p12`          | Used for signing messages (e.g., SAML, OIDC)                            |
+| `tls.p12`              | Used for TLS communication                                              |
+| `client-truststore.p12`| Stores trusted certificates of external systems                         |
 
+
+```shell
+kubectl create secret generic keystores \
+--from-file=path/to/internal_keystore(internal.p12) \
+--from-file=path/to/primary_keystore(primary.p12) \
+--from-file=path/to/tls_keystore(tls.p12) \
+--from-file=path/to/client_truststore(client-truststore.p12) \
+-n $NAMESPACE
 ```
-<EXTERNAL-IP> <deployment.ingress.hostName>
+
+**Note:**
+- To create these keystores and truststores, refer to the official guide:  
+👉 [How to Create New Keystores](https://is.docs.wso2.com/en/latest/deploy/security/keystores/create-new-keystores/)
+
+- Make sure to import the public key certificate into the truststore (client-truststore.p12).
+
+
+## 5. Install the Helm chart
+
+There are two ways to install the WSO2 Identity Server using the Helm chart.
+
+### Option 1: Install the chart from the Helm repository
+1. Add the WSO2 Helm chart repository
+
+    Before installing WSO2 Identity Server, add the WSO2 Helm chart repository and update it to fetch the latest charts.
+
+    ```shell
+    helm repo add wso2 https://helm.wso2.com && helm repo update
+    ```
+
+2. Install the Helm chart from the Helm repository.
+    ```shell
+    helm install $RELEASE_NAME wso2/identity-server --version 7.1.0-1 \
+    -n $NAMESPACE \
+    --set deployment.image.registry="wso2"
+    ```
+
+    **Note:** To disable AppArmor, set --set deployment.apparmor.enabled="false" (default: true)
+
+### Option 2: Install the Chart from source
+
+If you prefer to build the chart from the source, follow the steps below:
+
+1. Clone the WSO2 Kubernetes repository.
+
+    ```shell
+    git clone https://github.com/wso2/kubernetes-is.git
+    cd kubernetes-is
+    ```
+
+    **Note:** You can customize the product configuration by modifying the `kubernetes-is/confs/deployment.toml` file after cloning the repository.
+
+2. Install the Helm chart from the cloned repository:
+
+    ```shell
+    helm install $RELEASE_NAME -n $NAMESPACE . \
+    --set deployment.image.registry="wso2"
+    ```
+
+    **Note:** 
+    - To disable AppArmor, set --set deployment.apparmor.enabled="false" (default: true)
+    - The above commands use the publicly released [WSO2 Identity Server Docker image](https://hub.docker.com/r/wso2/wso2is). To use a custom docker image, update the registry, repository, and tag accordingly. You can also specify an image digest instead of a tag as shown below:
+    
+        ```shell
+        --set deployment.image.digest=<digest> 
+        ```
+
+    ### (Optional) Override Keystore Passwords
+
+    If you used a custom password for keystores (instead of `wso2carbon`), provide it using these flags:
+
+    ```bash
+    --set deploymentToml.keystore.internal.password="<value>" \
+    --set deploymentToml.keystore.internal.keyPassword="<value>" \
+    --set deploymentToml.keystore.primary.password="<value>" \
+    --set deploymentToml.keystore.primary.keyPassword="<value>" \
+    --set deploymentToml.keystore.tls.password="<value>" \
+    --set deploymentToml.keystore.tls.keyPassword="<value>" \
+    --set deploymentToml.truststore.password="<value>"
+    ```
+
+## 6. Obtain the External IP
+
+After deploying WSO2 Identity Server, you need to find its external IP address to access it outside the cluster. Run the following command to list the Ingress resources in your namespace:
+
+```shell
+kubectl get ing -n $NAMESPACE
 ```
 
-### 4. Access Management Console, Console and My Account
+**Output Fields:**
 
-- Identity Server's Carbon Management Console: `https://<deployment.ingress.hostName>/carbon`
-- Identity Server's Console: `https://<deployment.ingress.hostName>/console`
-- Identity Server's My Account: `https://<deployment.ingress.hostName>/myaccount`
+- **HOSTS** – Hostname (e.g., `wso2is.example.com`)
+- **ADDRESS** – External IP
+- **PORTS** – Exposed ports (usually 80, 443)
+
+## 7. Configure DNS
+
+If your hostname is backed by a DNS service, create a DNS record that maps the hostname to the external IP. If there is no DNS service, you can manually add an entry to the `/etc/hosts` file on your local machine (for evaluation purposes only):
+
+```shell
+<EXTERNAL-IP> wso2is.com
+```
+
+## 8. Access WSO2 Identity Server
+
+Once everything is set up, you can access WSO2 Identity Server using the following URLs and credentials:
+
+- Console: https://wso2is.com/console
+- My Account portal: https://wso2is.com/myaccount
+
+
+**Default credentials:**
+
+- Username: `admin`
+- Password: `admin`
+
+Congratulations! You have successfully deployed WSO2 Identity Server on Kubernetes using Helm.
 
 
 # Advance setup
@@ -136,43 +229,76 @@ hostname and the external IP in the `/etc/hosts` file at the client-side.
 > To set up the infrastructure layer you can use [WSO2 Terraform modules](https://github.com/wso2/iac-azure-wso2-products) 
 ---
 
-1. Create Kubernetes namespace
+
+## 1. Set up environment variables
+
+Define environment variables for the Kubernetes namespace, Helm release name, and WSO2 subscription.
 
 ```shell
-export NAMESPACE=<NAMESPACE>
+export NAMESPACE=<Kubernetes Namespace to deploy the identity server resources>
+export RELEASE_NAME=<Helm release name of the identity server deployment>
+export WSO2_USERNAME=<WSO2 subscription account username>
+export WSO2_PASSWORD=<WSO2 subscription account password>
 ```
+
+
+## 2. Create a Kubernetes namespace
+
+Ensure that the specified namespace exists or create a new one using the following command.
+
 ```shell
-kubectl get namespace ${NAMESPACE} || kubectl create namespace ${NAMESPACE}
+kubectl get namespace $NAMESPACE || kubectl create namespace $NAMESPACE
 ```
+
     
-3. Create a Kubernetes TLS secret for SSL termination at ingress controller. For this you need possess the SSL certificate and the key,
+## 3. Create a Kubernetes TLS secret 
+
+For this you need possess the SSL certificate and the key.
 
 ```shell
 kubectl create secret tls is-tls \
 --cert=path/to/cert/file \
 --key=path/to/key/file \
--n ${NAMESPACE}
+-n $NAMESPACE
 ```
-   
-4. Create a Kubernetes secret for keystore files. It is required to have four Java keystore files for the deployment. Please refer to the [documentation](https://is.docs.wso2.com/en/latest/deploy/security/configure-keystores-in-wso2-products/#configure-keystores) for more details and how to create key stores.
 
-    * Internal keystore(internal.jks): The key store which is used for encrypting/decrypting internal data
-    * Primary keystore(primary.jks): Certificates used for signing messages that are communicated with external parties(such SAML, OIDC id_token signing)
-    * TLS keystore(tls.jks): The key store which is used for tls communication.
-    * Client truststore(client-truststore.jks): Certificates of trusted third parties
+**Note:**
+- Ensure the certificate includes `localhost` as a Subject Alternative Name (SAN).
+
+   
+## 4. Create Kubernetes Secret for Java Keystore Files
+
+The deployment requires the following Java keystore files:
+
+| File                   | Purpose                                                                 |
+|------------------------|-------------------------------------------------------------------------|
+| `internal.p12`         | Used for internal data encryption/decryption                           |
+| `primary.p12`          | Used for signing messages (e.g., SAML, OIDC)                            |
+| `tls.p12`              | Used for TLS communication                                              |
+| `client-truststore.p12`| Stores trusted certificates of external systems                         |
+
 
 ```shell
 kubectl create secret generic keystores \
---from-file=internal.jks \
---from-file=primary.jks \
---from-file=tls.jks \
---from-file=client-truststore.jks \
--n ${NAMESPACE}
+--from-file=path/to/internal_keystore(internal.p12) \
+--from-file=path/to/primary_keystore(primary.p12) \
+--from-file=path/to/tls_keystore(tls.p12) \
+--from-file=path/to/client_truststore(client-truststore.p12) \
+-n $NAMESPACE
 ```
-  
-5. Create [Azure storage account secret](https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#create-a-kubernetes-secret) for persistence volume.
+
+**Note:**
+- To create these keystores and truststores, refer to the official guide:  
+👉 [How to Create New Keystores](https://is.docs.wso2.com/en/latest/deploy/security/keystores/create-new-keystores/)
+
+- Make sure to import the public key certificate into the truststore (client-truststore.p12).
+
+
+## 5. Create Azure storage account secret
+
+Create [Azure storage account secret](https://learn.microsoft.com/en-us/azure/aks/azure-csi-files-storage-provision#create-a-kubernetes-secret) for persistence volume.
    
-    Replace `<AZURE_STORAGE_NAME>` with Azure storage account name and `<AZURE_STORAGE_KEY>` with Azure storage account access key.
+Replace `<AZURE_STORAGE_NAME>` with Azure storage account name and `<AZURE_STORAGE_KEY>` with Azure storage account access key.
   
 ```shell
 export AZURE_STORAGE_NAME='<AZURE_STORAGE_NAME>'
@@ -186,41 +312,49 @@ kubectl create secret generic azure-storage-csi \
 -n ${NAMESPACE}
 ```
 
-6. Configure Azure key vault 
+
+## 6. Configure Azure key vault 
  
-    - Add `internal.jks` keystore password as the secret with the name `INTERNAL-KEYSTORE-PASSWORD-DECRYPTED`. Replace `<AZURE_KEY_VAULT_NAME>` with Azure Key vault name, `<AZURE_SUBSCRIPTION_ID>` with Azure subscription ID and `<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>` with internal keystore(`internal.jks`) password.
+- Add `internal.p12` keystore password as the secret with the name `INTERNAL-KEYSTORE-PASSWORD-DECRYPTED`. 
+- Replace: 
+    - `<AZURE_KEY_VAULT_NAME>` with Azure Key vault name 
+    - `<AZURE_SUBSCRIPTION_ID>` with Azure subscription ID 
+    - `<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>` with internal keystore (`internal.p12`) password.
 
-        ```shell
-        export AZURE_KEY_VAULT_NAME='<AZURE_KEY_VAULT_NAME>'
-        export AZURE_SUBSCRIPTION_ID='<AZURE_SUBSCRIPTION_ID>'
-        export INTERNAL_KEYSTORE_PASSWORD_DECRYPTED='<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>'
-        ```
-    
-        ```shell
-        az login
-        az account set -s "${AZURE_SUBSCRIPTION_ID}"
-        az keyvault secret set --vault-name "${AZURE_KEY_VAULT_NAME}" --name "INTERNAL-KEYSTORE-PASSWORD-DECRYPTED" --value "${INTERNAL_KEYSTORE_PASSWORD_DECRYPTED}"
-        ```
+    ```shell
+    export AZURE_KEY_VAULT_NAME='<AZURE_KEY_VAULT_NAME>'
+    export AZURE_SUBSCRIPTION_ID='<AZURE_SUBSCRIPTION_ID>'
+    export INTERNAL_KEYSTORE_PASSWORD_DECRYPTED='<INTERNAL_KEYSTORE_PASSWORD_DECRYPTED>'
+    ```
 
-    - Create a Kubernetes secret to hold service principal credentials to access keyvault for [secrets-store-csi-driver-provider-azure](https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/). 
-  
-        Replace `<AZURE_KEY_VAULT_SP_APP_ID>` with Azure active directory service principle application ID and `<AZURE_KEY_VAULT_SP_APP_SECRET>` with Azure active directory service principle application secret
-     
-        ```shell
-        export AZURE_KEY_VAULT_SP_APP_ID='<AZURE_KEY_VAULT_SP_APP_ID>'
-        export AZURE_KEY_VAULT_SP_APP_SECRET='<AZURE_KEY_VAULT_SP_APP_SECRET>'
-        ```
-    
-        ```shell
-        kubectl create secret generic azure-kv-secret-store-sp \
-        --from-literal=clientid="${AZURE_KEY_VAULT_SP_APP_ID}" \
-        --from-literal=clientsecret="${AZURE_KEY_VAULT_SP_APP_SECRET}" \
-        -n ${NAMESPACE}
-        ```
+```shell
+az login
+az account set -s "${AZURE_SUBSCRIPTION_ID}"
+az keyvault secret set --vault-name "${AZURE_KEY_VAULT_NAME}" --name "INTERNAL-KEYSTORE-PASSWORD-DECRYPTED" --value "${INTERNAL_KEYSTORE_PASSWORD_DECRYPTED}"
+```
 
-7. Encrypt secrets using WSO2 secure vault encryption
+- Create a Kubernetes secret to hold service principal credentials to access keyvault for [secrets-store-csi-driver-provider-azure](https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/). 
 
-    Following set of secure vault encrypted secrets are required for the deployment, please follow the [guideline](https://is.docs.wso2.com/en/latest/deploy/security/encrypt-passwords-with-cipher-tool/) to encrypt secrets using WSO2 secure vault encryption. Make sure to use previously created `internal.jks` keystore for the WSO2 secure vault encryption.
+- Replace: 
+    - `<AZURE_KEY_VAULT_SP_APP_ID>` with Azure active directory service principle application ID 
+    - `<AZURE_KEY_VAULT_SP_APP_SECRET>` with Azure active directory service principle application secret
+
+    ```shell
+    export AZURE_KEY_VAULT_SP_APP_ID='<AZURE_KEY_VAULT_SP_APP_ID>'
+    export AZURE_KEY_VAULT_SP_APP_SECRET='<AZURE_KEY_VAULT_SP_APP_SECRET>'
+    ```
+
+```shell
+kubectl create secret generic azure-kv-secret-store-sp \
+--from-literal=clientid="${AZURE_KEY_VAULT_SP_APP_ID}" \
+--from-literal=clientsecret="${AZURE_KEY_VAULT_SP_APP_SECRET}" \
+-n ${NAMESPACE}
+```
+
+## 7. Encrypt secrets using WSO2 secure vault encryption
+
+Following set of secure vault encrypted secrets are required for the deployment, please follow the [guideline](https://is.docs.wso2.com/en/latest/deploy/security/encrypt-passwords-with-cipher-tool/) to encrypt secrets using WSO2 secure vault encryption. 
+Make sure to use previously created `internal.p12` keystore for the WSO2 secure vault encryption.
 
 ```shell
 export DATABASE_IDENTITY_ENCRYPTED_USER='<Identity database encrypted username >'
@@ -244,7 +378,7 @@ export IDENTITY_AUTH_FRAMEWORK_ENDPOINT_ENCRYPTED_APP_PASSWORD='<Encrypted app p
 export SYMMETRIC_ENCRYPTED_KEY='<Encrypted symmetric key>'
 ```
 
-8. Install Helm chart
+## 8. Install Helm chart
 
 Add the WSO2 Helm chart repository.
 
@@ -290,7 +424,7 @@ export RELEASE_NAME='<RELEASE_NAME>'
 ```
 
 ```shell
-helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMESPACE}" \
+helm install "$RELEASE_NAME" wso2/identity-server --version 7.1.0-1  -n "$NAMESPACE" \
 --set deployment.image.registry="${IMAGE_REGISTRY_HOSTNAME}" \
 --set deployment.image.repository="${IMAGE_REPOSITORY_NAME}" \
 --set deployment.image.digest="${IMAGE_DIGEST}" \
@@ -317,13 +451,13 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMES
 --set deploymentToml.database.consent.username="${DATABASE_CONSENT_ENCRYPTED_USER}" \
 --set deploymentToml.database.consent.password="${DATABASE_CONSENT_ENCRYPTED_PASSWORD}" \
 --set deployment.externalJKS.enabled=true \
---set deploymentToml.keystore.internal.fileName="internal.jks" \
+--set deploymentToml.keystore.internal.fileName="internal.p12" \
 --set deploymentToml.keystore.internal.password="${KEYSTORE_INTERNAL_ENCRYPTED_PASSWORD}" \
 --set deploymentToml.keystore.internal.keyPassword="${KEYSTORE_INTERNAL_ENCRYPTED_KEY_PASSWORD}" \
---set deploymentToml.keystore.primary.fileName="primary.jks" \
+--set deploymentToml.keystore.primary.fileName="primary.p12" \
 --set deploymentToml.keystore.primary.password="${KEYSTORE_PRIMARY_ENCRYPTED_PASSWORD}" \
 --set deploymentToml.keystore.primary.keyPassword="${KEYSTORE_PRIMARY_ENCRYPTED_KEY_PASSWORD}" \
---set deploymentToml.keystore.tls.fileName="tls.jks" \
+--set deploymentToml.keystore.tls.fileName="tls.p12" \
 --set deploymentToml.keystore.tls.password="${KEYSTORE_TLS_ENCRYPTED_PASSWORD}" \
 --set deploymentToml.keystore.tls.keyPassword="${KEYSTORE_TLS_ENCRYPTED_KEY_PASSWORD}" \
 --set deploymentToml.superAdmin.password="${SUPER_ADMIN_ENCRYPTED_PASSWORD}" \
@@ -342,11 +476,12 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMES
 ```
 
  > If it is required to add additional configuration other than what are parameterised in `deployment.toml` file, you can override the Helm value `deploymentToml.extraConfigs`
+
 ## Compatibility
 
 | Kubernetes Version | Helm Version | Secrets Store CSI Driver Version | Compatibility Notes                  |
 |--------------------|--------------|----------------------------------|--------------------------------------|
-| v1.27.x            | v3.xx        | v1.3.0                           | Fully compatible.                    |
+| v1.30.x            | v3.xx        | v1.3.0                           | Fully compatible.                    |
 
 ## Values
 
@@ -354,7 +489,7 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMES
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | deployment.apparmor.profile | string | `"runtime/default"` | Apparmor profile |
-| deployment.buildVersion | string | `"7.0.0"` | Product version |
+| deployment.buildVersion | string | `"7.1.0"` | Product version |
 | deployment.enableCorrelationLogs | bool | `false` | Enable correlation logs |
 | deployment.externalJKS.enabled | bool | `false` | Mount external  keystore and trustores |
 | deployment.externalJKS.secretName | string | `"keystores"` | K8s secret name which contains JKS files |
@@ -369,7 +504,7 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMES
 | deployment.image.pullPolicy | string | `"Always"` | Refer to the Kubernetes documentation on updating images (Ref: https://kubernetes.io/docs/concepts/containers/images/#updating-images) |
 | deployment.image.registry | string | `"docker.wso2.com"` | Container image registry host name |
 | deployment.image.repository | string | `"wso2is"` | Container image repository name |
-| deployment.image.tag | string | `"7.0.0"` | Container image tag. Either "tag" or "digest" should defined |
+| deployment.image.tag | string | `"7.1.0"` | Container image tag. Either "tag" or "digest" should defined |
 | deployment.ingress.annotations."nginx.ingress.kubernetes.io/affinity" | string | `"cookie"` |  |
 | deployment.ingress.annotations."nginx.ingress.kubernetes.io/backend-protocol" | string | `"HTTPS"` |  |
 | deployment.ingress.annotations."nginx.ingress.kubernetes.io/force-ssl-redirect" | string | `"true"` |  |
@@ -459,20 +594,20 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMES
 | deploymentToml.extraConfigs | string | `nil` | Add custom configurations to deployment.toml. |
 | deploymentToml.identity.authFramework.endpoint.appPassword | string | `"dashboard"` | Configure client authentication encrypted app password. Ref https://is.docs.wso2.com/en/latest/deploy/security/product-level-security-guidelines/#configure-client-authentication |
 | deploymentToml.keystore.internal.alias | string | `"wso2carbon"` |  |
-| deploymentToml.keystore.internal.fileName | string | `"wso2carbon.jks"` |  |
+| deploymentToml.keystore.internal.fileName | string | `"wso2carbon.p12"` |  |
 | deploymentToml.keystore.internal.keyPassword | string | `"wso2carbon"` |  |
 | deploymentToml.keystore.internal.password | string | `"wso2carbon"` |  |
-| deploymentToml.keystore.internal.type | string | `"JKS"` |  |
+| deploymentToml.keystore.internal.type | string | `"PKCS12"` |  |
 | deploymentToml.keystore.primary.alias | string | `"wso2carbon"` |  |
-| deploymentToml.keystore.primary.fileName | string | `"wso2carbon.jks"` |  |
+| deploymentToml.keystore.primary.fileName | string | `"wso2carbon.p12"` |  |
 | deploymentToml.keystore.primary.keyPassword | string | `"wso2carbon"` |  |
 | deploymentToml.keystore.primary.password | string | `"wso2carbon"` |  |
-| deploymentToml.keystore.primary.type | string | `"JKS"` |  |
+| deploymentToml.keystore.primary.type | string | `"PKCS12"` |  |
 | deploymentToml.keystore.tls.alias | string | `"wso2carbon"` |  |
-| deploymentToml.keystore.tls.fileName | string | `"wso2carbon.jks"` |  |
+| deploymentToml.keystore.tls.fileName | string | `"wso2carbon.p12"` |  |
 | deploymentToml.keystore.tls.keyPassword | string | `"wso2carbon"` |  |
 | deploymentToml.keystore.tls.password | string | `"wso2carbon"` |  |
-| deploymentToml.keystore.tls.type | string | `"JKS"` |  |
+| deploymentToml.keystore.tls.type | string | `"PKCS12"` |  |
 | deploymentToml.oauth.tokenCleanup | bool | `false` | Enable/Disable the internal token cleanup process. Ref: https://is.docs.wso2.com/en/6.0.0/deploy/remove-unused-tokens-from-the-database/#! |
 | deploymentToml.oauth.tokenGeneration.includeUsernameInAccessToken | bool | `false` | Add UserName Assertions in Access Tokens. Ref: https://is.docs.wso2.com/en/6.0.0/deploy/enable-assertions-in-access-tokens/ |
 | deploymentToml.otp.email.addressRequestPage | string | `"https://localhost:9443/emailotpauthenticationendpoint/emailAddress.jsp"` |  |
@@ -544,9 +679,9 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.0.0-1  -n "${NAMES
 | deploymentToml.transport.https.sslHostConfig.properties.protocols | string | `"+TLSv1, +TLSv1.1, +TLSv1.2, +TLSv1.3"` | Enabling SSL protocols in the HTTPS transport. Ref: https://is.docs.wso2.com/en/latest/deploy/security/configure-transport-level-security/#enabling-ssl-protocols-in-the-wso2-is |
 | deploymentToml.transport.thrift.ciphers | string | `"TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384,TLS_DHE_DSS_WITH_AES_256_GCM_SHA384,TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256,TLS_DHE_DSS_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384,TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384,TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384,TLS_DHE_DSS_WITH_AES_256_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA,TLS_ECDH_RSA_WITH_AES_256_CBC_SHA,TLS_DHE_DSS_WITH_AES_256_CBC_SHA,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256,TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256,TLS_DHE_DSS_WITH_AES_128_CBC_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA,TLS_ECDH_RSA_WITH_AES_128_CBC_SHA,TLS_DHE_DSS_WITH_AES_128_CBC_SHA"` | Configure TSL ciphers in ThriftAuthenticationService. Ref: https://is.docs.wso2.com/en/latest/deploy/security/configure-transport-level-security/#enable-ssl-protocols-and-ciphers-in-thriftauthenticationservice |
 | deploymentToml.transport.thrift.protocols | string | `"TLSv1,TLSv1.1,TLSv1.2"` | Enabling SSL protocols in ThriftAuthenticationService. Ref: https://is.docs.wso2.com/en/latest/deploy/security/configure-transport-level-security/#enable-ssl-protocols-and-ciphers-in-thriftauthenticationservice |
-| deploymentToml.truststore.fileName | string | `"client-truststore.jks"` |  |
+| deploymentToml.truststore.fileName | string | `"client-truststore.p12"` |  |
 | deploymentToml.truststore.password | string | `"wso2carbon"` |  |
-| deploymentToml.truststore.type | string | `"JKS"` |  |
+| deploymentToml.truststore.type | string | `"PKCS12"` |  |
 | deploymentToml.userAccountLock.enabled | bool | `true` | Enable user account lock. Ref: https://is.docs.wso2.com/en/latest/guides/identity-lifecycles/lock-account/ |
 | deploymentToml.userAccountLock.loginAttempts.allowedFailedAttempts | int | `5` | This indicates the number of consecutive attempts that a user can try to log in without the account getting locked. If the value you specify is 2, the account gets locked if the login attempt fails twice. |
 | deploymentToml.userAccountLock.loginAttempts.autoUnlockAfter | int | `5` | The time specified here is in minutes. Authentication can be attempted once this time has passed. |

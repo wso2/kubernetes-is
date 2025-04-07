@@ -29,14 +29,16 @@ protocols={{ .Values.deploymentToml.transport.https.sslHostConfig.properties.pro
 ciphers={{ .Values.deploymentToml.transport.https.sslHostConfig.properties.ciphers | quote }}
 
 [super_admin]
+username = {{ .Values.deploymentToml.superAdmin.username | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
-username = "$secret{super_admin_username}"
 password = "$secret{super_admin_password}"
 {{- else }}
-username = {{ .Values.deploymentToml.superAdmin.username | quote }}
 password = {{ .Values.deploymentToml.superAdmin.password | quote }}
 {{- end }}
 create_admin_account = {{ .Values.deploymentToml.superAdmin.createAdminAccount }}
+
+[identity_mgt]
+user_self_registration.callback_url = "https://{{ .Values.deployment.ingress.hostName }}/.*"
 
 [user_store]
 type = {{ .Values.deploymentToml.userStore.type | quote }}
@@ -174,6 +176,7 @@ password = "$secret{keystore_truststore_password}"
 {{- else }}
 password = {{ .Values.deploymentToml.truststore.password | quote }}
 {{- end }}
+
 [account_recovery.endpoint.auth]
 hash= {{ .Values.deploymentToml.account.recovery.endpoint.auth.hash | quote }}
 
@@ -250,6 +253,7 @@ enableAuthentication= {{ .Values.deploymentToml.outputAdapter.email.enableAuthen
 [event.default_listener.identity_mgt]
 priority= "50"
 enable = false
+
 [event.default_listener.governance_identity_mgt]
 priority= "95"
 enable = true
@@ -325,6 +329,7 @@ EnableAccountLockingForFailedAttempts = {{ .Values.deploymentToml.totp.userAccou
 {{- end }}
 
 [encryption]
+internal_crypto_provider = "org.wso2.carbon.crypto.provider.SymmetricKeyInternalCryptoProvider"
 {{- if .Values.deployment.secretStore.enabled }}
 key= "$secret{symmetric_key}"
 {{- else }}
@@ -334,9 +339,11 @@ key= {{ .Values.deploymentToml.encryption.key | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 # Secure vault encryted secrets
 [secrets]
+
 # Super admin creds
 super_admin_username = {{ .Values.deploymentToml.superAdmin.username | quote }}
 super_admin_password = {{ .Values.deploymentToml.superAdmin.password | quote }}
+
 # Database creds
 database_identity_username = {{ .Values.deploymentToml.database.identity.username | quote }}
 database_identity_password = {{ .Values.deploymentToml.database.identity.password | quote }}
@@ -346,6 +353,7 @@ database_user_username = {{ .Values.deploymentToml.database.user.username | quot
 database_user_password = {{ .Values.deploymentToml.database.user.password | quote }}
 database_consent_username = {{ .Values.deploymentToml.database.consent.username | quote }}
 database_consent_password = {{ .Values.deploymentToml.database.consent.password | quote }}
+
 # Keystores
 keystore_tls_password = {{ .Values.deploymentToml.keystore.tls.password | quote }}
 keystore_tls_key_password = {{ .Values.deploymentToml.keystore.tls.keyPassword | quote }}
@@ -353,13 +361,17 @@ keystore_primary_password = {{ .Values.deploymentToml.keystore.primary.password 
 keystore_primary_key_password = {{ .Values.deploymentToml.keystore.primary.keyPassword | quote }}
 keystore_internal_password = {{ .Values.deploymentToml.keystore.internal.password | quote }}
 keystore_internal_key_password = {{ .Values.deploymentToml.keystore.internal.keyPassword | quote }}
+
 # Truststore
 keystore_truststore_password = {{ .Values.deploymentToml.truststore.password | quote }}
+
 # App password
 app_password = {{ .Values.deploymentToml.identity.authFramework.endpoint.appPassword | quote }}
+
 # Symmetric key
 symmetric_key = {{ .Values.deploymentToml.encryption.key | quote }}
 {{- if .Values.deploymentToml.recaptcha.enabled }}
+
 # Recaptcha creds
 recaptcha_site_key = {{ .Values.deploymentToml.recaptcha.siteKey | quote }}
 recaptcha_secret_key = {{ .Values.deploymentToml.recaptcha.secretKey | quote }}
@@ -368,5 +380,4 @@ recaptcha_secret_key = {{ .Values.deploymentToml.recaptcha.secretKey | quote }}
 {{- if .Values.deploymentToml.outputAdapter.email.enabled }}
 output_adapter_email_password = {{ .Values.deploymentToml.outputAdapter.email.password | quote }}
 {{- end }}
-
 {{- end }}
