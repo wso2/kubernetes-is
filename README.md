@@ -288,10 +288,10 @@ kubectl create secret generic keystores \
 ```
 
 **Note:**
+- Make sure to import the public key certificates of all three keystores into the truststore (client-truststore.p12).
+- Ensure that the tls.p12 used here matches the one used for creating the **is-tls** TLS kubernetes secret above.
 - To create these keystores and truststores, refer to the official guide:  
 👉 [How to Create New Keystores](https://is.docs.wso2.com/en/latest/deploy/security/keystores/create-new-keystores/)
-
-- Make sure to import the public key certificate into the truststore (client-truststore.p12).
 
 
 ## 5. Create Azure storage account secret
