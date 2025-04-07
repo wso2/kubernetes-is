@@ -19,3 +19,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Updated keystore files to use `.p12` format for internal, primary, TLS, and truststore files.
 - Made external keystore configuration **mandatory**, improving security and enabling B2B use cases.
 - Updated Docker image tags and build version to align with WSO2 IS 7.1.0.
+
+## [v7.0.0-2] - 2025-02-27
+
+### Added
+
+- Add IF Condition to disable AppArmor
+- Add support for proxyPort configuration
+
+## [v7.0.0-1] - 2024-03-12
+
+### Added
+
+- Introduce Helm resources for WSO2 Identity Server version `7.0.0`.
