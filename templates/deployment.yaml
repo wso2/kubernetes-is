@@ -44,9 +44,13 @@ spec:
         checksum.thrift-authentication.xml: {{ include (print $.Template.BasePath "/cm-thrift-authentication-xml.yaml") . | sha256sum }}
     spec:
       securityContext:
-        runAsUser: {{ .Values.deployment.securityContext.runAsUser }}
+        {{- if .Values.deployment.securityContext.runAsUser.enabled }}
+        runAsUser: {{ .Values.deployment.securityContext.runAsUser.uid }}
+        {{- end }}
+        {{- if .Values.deployment.securityContext.seccompProfile.enabled }}
         seccompProfile:
           type: {{ .Values.deployment.securityContext.seccompProfile.type }}
+        {{- end }}
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
       affinity:
         podAntiAffinity:
@@ -124,6 +128,10 @@ spec:
             {{- if .Values.deployment.apparmor.enabled }}
             appArmorProfile: 
               type: {{ .Values.deployment.apparmor.profile }}
+            {{- end }}
+            {{- if .Values.deployment.securityContext.seLinux.enabled }}
+            seLinuxOptions:
+              level: {{ .Values.deployment.securityContext.seLinux.level }}
             {{- end }}
             capabilities:
               drop:
@@ -230,7 +238,7 @@ spec:
         - name: {{ template "..fullname" . }}-entrypoint
           configMap:
             name: {{ template "..fullname" . }}-entrypoint
-            defaultMode: 0407
+            defaultMode: {{ .values.deployment.entrypoint.defaultMode }}
         {{- if .Values.deployment.persistence.enabled }}
         - name: runtime-persistent-data-storage
           persistentVolumeClaim:

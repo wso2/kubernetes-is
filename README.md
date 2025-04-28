@@ -174,6 +174,22 @@ If you used a custom password for keystores (instead of `wso2carbon`), provide i
 --set deploymentToml.truststore.password="<value>"
 ```
 
+#### Note: If you are using OpenShift, you need to set the following additional parameters:
+
+```bash
+--set deployment.securityContext.runAsUser.enabled=false \
+--set deployment.securityContext.seLinux.enabled=true \
+--set deployment.apparmor.enabled=false \
+--set deployment.entrypoint.defaultMode=0457
+```
+
+Or, if you need to disable Seccomp and AppArmor, set the following:
+
+```bash
+--set deployment.securityContext.seccompProfile.enabled=false \
+--set deployment.apparmor.enabled=false
+```
+
 ## 6. Obtain the External IP
 
 After deploying WSO2 Identity Server, you need to find its external IP address to access it outside the cluster. Run the following command to list the Ingress resources in your namespace:
