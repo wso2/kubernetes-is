@@ -183,7 +183,10 @@ If you used a custom password for keystores (instead of `wso2carbon`), provide i
 --set deployment.entrypoint.defaultMode=0457
 ```
 
-Or, if you need to disable Seccomp and AppArmor, set the following:
+Or, if you need to disable Seccomp and AppArmor and run with any UID, set the following:
+```bash
+oc adm policy add-scc-to-user anyuid -z <service-acccount-name> -n <namespace>
+```
 
 ```bash
 --set deployment.securityContext.seccompProfile.enabled=false \

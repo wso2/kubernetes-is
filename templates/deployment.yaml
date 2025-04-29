@@ -238,7 +238,7 @@ spec:
         - name: {{ template "..fullname" . }}-entrypoint
           configMap:
             name: {{ template "..fullname" . }}-entrypoint
-            defaultMode: {{ .values.deployment.entrypoint.defaultMode }}
+            defaultMode: {{ .Values.deployment.configMaps.entryPoint.defaultMode }}
         {{- if .Values.deployment.persistence.enabled }}
         - name: runtime-persistent-data-storage
           persistentVolumeClaim:

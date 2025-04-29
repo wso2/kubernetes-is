@@ -206,7 +206,6 @@ deployment:
         secretName: "INTERNAL-KEYSTORE-PASSWORD-DECRYPTED"
       # -- The name of the Kubernetes secret that contains the service principal credentials to access Azure Key Vault. Ref: https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/#configure-service-principal-to-access-keyvault
       nodePublishSecretRef: "azure-kv-secret-store-sp"
-
   configMaps:
     entryPoint:
       defaultMode: "0407"
