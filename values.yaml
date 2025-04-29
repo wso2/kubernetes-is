@@ -156,7 +156,7 @@ deployment:
   enableCorrelationLogs: false
   externalJKS:
     # -- Mount external  keystore and trustores
-    enabled: true
+    enabled: false
     # -- K8s secret name which contains JKS files
     secretName: "keystores"
   persistence:
@@ -317,19 +317,19 @@ deploymentToml:
 #        defaultAutoCommit: false
   keystore:
     tls:
-      fileName: "tls.p12"
+      fileName: "wso2carbon.p12"
       type: "PKCS12"
       password: "wso2carbon"
       alias: "wso2carbon"
       keyPassword: "wso2carbon"
     primary:
-      fileName: "primary.p12"
+      fileName: "wso2carbon.p12"
       type: "PKCS12"
       password: "wso2carbon"
       alias: "wso2carbon"
       keyPassword: "wso2carbon"
     internal:
-      fileName: "internal.p12"
+      fileName: "wso2carbon.p12"
       type: "PKCS12"
       password: "wso2carbon"
       alias: "wso2carbon"
