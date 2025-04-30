@@ -116,6 +116,24 @@ If you prefer to build the chart from the source, follow the steps below:
         --set deployment.image.digest=<digest> 
         ```
 
+#### Note: If you are using OpenShift, you need to set the following additional parameters:
+
+```bash
+--set deployment.securityContext.runAsUser.enabled=false \
+--set deployment.securityContext.seLinux.enabled=true \
+--set deployment.apparmor.enabled=false \
+--set deployment.entrypoint.defaultMode=0457
+```
+
+Or, if you need to disable Seccomp and AppArmor and run with any UID, set the following:
+```bash
+oc adm policy add-scc-to-user anyuid -z <service-acccount-name> -n <namespace>
+```
+
+```bash
+--set deployment.securityContext.seccompProfile.enabled=false \
+--set deployment.apparmor.enabled=false
+```
 
 ## 4. Obtain the External IP
 
