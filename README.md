@@ -137,7 +137,6 @@ oc adm policy add-scc-to-user anyuid -z <service-acccount-name> -n <namespace>
 
 ## 4. Obtain the External IP
 
-
 After deploying WSO2 Identity Server, you need to find its external IP address to access it outside the cluster. Run the following command to list the Ingress resources in your namespace:
 
 ```shell
