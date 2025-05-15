@@ -61,10 +61,10 @@ subjects:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ template "wso2is.fullname" . }}-pvc-wait-sa
+  name: {{ template "..fullname" . }}-pvc-wait-sa
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "wso2is.fullname" . }}-pvc-wait
+    app: {{ template "..fullname" . }}-pvc-wait
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "-5"
@@ -78,10 +78,10 @@ metadata:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
-  name: {{ template "wso2is.fullname" . }}-pvc-wait-role
+  name: {{ template "..fullname" . }}-pvc-wait-role
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "wso2is.fullname" . }}-pvc-wait
+    app: {{ template "..fullname" . }}-pvc-wait
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "-5"
@@ -96,10 +96,10 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: {{ template "wso2is.fullname" . }}-pvc-wait-binding
+  name: {{ template "..fullname" . }}-pvc-wait-binding
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "wso2is.fullname" . }}-pvc-wait
+    app: {{ template "..fullname" . }}-pvc-wait
   annotations:
     "helm.sh/hook": pre-install
     "helm.sh/hook-weight": "-5"
@@ -107,9 +107,9 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: {{ template "wso2is.fullname" . }}-pvc-wait-role
+  name: {{ template "..fullname" . }}-pvc-wait-role
 subjects:
 - kind: ServiceAccount
-  name: {{ template "wso2is.fullname" . }}-pvc-wait-sa
+  name: {{ template "..fullname" . }}-pvc-wait-sa
   namespace: {{ .Release.Namespace }}
 {{- end }}
