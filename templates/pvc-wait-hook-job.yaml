@@ -1,0 +1,59 @@
+# Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+#
+# WSO2 LLC. licenses this file to you under the Apache License,
+# Version 2.0 (the "License"); you may not use this file except
+# in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing,
+# software distributed under the License is distributed on an
+# "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+# KIND, either express or implied. See the License for the
+# specific language governing permissions and limitations
+# under the License.
+
+{{- if .Values.deployment.persistence.enabled }}
+{{- if .Values.deployment.persistence.aws.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-wait-for-pvc-job
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-pvc-wait
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+       labels:
+          app: {{ .Release.Name }}-pvc-wait
+          job-name: {{ .Release.Name }}-wait-for-pvc-job
+    spec:
+      serviceAccountName: {{ .Release.Name }}-pvc-wait-sa
+      containers:
+        - name: wait
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              PVC_NAME="{{ template "..fullname" . }}"
+              NAMESPACE="{{ .Release.Namespace }}"
+              echo "Waiting up to 1m for PVC $PVC_NAME in namespace $NAMESPACE to be Bound..."
+              if kubectl pvc "$PVC_NAME" -n "$NAMESPACE" --for=jsonpath='{.status.phase}'=Bound wait --timeout=1m; then
+                echo "PVC $PVC_NAME is Bound!"
+                exit 0
+              else
+                echo "Error: Timeout waiting for PVC $PVC_NAME to become Bound." >&2
+                kubectl get pvc "$PVC_NAME" -n "$NAMESPACE" -o yaml 
+                exit 1
+              fi
+      restartPolicy: Never
+{{- end }}
+{{- end }}

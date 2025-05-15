@@ -1,4 +1,4 @@
-# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+# Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -42,6 +42,13 @@ spec:
         checksum.log4j.properties: {{ include (print $.Template.BasePath "/cm-log4j2-properties.yaml") . | sha256sum }}
         checksum.entrypoint.sh: {{ include (print $.Template.BasePath "/cm-entrypoint.yaml") . | sha256sum }}
         checksum.thrift-authentication.xml: {{ include (print $.Template.BasePath "/cm-thrift-authentication-xml.yaml") . | sha256sum }}
+        {{- if .Values.deployment.apparmor.enabled }}
+        container.apparmor.security.beta.kubernetes.io/wso2is: {{ .Values.deployment.apparmor.profile }}
+        {{- end }}
+        {{- if .Values.deployment.secretStore.aws.enabled }}
+        secret.k8s.aws/secret-name: {{ .Values.deployment.secretStore.aws.secretManager.secretName }}
+        secret.k8s.aws/region: {{ .Values.deployment.secretStore.aws.secretManager.region }}
+        {{- end }}
     spec:
       securityContext:
         {{- if .Values.deployment.securityContext.runAsUser.enabled }}
@@ -68,6 +75,31 @@ spec:
                       values:
                         - {{ .Release.Name }}
                 topologyKey: topology.kubernetes.io/zone
+      {{- if .Values.deployment.secretStore.aws.enabled }}
+      initContainers:
+        - name: aws-secrets-manager
+          image: loshans/secret-access-init:latest
+          env:
+            - name: AWS_REGION
+              valueFrom:
+                fieldRef: 
+                  fieldPath: metadata.annotations['secret.k8s.aws/region']
+            - name: SECRET_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['secret.k8s.aws/secret-name']
+          volumeMounts:
+            - name: secrets-volume
+              mountPath: /tmp
+          securityContext:
+            allowPrivilegeEscalation: false
+            # File system should be read write to cater runtime writes to the configs, DB files, etc...
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            capabilities:
+              drop:
+                - all
+      {{- end }}
       containers:
         - name: wso2is
           {{- if .Values.deployment.image.digest }}
@@ -224,6 +256,7 @@ spec:
         - name: {{ template "..fullname" . }}-secret-config-properties
           configMap:
             name: {{ template "..fullname" . }}-secret-config-properties
+        {{- if .Values.deployment.secretStore.azure.enabled }}
         - name: secrets-volume
           csi:
             driver: secrets-store.csi.k8s.io
@@ -234,6 +267,11 @@ spec:
             nodePublishSecretRef:
               name: {{ .Values.deployment.secretStore.azure.nodePublishSecretRef }}
             {{- end }}
+        {{- end }}
+        {{- if .Values.deployment.secretStore.aws.enabled }}
+        - name: secrets-volume
+          emptyDir: {}
+        {{- end }}
         {{- end }}
         - name: {{ template "..fullname" . }}-entrypoint
           configMap:

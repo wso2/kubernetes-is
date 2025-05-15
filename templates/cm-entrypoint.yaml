@@ -55,7 +55,9 @@ data:
     # copy any artifact changes mounted to artifact_volume
     test -d ${artifact_volume} && [ "$(ls -A ${artifact_volume})" ] && cp -RL ${artifact_volume}/* ${WSO2_SERVER_HOME}/
     
-    {{- if .Values.deployment.secretStore.enabled }}
+    {{- if .Values.deployment.secretStore.aws.enabled }}
+    cp /mnt/secrets-store/password-tmp ${WSO2_SERVER_HOME}/password-tmp
+    {{- if .Values.deployment.secretStore.azure.enabled }}
     # copy the decrypted internal keystore password to the password-tmp file
     cp /mnt/secrets-store/INTERNAL-KEYSTORE-PASSWORD-DECRYPTED ${WSO2_SERVER_HOME}/password-tmp
     {{- end }}
