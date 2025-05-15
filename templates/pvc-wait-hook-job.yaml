@@ -46,7 +46,7 @@ spec:
               PVC_NAME="{{ template "..fullname" . }}"
               NAMESPACE="{{ .Release.Namespace }}"
               echo "Waiting up to 1m for PVC $PVC_NAME in namespace $NAMESPACE to be Bound..."
-              if kubectl pvc "$PVC_NAME" -n "$NAMESPACE" --for=jsonpath='{.status.phase}'=Bound wait --timeout=1m; then
+              if kubectl wait pvc "$PVC_NAME" -n "$NAMESPACE" --for=jsonpath='{.status.phase}'=Bound --timeout=1m; then
                 echo "PVC $PVC_NAME is Bound!"
                 exit 0
               else
