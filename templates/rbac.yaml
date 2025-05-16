@@ -1,4 +1,4 @@
-# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+# Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -18,7 +18,11 @@ apiVersion: {{ .Values.k8sKindAPIVersions.serviceAccount }}
 kind: ServiceAccount
 metadata:
   name: {{ template "..fullname" . }}
-  namespace : {{ .Release.Namespace }}
+  namespace: {{ .Release.Namespace }}
+  {{- if .Values.deployment.persistence.aws.enabled }}
+  annotations:
+    {{- toYaml .Values.deployment.rbac.annotations | nindent 4 }}
+  {{- end }}
 
 ---
 
@@ -47,3 +51,62 @@ subjects:
   - kind: ServiceAccount
     name: {{ template "..fullname" . }}
     namespace: {{ .Release.Namespace }}
+
+{{- if and .Values.deployment.persistence.enabled .Values.deployment.persistence.aws.enabled }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ .Release.Name }}-pvc-wait-sa 
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Release.Name }}-pvc-wait
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5" 
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+    {{- if .Values.deployment.rbac.annotations }}
+    {{- toYaml .Values.deployment.rbac.annotations | nindent 4 }}
+    {{- end }}
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ .Release.Name }}-pvc-wait-role
+  namespace: {{ .Release.Namespace }}
+  labels:
+     app: {{ .Release.Name }}-pvc-wait
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+rules:
+- apiGroups: [""] 
+  resources: ["persistentvolumeclaims"]
+  verbs: ["get", "list", "watch"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ .Release.Name }}-pvc-wait-binding
+  namespace: {{ .Release.Namespace }}
+  labels:
+     app: {{ .Release.Name }}-pvc-wait
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ .Release.Name }}-pvc-wait-role 
+subjects:
+- kind: ServiceAccount
+  name: {{ .Release.Name }}-pvc-wait-sa
+  namespace: {{ .Release.Namespace }}
+  storageClassName: ""
+{{- end }}
