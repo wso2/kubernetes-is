@@ -66,51 +66,7 @@ kubectl get namespace $NAMESPACE || kubectl create namespace $NAMESPACE
 ```
 
 
-## 3. Create a Kubernetes TLS secret 
-
-For this you need possess the SSL certificate and the key.
-
-```shell
-kubectl create secret tls is-tls \
---cert=path/to/cert/file \
---key=path/to/key/file \
--n $NAMESPACE
-```
-
-**Note:**
-- Ensure the certificate includes `localhost` as a Subject Alternative Name (SAN).
-- Use the default password `wso2carbon` when generating keystores.
-
-
-## 4. Create Kubernetes Secret for Java Keystore Files
-
-The deployment requires the following Java keystore files:
-
-| File                   | Purpose                                                                 |
-|------------------------|-------------------------------------------------------------------------|
-| `internal.p12`         | Used for internal data encryption/decryption                           |
-| `primary.p12`          | Used for signing messages (e.g., SAML, OIDC)                            |
-| `tls.p12`              | Used for TLS communication                                              |
-| `client-truststore.p12`| Stores trusted certificates of external systems                         |
-
-
-```shell
-kubectl create secret generic keystores \
---from-file=path/to/internal_keystore(internal.p12) \
---from-file=path/to/primary_keystore(primary.p12) \
---from-file=path/to/tls_keystore(tls.p12) \
---from-file=path/to/client_truststore(client-truststore.p12) \
--n $NAMESPACE
-```
-
-**Note:**
-- Make sure to import the public key certificates of all three keystores into the truststore (client-truststore.p12).
-- Ensure that the tls.p12 used here matches the one used for creating the **is-tls** TLS kubernetes secret above.
-- To create these keystores and truststores, refer to the official guide:  
-👉 [How to Create New Keystores](https://is.docs.wso2.com/en/latest/deploy/security/keystores/create-new-keystores/)
-
-
-## 5. Install the Helm chart
+## 3. Install the Helm chart
 
 There are two ways to install the WSO2 Identity Server using the Helm chart.
 
@@ -160,21 +116,8 @@ If you prefer to build the chart from the source, follow the steps below:
         --set deployment.image.digest=<digest> 
         ```
 
-### (Optional) Override Keystore Passwords
 
-If you used a custom password for keystores (instead of `wso2carbon`), provide it using these flags:
-
-```bash
---set deploymentToml.keystore.internal.password="<value>" \
---set deploymentToml.keystore.internal.keyPassword="<value>" \
---set deploymentToml.keystore.primary.password="<value>" \
---set deploymentToml.keystore.primary.keyPassword="<value>" \
---set deploymentToml.keystore.tls.password="<value>" \
---set deploymentToml.keystore.tls.keyPassword="<value>" \
---set deploymentToml.truststore.password="<value>"
-```
-
-## 6. Obtain the External IP
+## 4. Obtain the External IP
 
 After deploying WSO2 Identity Server, you need to find its external IP address to access it outside the cluster. Run the following command to list the Ingress resources in your namespace:
 
@@ -184,11 +127,11 @@ kubectl get ing -n $NAMESPACE
 
 **Output Fields:**
 
-- **HOSTS** – Hostname (e.g., `wso2is.example.com`)
+- **HOSTS** – Hostname (e.g., `wso2is.com`)
 - **ADDRESS** – External IP
 - **PORTS** – Exposed ports (usually 80, 443)
 
-## 7. Configure DNS
+## 5. Configure DNS
 
 If your hostname is backed by a DNS service, create a DNS record that maps the hostname to the external IP. If there is no DNS service, you can manually add an entry to the `/etc/hosts` file on your local machine (for evaluation purposes only):
 
@@ -196,7 +139,7 @@ If your hostname is backed by a DNS service, create a DNS record that maps the h
 <EXTERNAL-IP> wso2is.com
 ```
 
-## 8. Access WSO2 Identity Server
+## 6. Access WSO2 Identity Server
 
 Once everything is set up, you can access WSO2 Identity Server using the following URLs and credentials:
 
@@ -357,8 +300,8 @@ Following set of secure vault encrypted secrets are required for the deployment,
 Make sure to use previously created `internal.p12` keystore for the WSO2 secure vault encryption.
 
 ```shell
-export DATABASE_IDENTITY_ENCRYPTED_USER='<Identity database encrypted username >'
-export DATABASE_IDENTITY_ENCRYPTED_PASSWORD='<Identity database encrypted user password >'
+export DATABASE_IDENTITY_ENCRYPTED_USER='<Identity database encrypted username>'
+export DATABASE_IDENTITY_ENCRYPTED_PASSWORD='<Identity database encrypted user password>'
 export DATABASE_SHARED_ENCRYPTED_USER='<Shared database encrypted username>'
 export DATABASE_SHARED_ENCRYPTED_PASSWORD='<Shared database encrypted user password>'
 export DATABASE_USER_ENCRYPTED_USER='<User database encrypted username>'
