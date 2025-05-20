@@ -1,4 +1,4 @@
-# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+# Copyright (c) 2024-2025, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -87,9 +87,11 @@ deployment:
   #      name: custom-property-file
   securityContext:
     # -- Run as user ID
-    runAsUser:
-      uid: 802
-      enabled: true
+    runAsUser: 802
+    enableRunAsUser: true
+    # -- Run as group ID
+    runAsGroup: 802
+    enableRunAsGroup: false
     seccompProfile:
       enabled: true
     # --  Seccomp profile type
@@ -209,6 +211,15 @@ deployment:
   configMaps:
     entryPoint:
       defaultMode: "0407"
+  route:
+    # -- Enable route for the deployment
+    enabled: false
+    # -- TLS termination type
+    tls:
+      termination:
+        type: "passthrough"
+        key: ""
+        certificate: ""
 
 deploymentToml:
   server:
@@ -491,3 +502,7 @@ k8sKindAPIVersions:
   secret: "v1"
   # -- K8s API version for kind Service
   service: "v1"
+# -- OpenShift API versions for OpenShift kinds
+openShiftKindAPIVersions:
+  # -- OpenShift API version for kind Route
+  route: "route.openshift.io/v1"
