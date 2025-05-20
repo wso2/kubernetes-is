@@ -25,6 +25,7 @@ User or service principle who installs the Helm chart, needs to possess actions 
 | Service                 | v1                               |
 | ServiceAccount          | v1                               |
 | Secret                  | v1                               |
+| Route                   | route.openshift.io/v1            |
 ___
 
 # Quick Start Guide
@@ -34,6 +35,7 @@ ___
 ### Infrastructure
 - Running Kubernetes cluster ([minikube](https://kubernetes.io/docs/tasks/tools/#minikube) or an alternative cluster)
 - Kubernetes ingress controller ([NGINX Ingress](https://github.com/kubernetes/ingress-nginx) recommended)
+- If you are deploying on OpenShift, ensure that you have administrative access to the cluster and the OpenShift CLI (oc) installed.
 
 ### Security
 - AppArmor Security Module enabled
@@ -116,8 +118,37 @@ If you prefer to build the chart from the source, follow the steps below:
         --set deployment.image.digest=<digest> 
         ```
 
+#### Note: If you are using OpenShift, you need to set the following additional parameters:
 
-## 4. Obtain the External IP
+To deploy WSO2 Identity Server on OpenShift, you need to create a compatible Docker image with the nessary configurations. The official WSO2 Identity Server Docker image is not OpenShift compatible by default, so you need to build a custom image by changing the group ownership of the product files to GID 0.
+This is necessary because OpenShift runs containers with an arbitrary non-root user by default from the root user group, and the WSO2 Identity Server image needs to be able to access the files.
+
+If you are using a custom image, you can set the following parameters to set an arbitrary UID.
+
+```bash
+--set deployment.securityContext.runAsUser.enabled=false \
+--set deployment.apparmor.enabled=false \
+--set deployment.entrypoint.defaultMode=0457
+```
+
+If you need to disable Seccomp and AppArmor and run with any UID, set the following:
+```bash
+oc adm policy add-scc-to-user anyuid -z <service-acccount-name> -n <namespace>
+```
+
+```bash
+--set deployment.securityContext.seccompProfile.enabled=false \
+--set deployment.apparmor.enabled=false
+```
+
+## 4. Enable routes for OpenShift deployment (If you are using Kubernetes instead of OpenShift, skip this step)
+If you are deploying on OpenShift, you can enable routes for the WSO2 Identity Server deployment. You can do this by setting the following command:
+
+```bash
+--set deployment.route.enabled=true
+```
+
+## 5. Obtain the External IP
 
 After deploying WSO2 Identity Server, you need to find its external IP address to access it outside the cluster. Run the following command to list the Ingress resources in your namespace:
 
@@ -131,7 +162,7 @@ kubectl get ing -n $NAMESPACE
 - **ADDRESS** – External IP
 - **PORTS** – Exposed ports (usually 80, 443)
 
-## 5. Configure DNS
+## 6. Configure DNS
 
 If your hostname is backed by a DNS service, create a DNS record that maps the hostname to the external IP. If there is no DNS service, you can manually add an entry to the `/etc/hosts` file on your local machine (for evaluation purposes only):
 
@@ -139,7 +170,7 @@ If your hostname is backed by a DNS service, create a DNS record that maps the h
 <EXTERNAL-IP> wso2is.com
 ```
 
-## 6. Access WSO2 Identity Server
+## 7. Access WSO2 Identity Server
 
 Once everything is set up, you can access WSO2 Identity Server using the following URLs and credentials:
 
@@ -422,9 +453,10 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.1.0-1  -n "$NAMESP
 
 ## Compatibility
 
-| Kubernetes Version | Helm Version | Secrets Store CSI Driver Version | Compatibility Notes                  |
-|--------------------|--------------|----------------------------------|--------------------------------------|
-| v1.30.x            | v3.xx        | v1.3.0                           | Fully compatible.                    |
+| Deployment | Version | Helm Version | Secrets Store CSI Driver Version | Compatibility Notes                  |
+|------------|---------|--------------|----------------------------------|--------------------------------------|
+| Kubernetes | v1.30.x | v3.xx        | v1.3.0                           | Fully compatible.                    |
+| OpenShift  | v4.18.x | v3.xx        | v1.31.2                          | Fully compatible.                    |
 
 ## Values
 
@@ -486,6 +518,10 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.1.0-1  -n "$NAMESP
 | deployment.resources.requests | object | `{"cpu":"2","memory":"2Gi"}` | as per official documentation (Ref: https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/) |
 | deployment.resources.requests.cpu | string | `"2"` | The minimum amount of CPU that should be allocated for a Pod |
 | deployment.resources.requests.memory | string | `"2Gi"` | The minimum amount of memory that should be allocated for a Pod |
+| deployment.route.enabled | bool | `false` | Enable OpenShift route |
+| deployment.route.tls.termination.certificate | string | `""` | TLS certificate |
+| deployment.route.tls.termination.key | string | `""` | TLS key |
+| deployment.route.tls.termination.type | string | `"passthrough"` | TLS termination type |
 | deployment.secretStore.azure.enabled | bool | `true` | Enable Azure Key Vault integration. |
 | deployment.secretStore.azure.keyVault.name | string | `""` | Name of the target Azure Key Vault instance |
 | deployment.secretStore.azure.keyVault.resourceGroup | string | `""` | Name of the Azure Resource Group to which the target Azure Key Vault belongs |
@@ -495,8 +531,12 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.1.0-1  -n "$NAMESP
 | deployment.secretStore.azure.keyVault.tenantId | string | `""` | Azure Active Directory tenant ID of the target Key Vault |
 | deployment.secretStore.azure.nodePublishSecretRef | string | `"azure-kv-secret-store-sp"` | The name of the Kubernetes secret that contains the service principal credentials to access Azure Key Vault. Ref: https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/#configure-service-principal-to-access-keyvault |
 | deployment.secretStore.enabled | bool | `false` | Enable secure vault with secret store CSI driver |
+| deployment.securityContext.enableRunAsUser | bool | `true` | Enable runAsUser security context |
+| deployment.securityContext.enableRunAsGroup | bool | `false` | Enable runAsGroup security context |
+| deployment.securityContext.runAsGroup | int | `802` | Run as group ID |
 | deployment.securityContext.runAsUser | int | `802` | Run as user ID |
 | deployment.securityContext.seccompProfile.type | string | `"RuntimeDefault"` | Seccomp profile type |
+| deployment.securityContext.seLinux.enabled | bool | `false` | Enable SELinux |
 | deployment.startupProbe | object | `{"failureThreshold":30,"initialDelaySeconds":60,"periodSeconds":5}` | Startup probe executed prior to Liveness Probe taking over |
 | deployment.startupProbe.failureThreshold | int | `30` | Number of attempts |
 | deployment.startupProbe.initialDelaySeconds | int | `60` | Number of seconds after the container has started before startup probes are initiated |
@@ -644,5 +684,6 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.1.0-1  -n "$NAMESP
 | k8sKindAPIVersions.secretProviderClass | string | `"secrets-store.csi.x-k8s.io/v1"` | K8s API version for kind SecretProviderClass |
 | k8sKindAPIVersions.service | string | `"v1"` | K8s API version for kind Service |
 | k8sKindAPIVersions.serviceAccount | string | `"v1"` | K8s API version for kind ServiceAccount |
+| openShiftKindAPIVersions.route | string | `"route.openshift.io/v1"` | OpenShift API version for kind Route |
 | wso2.subscription.password | string | `""` | WSO2 account password |
 | wso2.subscription.username | string | `""` | WSO2 account username |

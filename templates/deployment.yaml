@@ -1,4 +1,4 @@
-# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+# Copyright (c) 2024-2025, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -44,9 +44,13 @@ spec:
         checksum.thrift-authentication.xml: {{ include (print $.Template.BasePath "/cm-thrift-authentication-xml.yaml") . | sha256sum }}
     spec:
       securityContext:
+        {{- if .Values.deployment.securityContext.enableRunAsUser }}
         runAsUser: {{ .Values.deployment.securityContext.runAsUser }}
+        {{- end }}
+        {{- if .Values.deployment.securityContext.seccompProfile.enabled }}
         seccompProfile:
           type: {{ .Values.deployment.securityContext.seccompProfile.type }}
+        {{- end }}
       terminationGracePeriodSeconds: {{ .Values.deployment.terminationGracePeriodSeconds }}
       affinity:
         podAntiAffinity:
@@ -124,6 +128,10 @@ spec:
             {{- if .Values.deployment.apparmor.enabled }}
             appArmorProfile: 
               type: {{ .Values.deployment.apparmor.profile }}
+            {{- end }}
+            {{- if .Values.deployment.securityContext.seLinux.enabled }}
+            seLinuxOptions:
+              level: {{ .Values.deployment.securityContext.seLinux.level }}
             {{- end }}
             capabilities:
               drop:
@@ -230,7 +238,7 @@ spec:
         - name: {{ template "..fullname" . }}-entrypoint
           configMap:
             name: {{ template "..fullname" . }}-entrypoint
-            defaultMode: 0407
+            defaultMode: {{ .Values.deployment.configMaps.entryPoint.defaultMode }}
         {{- if .Values.deployment.persistence.enabled }}
         - name: runtime-persistent-data-storage
           persistentVolumeClaim:
