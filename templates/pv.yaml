@@ -1,5 +1,5 @@
 {{- if .Values.deployment.persistence.enabled }}
-# Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+# Copyright (c) 2024-2025, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -44,7 +44,11 @@ spec:
     - dir_mode=0777
     - file_mode=0777
     - uid={{ .Values.deployment.securityContext.runAsUser }}
+{{- if .Values.deployment.securityContext.enableRunAsGroup }}
+    - gid={{ .Values.deployment.securityContext.runAsGroup }}
+{{- else }}
     - gid={{ .Values.deployment.securityContext.runAsUser }}
+{{- end }}
     - cache=strict
   {{- else if .Values.deployment.persistence.aws.enabled }}
   csi:
