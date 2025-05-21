@@ -451,10 +451,11 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.1.0-1  -n "$NAMESP
 
 ## Compatibility
 
-| Deployment | Version | Helm Version | Secrets Store CSI Driver Version | Compatibility Notes                  |
-|------------|---------|--------------|----------------------------------|--------------------------------------|
-| Kubernetes | v1.30.x | v3.xx        | v1.3.0                           | Fully compatible.                    |
-| OpenShift  | v4.18.x | v3.xx        | v1.31.2                          | Fully compatible.                    |
+| Deployment | Version          | Helm Version | Compatibility Notes                  |
+|------------|------------------|--------------|--------------------------------------|
+| Kubernetes | v1.30.x          | v3.xx        | Fully compatible.                    |
+| OpenShift  | v4.18.x          | v3.xx        | Fully compatible.                    |
+| RKE2       | v1.31.8+rke2r1   | v3.xx        | Fully compatible.                    |
 
 ## Values
 
