@@ -36,7 +36,7 @@ deployment:
     tlsSecretsName: "is-tls"
     # -- Enable Nginx rate limiting
     enableNginxRateLimit: false
-    annotations:
+    commonAnnotations: &commonAnnotations
       nginx.ingress.kubernetes.io/affinity: "cookie"
       nginx.ingress.kubernetes.io/session-cookie-name: "paf"
       nginx.ingress.kubernetes.io/session-cookie-hash: "sha1"
@@ -45,12 +45,23 @@ deployment:
       nginx.ingress.kubernetes.io/session-cookie-conditional-samesite-none: "true"
       nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
       nginx.ingress.kubernetes.io/session-cookie-path: "/"
-      nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
       # Enable or disable proxy buffering proxy_buffering. By default, proxy buffering is disabled in the NGINX config(Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md#proxy-buffering).
       nginx.ingress.kubernetes.io/proxy-buffering: "on"
       # Sets the size of the buffer proxy_buffer_size used for reading the first part of the response received from the proxied server. By default proxy buffer size is set as "64k".(Ref: https://github.com/kubernetes/ingress-nginx/blob/main/docs/user-guide/nginx-configuration/annotations.md#proxy-buffer-size)
       nginx.ingress.kubernetes.io/proxy-buffer-size: "64k"
-
+    azure:
+      enabled: false
+      annotations:
+        !!merge <<: *commonAnnotations
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    aws:
+      enabled: false
+      annotations:
+        !!merge <<: *commonAnnotations
+        nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
+  rbac:
+    annotations:
+      eks.amazonaws.com/role-arn: "null"
   image:
     # -- Container image registry host name
     registry: "docker.wso2.com"
@@ -177,7 +188,7 @@ deployment:
       userstores: "userstores"
     azure:
       # -- Enable persistence for artifact sharing using Azure file share
-      enabled: true
+      enabled: false
       # -- Azure Storage Account credentials to access the file shares
       # -- Ref: https://docs.microsoft.com/en-us/azure/aks/azure-files-volume#create-a-kubernetes-secret
       # -- Names of Azure File shares for persisted data
@@ -186,12 +197,17 @@ deployment:
       secretName: "azure-storage-csi"
     # -- Define capacity for persistent runtime artifacts which are shared between instances of the Identity Server profile
     capacity: 100Gi
+    aws:
+      # -- Enable persistence for artifact sharing using AWS EFS
+      enabled: false
+      # -- EFS volume handle ID
+      volumeHandle: ""
   secretStore:
     # -- Enable secure vault with secret store CSI driver
     enabled: false
     azure:
       # -- Enable Azure Key Vault integration.
-      enabled: true
+      enabled: false
       keyVault:
         # -- Name of the target Azure Key Vault instance
         name: ""
@@ -208,6 +224,13 @@ deployment:
         secretName: "INTERNAL-KEYSTORE-PASSWORD-DECRYPTED"
       # -- The name of the Kubernetes secret that contains the service principal credentials to access Azure Key Vault. Ref: https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/#configure-service-principal-to-access-keyvault
       nodePublishSecretRef: "azure-kv-secret-store-sp"
+    aws:
+      enabled: false
+      secretManager:
+        # -- AWS Secret Manager secret name of the internal keystore password
+        secretName: "INTERNAL-KEYSTORE-PASSWORD-DECRYPTED"
+        # -- Region of the deployment
+        region: ""
   configMaps:
     entryPoint:
       defaultMode: "0407"
@@ -502,6 +525,8 @@ k8sKindAPIVersions:
   secret: "v1"
   # -- K8s API version for kind Service
   service: "v1"
+  # -- k8s API verion for CSI Driver
+  csi: "storage.k8s.io/v1"
 # -- OpenShift API versions for OpenShift kinds
 openShiftKindAPIVersions:
   # -- OpenShift API version for kind Route
