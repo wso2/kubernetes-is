@@ -5,6 +5,12 @@ All notable changes to Kubernetes and Helm resources for WSO2 IAM version 7.x wi
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
+## [v7.1.0-3] - 2025-05-20
+
+### Changed
+
+- Add OpenShift support for WSO2 Identity Server 7.1.0.
+- Documentation improvements in the README for OpenShift deployment.
 
 ## [v7.1.0-2] - 2025-05-19
 

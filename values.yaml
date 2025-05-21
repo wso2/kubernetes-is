@@ -1,4 +1,4 @@
-# Copyright (c) 2024, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+# Copyright (c) 2024-2025, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -88,9 +88,17 @@ deployment:
   securityContext:
     # -- Run as user ID
     runAsUser: 802
+    enableRunAsUser: true
+    # -- Run as group ID
+    runAsGroup: 802
+    enableRunAsGroup: false
     seccompProfile:
+      enabled: true
     # --  Seccomp profile type
       type: "RuntimeDefault"
+    seLinux:
+      enabled: false
+      level: "s0:c26,c0"
   hpa:
     # -- Enable HPA for the deployment
     enabled: false
@@ -200,6 +208,18 @@ deployment:
         secretName: "INTERNAL-KEYSTORE-PASSWORD-DECRYPTED"
       # -- The name of the Kubernetes secret that contains the service principal credentials to access Azure Key Vault. Ref: https://azure.github.io/secrets-store-csi-driver-provider-azure/docs/configurations/identity-access-modes/service-principal-mode/#configure-service-principal-to-access-keyvault
       nodePublishSecretRef: "azure-kv-secret-store-sp"
+  configMaps:
+    entryPoint:
+      defaultMode: "0407"
+  route:
+    # -- Enable route for the deployment
+    enabled: false
+    # -- TLS termination type
+    tls:
+      termination:
+        type: "passthrough"
+        key: ""
+        certificate: ""
 
 deploymentToml:
   server:
@@ -482,3 +502,7 @@ k8sKindAPIVersions:
   secret: "v1"
   # -- K8s API version for kind Service
   service: "v1"
+# -- OpenShift API versions for OpenShift kinds
+openShiftKindAPIVersions:
+  # -- OpenShift API version for kind Route
+  route: "route.openshift.io/v1"
