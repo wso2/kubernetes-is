@@ -153,14 +153,14 @@ deployment:
     # -- as per official documentation (Ref: https://is.docs.wso2.com/en/latest/setup/installation-prerequisites/)
     requests:
       # -- The minimum amount of memory that should be allocated for a Pod
-      memory: "2Gi"
+      memory: "4Gi"
       # -- The minimum amount of CPU that should be allocated for a Pod
-      cpu: "2"
+      cpu: "4"
     limits:
       # -- The maximum amount of memory that should be allocated for a Pod
-      memory: "4Gi"
+      memory: "8Gi"
       # -- The maximum amount of CPU that should be allocated for a Pod
-      cpu: "3"
+      cpu: "6"
     jvm:
       # -- JVM memory options
       memOpts: "-Xms2048m -Xmx2048m"
