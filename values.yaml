@@ -1,4 +1,4 @@
-# Copyright (c) 2024-2025, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
+# Copyright (c) 2024-2026, WSO2 LLC. (https://www.wso2.com) All Rights Reserved.
 #
 # WSO2 LLC. licenses this file to you under the Apache License,
 # Version 2.0 (the "License"); you may not use this file except
@@ -53,9 +53,9 @@ deployment:
 
   image:
     # -- Container image registry host name
-    registry: "docker.wso2.com"
+    registry: "registry.wso2.com"
     # -- Container image repository name
-    repository: "wso2is"
+    repository: "wso2-is/is"
     # -- Container image digest
     digest: ""
     # -- Container image tag. Either "tag" or "digest" should defined
