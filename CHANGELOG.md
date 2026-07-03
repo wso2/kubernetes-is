@@ -10,7 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
-- Corrected the `imagePullSecrets` reference in `deployment.yaml` to use `.Values.deployment.image.imagePullSecret` instead of the non-existent `.Values.wso2.deployment.image.imagePullSecret`, ensuring the configured image pull secret is applied correctly.
+- Corrected the `imagePullSecrets` reference in `deployment.yaml` to use `.Values.deployment.image.imagePullSecret` instead of the non-existent
+`.Values.wso2.deployment.image.imagePullSecret`, ensuring the configured image pull secret is applied correctly.
 
 ## [v7.3.0-1] - 2026-05-19
 
