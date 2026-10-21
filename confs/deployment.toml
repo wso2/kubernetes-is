@@ -33,6 +33,8 @@ ciphers={{ .Values.deploymentToml.transport.https.sslHostConfig.properties.ciphe
 username = {{ .Values.deploymentToml.superAdmin.username | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 password = "$secret{super_admin_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+password = "$env{ADMIN_PASSWORD}"
 {{- else }}
 password = {{ .Values.deploymentToml.superAdmin.password | quote }}
 {{- end }}
@@ -50,6 +52,9 @@ url = {{ .Values.deploymentToml.database.identity.url | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 username = "$secret{database_identity_username}"
 password = "$secret{database_identity_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+username = {{ .Values.deploymentToml.database.identity.username | quote }}
+password = "$env{IDENTITY_DB_PASSWORD}"
 {{- else }}
 username = {{ .Values.deploymentToml.database.identity.username | quote }}
 password = {{ .Values.deploymentToml.database.identity.password | quote }}
@@ -68,6 +73,9 @@ url = {{ .Values.deploymentToml.database.shared.url | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 username = "$secret{database_shared_username}"
 password = "$secret{database_shared_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+username = {{ .Values.deploymentToml.database.shared.username | quote }}
+password = "$env{SHARED_DB_PASSWORD}"
 {{- else }}
 username = {{ .Values.deploymentToml.database.shared.username | quote }}
 password = {{ .Values.deploymentToml.database.shared.password | quote }}
@@ -87,6 +95,9 @@ type = {{ .Values.deploymentToml.database.consent.type | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 username = "$secret{database_consent_username}"
 password = "$secret{database_consent_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+username = {{ .Values.deploymentToml.database.consent.username | quote }}
+password = "$env{IDENTITY_DB_PASSWORD}"
 {{- else }}
 username = {{ .Values.deploymentToml.database.consent.username | quote }}
 password = {{ .Values.deploymentToml.database.consent.password | quote }}
@@ -107,6 +118,9 @@ type = {{ .Values.deploymentToml.database.agentIdentity.type | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 username = "$secret{database_agent_identity_username}"
 password = "$secret{database_agent_identity_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+username = {{ .Values.deploymentToml.database.agentIdentity.username | quote }}
+password = "$env{AGENT_IDENTITY_DB_PASSWORD}"
 {{- else }}
 username = {{ .Values.deploymentToml.database.agentIdentity.username | quote }}
 password = {{ .Values.deploymentToml.database.agentIdentity.password | quote }}
@@ -132,6 +146,9 @@ url = {{ .Values.deploymentToml.database.user.url | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 username = "$secret{database_user_username}"
 password = "$secret{database_user_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+username = {{ .Values.deploymentToml.database.user.username | quote }}
+password = "$env{SHARED_DB_PASSWORD}"
 {{- else }}
 username = {{ .Values.deploymentToml.database.user.username | quote }}
 password = {{ .Values.deploymentToml.database.user.password | quote }}
@@ -149,12 +166,16 @@ file_name =  {{ .Values.deploymentToml.keystore.tls.fileName | quote }}
 type =  {{ .Values.deploymentToml.keystore.tls.type | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 password = "$secret{keystore_tls_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+password = "$env{KEYSTORE_PASSWORD}"
 {{- else }}
 password = {{ .Values.deploymentToml.keystore.tls.password | quote }}
 {{- end }}
 alias = {{ .Values.deploymentToml.keystore.tls.alias | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 key_password = "$secret{keystore_tls_key_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+key_password = "$env{KEYSTORE_PASSWORD}"
 {{- else }}
 key_password = {{ .Values.deploymentToml.keystore.tls.keyPassword | quote }}
 {{- end }}
@@ -164,12 +185,16 @@ file_name =  {{ .Values.deploymentToml.keystore.primary.fileName | quote }}
 type =  {{ .Values.deploymentToml.keystore.primary.type | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 password = "$secret{keystore_primary_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+password = "$env{KEYSTORE_PASSWORD}"
 {{- else }}
 password = {{ .Values.deploymentToml.keystore.primary.password | quote }}
 {{- end }}
 alias = {{ .Values.deploymentToml.keystore.primary.alias | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 key_password = "$secret{keystore_primary_key_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+key_password = "$env{KEYSTORE_PASSWORD}"
 {{- else }}
 key_password = {{ .Values.deploymentToml.keystore.primary.keyPassword | quote }}
 {{- end }}
@@ -179,12 +204,16 @@ file_name =  {{ .Values.deploymentToml.keystore.internal.fileName | quote }}
 type =  {{ .Values.deploymentToml.keystore.internal.type | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 password = "$secret{keystore_internal_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+password = "$env{KEYSTORE_PASSWORD}"
 {{- else }}
 password = {{ .Values.deploymentToml.keystore.internal.password | quote }}
 {{- end }}
 alias = {{ .Values.deploymentToml.keystore.internal.alias | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 key_password = "$secret{keystore_internal_key_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+key_password = "$env{KEYSTORE_PASSWORD}"
 {{- else }}
 key_password ={{ .Values.deploymentToml.keystore.internal.keyPassword | quote }}
 {{- end }}
@@ -194,16 +223,24 @@ file_name =  {{ .Values.deploymentToml.truststore.fileName | quote }}
 type =  {{ .Values.deploymentToml.truststore.type | quote }}
 {{- if .Values.deployment.secretStore.enabled }}
 password = "$secret{keystore_truststore_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+password = "$env{TRUSTSTORE_PASSWORD}"
 {{- else }}
 password = {{ .Values.deploymentToml.truststore.password | quote }}
 {{- end }}
 
 [account_recovery.endpoint.auth]
+{{- if .Values.deployment.externalCredentials.enabled }}
+hash= "$env{AUTH_ENDPOINT_APP_HASH}"
+{{- else }}
 hash= {{ .Values.deploymentToml.account.recovery.endpoint.auth.hash | quote }}
+{{- end }}
 
 [identity.auth_framework.endpoint]
 {{- if .Values.deployment.secretStore.enabled }}
 app_password= "$secret{app_password}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+app_password= "$env{AUTH_ENDPOINT_APP_PASSWORD}"
 {{- else }}
 app_password= {{ .Values.deploymentToml.identity.authFramework.endpoint.appPassword | quote }}
 {{- end }}
@@ -358,6 +395,8 @@ EnableAccountLockingForFailedAttempts = {{ .Values.deploymentToml.totp.userAccou
 internal_crypto_provider = "org.wso2.carbon.crypto.provider.SymmetricKeyInternalCryptoProvider"
 {{- if .Values.deployment.secretStore.enabled }}
 key= "$secret{symmetric_key}"
+{{- else if .Values.deployment.externalCredentials.enabled }}
+key= "$env{ENCRYPTION_KEY}"
 {{- else }}
 key= {{ .Values.deploymentToml.encryption.key | quote }}
 {{- end }}

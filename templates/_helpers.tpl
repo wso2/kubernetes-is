@@ -94,4 +94,9 @@ Validate Cloud Provider Specific Configurations..
   {{- if and $secretStoreAwsEnabled $secretStoreAzureEnabled }}
     {{- fail (printf "Validation Error in 'deployment.secretStore': Both 'aws.enabled' (value: %v) and 'azure.enabled' (value: %v) are true. Only one cloud provider should be enabled for SecretStore at a time." $values.secretStore.aws.enabled $values.secretStore.azure.enabled) }}
   {{- end }}
+
+  {{/* Validate External Credentials Configuration */}}
+  {{- if and $values.externalCredentials.enabled $values.secretStore.enabled }}
+    {{- fail (printf "Validation Error in 'deployment.externalCredentials': Both 'externalCredentials.enabled' (value: %v) and 'secretStore.enabled' (value: %v) are true. Only one source should be enabled for the server credentials at a time." $values.externalCredentials.enabled $values.secretStore.enabled) }}
+  {{- end }}
 {{- end -}}

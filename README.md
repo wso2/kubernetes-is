@@ -652,6 +652,52 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.3.0-1  -n "$NAMESP
 
  > If it is required to add additional configuration other than what are parameterised in `deployment.toml` file, you can override the Helm value `deploymentToml.extraConfigs`
 
+## Use an external Kubernetes secret for server credentials
+
+In environments where a managed secret store such as Azure Key Vault or AWS Secrets Manager is not available, the server
+passwords and keys can be read from a Kubernetes secret instead of being passed as Helm values. Each credential is
+passed to the container as an environment variable from the secret and referenced in `deployment.toml` as `$env{...}`.
+
+The secret must contain the following keys:
+
+| Key                          | Purpose                                                                                     |
+|------------------------------|---------------------------------------------------------------------------------------------|
+| `ADMIN_PASSWORD`             | Super admin password                                                                        |
+| `IDENTITY_DB_PASSWORD`       | Identity database password. Also used for the consent datasource, which uses the identity database |
+| `SHARED_DB_PASSWORD`         | Shared database password. Also used for the user store, which uses the shared database      |
+| `AGENT_IDENTITY_DB_PASSWORD` | Agent identity database password                                                            |
+| `KEYSTORE_PASSWORD`          | Password and private key password of the internal, primary and TLS keystores                |
+| `TRUSTSTORE_PASSWORD`        | Truststore password                                                                         |
+| `AUTH_ENDPOINT_APP_PASSWORD` | Client authentication app password                                                          |
+| `AUTH_ENDPOINT_APP_HASH`     | Client authentication app password hash                                                     |
+| `ENCRYPTION_KEY`             | Symmetric encryption key                                                                    |
+
+```shell
+kubectl create secret generic credentials \
+--from-literal=ADMIN_PASSWORD="${SUPER_ADMIN_PASSWORD}" \
+--from-literal=IDENTITY_DB_PASSWORD="${DATABASE_IDENTITY_PASSWORD}" \
+--from-literal=SHARED_DB_PASSWORD="${DATABASE_SHARED_PASSWORD}" \
+--from-literal=AGENT_IDENTITY_DB_PASSWORD="${DATABASE_AGENT_IDENTITY_PASSWORD}" \
+--from-literal=KEYSTORE_PASSWORD="${KEYSTORE_PASSWORD}" \
+--from-literal=TRUSTSTORE_PASSWORD="${TRUSTSTORE_PASSWORD}" \
+--from-literal=AUTH_ENDPOINT_APP_PASSWORD="${IDENTITY_AUTH_FRAMEWORK_ENDPOINT_APP_PASSWORD}" \
+--from-literal=AUTH_ENDPOINT_APP_HASH="${ACCOUNT_RECOVERY_ENDPOINT_AUTH_HASH}" \
+--from-literal=ENCRYPTION_KEY="${SYMMETRIC_KEY}" \
+-n $NAMESPACE
+```
+
+Add the following parameters when installing the Helm chart:
+
+```shell
+--set deployment.externalCredentials.enabled=true \
+--set deployment.externalCredentials.secretName="credentials"
+```
+
+**Note:**
+- `deployment.externalCredentials` and `deployment.secretStore` cannot be enabled at the same time.
+- Database usernames and the remaining configurations are still read from the values under `deploymentToml`.
+- Kubernetes does not restart the pods when the secret is updated. Restart the deployment after changing a credential.
+
 ## Compatibility
 
 | Deployment | Version          | Helm Version | Compatibility Notes                  |
@@ -668,6 +714,8 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.3.0-1  -n "$NAMESP
 | deployment.apparmor.profile | string | `"runtime/default"` | Apparmor profile |
 | deployment.buildVersion | string | `"7.3.0"` | Product version |
 | deployment.enableCorrelationLogs | bool | `false` | Enable correlation logs |
+| deployment.externalCredentials.enabled | bool | `false` | Read the server passwords and keys from an external K8s secret instead of the values under "deploymentToml" |
+| deployment.externalCredentials.secretName | string | `"credentials"` | K8s secret name which contains the server passwords and keys |
 | deployment.externalJKS.enabled | bool | `false` | Mount external  keystore and trustores |
 | deployment.externalJKS.secretName | string | `"keystores"` | K8s secret name which contains JKS files |
 | deployment.extraVolumeMounts | list | `[]` | Additional volumeMounts to the pods. All the configuration mounts should be done under the path "/home/wso2carbon/wso2-config-volume/" |

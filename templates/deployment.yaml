@@ -194,6 +194,53 @@ spec:
               value: {{ .Values.deployment.resources.jvm.memOpts }}
             - name: JAVA_OPTS
               value: {{ .Values.deployment.resources.jvm.javaOpts }}
+            {{- if .Values.deployment.externalCredentials.enabled }}
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: ADMIN_PASSWORD
+            - name: IDENTITY_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: IDENTITY_DB_PASSWORD
+            - name: SHARED_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: SHARED_DB_PASSWORD
+            - name: AGENT_IDENTITY_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: AGENT_IDENTITY_DB_PASSWORD
+            - name: KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: KEYSTORE_PASSWORD
+            - name: TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: TRUSTSTORE_PASSWORD
+            - name: AUTH_ENDPOINT_APP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: AUTH_ENDPOINT_APP_PASSWORD
+            - name: AUTH_ENDPOINT_APP_HASH
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: AUTH_ENDPOINT_APP_HASH
+            - name: ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.deployment.externalCredentials.secretName }}
+                  key: ENCRYPTION_KEY
+            {{- end }}
           ports:
             - containerPort: 9443
               protocol: TCP

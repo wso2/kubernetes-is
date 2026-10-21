@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [v7.3.0-3] - 2026-10-21
+
+### Added
+
+- Added `deployment.externalCredentials.enabled` and `deployment.externalCredentials.secretName` to read the super admin, database, keystore, truststore, client authentication app and symmetric encryption credentials from an external Kubernetes secret. The credentials are passed to the container as environment variables from the secret and referenced in `deployment.toml` as `$env{...}`, so they no longer need to be supplied as Helm values in environments without a managed secret store.
+
+### Fixed
+
+- Fixed Log4j2 configuration errors during server startup when logs are written only to the console. The server's remote logging configuration sync rewrote `log4j2.properties` with `CARBON_LOGFILE` and `AUDIT_LOGFILE` file appenders that were missing from the chart's configuration. These appenders are now declared as placeholders that no logger uses and that create no log files.
+
 ## [v7.3.0-2] - 2026-07-03
 
 ### Changed

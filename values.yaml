@@ -196,6 +196,11 @@ deployment:
     enabled: false
     # -- K8s secret name which contains JKS files
     secretName: "keystores"
+  externalCredentials:
+    # -- Read the server passwords and keys from an external K8s secret instead of the values under "deploymentToml"
+    enabled: false
+    # -- K8s secret name which contains the server passwords and keys
+    secretName: "credentials"
   persistence:
     # -- Enable persistence for artifact sharing
     enabled: false
