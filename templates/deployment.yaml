@@ -84,6 +84,10 @@ spec:
       nodeSelector:
         {{- toYaml .Values.deployment.nodeSelector | nindent 8 }}
       {{- end }}
+      {{- if .Values.deployment.hostAliases }}
+      hostAliases:
+        {{- toYaml .Values.deployment.hostAliases | nindent 8 }}
+      {{- end }}
       {{- if .Values.deployment.secretStore.aws.enabled }}
       initContainers:
         - name: aws-secrets-injector

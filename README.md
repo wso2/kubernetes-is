@@ -672,6 +672,7 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.3.0-1  -n "$NAMESP
 | deployment.externalJKS.secretName | string | `"keystores"` | K8s secret name which contains JKS files |
 | deployment.extraVolumeMounts | list | `[]` | Additional volumeMounts to the pods. All the configuration mounts should be done under the path "/home/wso2carbon/wso2-config-volume/" |
 | deployment.extraVolumes | list | `[]` | Additional volumes to the pod. |
+| deployment.hostAliases | list | `[]` | Additional entries to the pod's /etc/hosts file. Use it to map the internal hostname to 127.0.0.1 |
 | deployment.hpa.averageUtilizationCPU | int | `65` | Average CPU utilization for HPA |
 | deployment.hpa.averageUtilizationMemory | int | `75` | averageUtilizationMemory parameter should be greater than 75 if not un expected scaling will happen during rolling update. |
 | deployment.hpa.enabled | bool | `false` | Enable HPA for the deployment |
@@ -851,6 +852,7 @@ helm install "$RELEASE_NAME" wso2/identity-server --version 7.3.0-1  -n "$NAMESP
 | deploymentToml.recaptcha.secretKey | string | `""` |  |
 | deploymentToml.recaptcha.siteKey | string | `""` |  |
 | deploymentToml.recaptcha.verifyUrl | string | `""` |  |
+| deploymentToml.server.internalHostname | string | `""` | Hostname used for internal API calls. Defaults to localhost. Map it to 127.0.0.1 in deployment.hostAliases (Ref: https://is.docs.wso2.com/en/latest/deploy/change-the-hostname/) |
 | deploymentToml.server.offset | string | `"0"` | Change default ports(Ref: https://is.docs.wso2.com/en/latest/references/default-ports-of-wso2-products/#:~:text=For%20each%20additional%20WSO2%20product,to%20the%20server%20during%20startup.) |
 | deploymentToml.superAdmin.createAdminAccount | bool | `true` | Create Carbon console admin account |
 | deploymentToml.superAdmin.password | string | `"admin"` | Carbon console admin account password |
