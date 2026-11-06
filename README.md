@@ -83,7 +83,7 @@ There are two ways to install the WSO2 Identity Server using the Helm chart.
 
 2. Install the Helm chart from the Helm repository.
     ```shell
-    helm install $RELEASE_NAME wso2/identity-server --version 7.2.0-3 \
+    helm install $RELEASE_NAME wso2/identity-server --version 7.2.0-5 \
     -n $NAMESPACE \
     --set deployment.image.registry="wso2"
     ```
@@ -400,7 +400,7 @@ export RELEASE_NAME='<RELEASE_NAME>'
 ```
 
 ```shell
-helm install "$RELEASE_NAME" wso2/identity-server --version 7.2.0-3  -n "$NAMESPACE" \
+helm install "$RELEASE_NAME" wso2/identity-server --version 7.2.0-5  -n "$NAMESPACE" \
 --set deployment.image.registry="${IMAGE_REGISTRY_HOSTNAME}" \
 --set deployment.image.repository="${IMAGE_REPOSITORY_NAME}" \
 --set deployment.image.digest="${IMAGE_DIGEST}" \
