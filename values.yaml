@@ -114,6 +114,11 @@ deployment:
   podAnnotations: {}
   # -- Node selector to deploy pod in selected node. Add label to the node and specify the label here.
   nodeSelector: {}
+  # -- Additional entries to the pod's /etc/hosts file
+  hostAliases: []
+  #  - ip: "127.0.0.1"
+  #    hostnames:
+  #      - "is.example.com"
   securityContext:
     # -- Run as user ID
     runAsUser: 802
@@ -278,6 +283,8 @@ deploymentToml:
   server:
     # -- Change default ports(Ref: https://is.docs.wso2.com/en/latest/references/default-ports-of-wso2-products/#:~:text=For%20each%20additional%20WSO2%20product,to%20the%20server%20during%20startup.)
     offset: "0"
+    # -- Hostname used for internal API calls. Defaults to localhost. Map it to 127.0.0.1 in deployment.hostAliases. Requires a TLS keystore (e.g. via deployment.externalJKS) whose certificate contains this hostname in its SAN. If Envoy Gateway is used, also set deployment.gateway.backendCACertificate.hostname to this hostname. (Ref: https://is.docs.wso2.com/en/latest/deploy/change-the-hostname/)
+    internalHostname: ""
   userStore:
     type: "database_unique_id"
   superAdmin:
