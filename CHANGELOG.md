@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Added `deployment.hostAliases` to add entries to the `/etc/hosts` file of the WSO2 Identity Server pods.
 - Added `deploymentToml.server.internalHostname` to configure the `internal_hostname` in `deployment.toml`.
-Together, these allow changing the hostname without adding `localhost` to the TLS certificate.
+- Together, these allow changing the hostname without adding `localhost` to the TLS certificate.
 
 ## [v7.3.0-2] - 2026-07-03
 
